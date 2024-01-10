@@ -15,8 +15,8 @@ namespace RetroEngine.UnitTest.ECS.Utils
 
             foreach (var entity in ActiveEntities)
             {
-                World.GetComponent<TestUpdateComponent>(entity)
-                    .Tag = $"Updated in {time.Hours}:{time.Minutes}:{time.Seconds}";
+                ref var comp = ref World.GetComponent<TestUpdateComponent>(entity);
+                comp.Tag = $"Updated in {time.Hours}:{time.Minutes}:{time.Seconds}";
             }
         }
     }
