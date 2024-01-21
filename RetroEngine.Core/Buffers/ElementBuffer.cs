@@ -5,7 +5,7 @@ namespace RetroEngine.Core.Buffers
     /// <summary>
     /// Abstracts the element buffer object functionallity from OpenGL.
     /// </summary>
-    internal struct ElementBuffer
+    internal class ElementBuffer
     {
         /// <summary>
         /// Gets the OpenGL ID of this object.

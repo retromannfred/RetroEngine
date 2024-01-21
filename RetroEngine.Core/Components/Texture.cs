@@ -6,7 +6,7 @@ namespace RetroEngine.Core.Components
     /// <summary>
     /// Abstracts the texture functionallity from OpenGL.
     /// </summary>
-    public struct Texture
+    public class Texture
     {
         /// <summary>
         /// Gets this texture ID in OpenGL.
