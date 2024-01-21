@@ -6,7 +6,7 @@ namespace RetroEngine.Core.Buffers
     /// <summary>
     /// Abstracts the vertex buffer object functionallity from OpenGL.
     /// </summary>
-    internal struct VertexBuffer
+    internal class VertexBuffer
     {
         /// <summary>
         /// Gets the OpenGL ID of this object.

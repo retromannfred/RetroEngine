@@ -5,7 +5,7 @@ namespace RetroEngine.Core.Buffers
     /// <summary>
     /// Abstracts the vertex array object functionallity from OpenGL.
     /// </summary>
-    internal struct VertexArray
+    internal class VertexArray
     {
         /// <summary>
         /// Gets the OpenGL ID of this object.

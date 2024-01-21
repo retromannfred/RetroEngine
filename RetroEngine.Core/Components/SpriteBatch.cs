@@ -1,4 +1,4 @@
-﻿using OpenTK.Graphics.OpenGL;
+﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using RetroEngine.Core.Buffers;
 
@@ -7,14 +7,16 @@ namespace RetroEngine.Core.Components
     /// <summary>
     /// Defines a spritebatch for drawing multiple sprites from a single texture.
     /// </summary>
-    public struct SpriteBatch
+    public class SpriteBatch
     {
         private const int DEFAULT_SIZE = 10;
         private int _count;
 
+        private Texture _texture;
+        private ShaderProgram _program;
+
         private VertexArray _vao;
         private ElementBuffer _indices;
-        private Texture _texture;
 
         private VertexBuffer _positions;
         private VertexBuffer _textureCoords;
@@ -35,6 +37,7 @@ namespace RetroEngine.Core.Components
             List<Vector3> colors,
             List<uint> indices)
         {
+            _texture = texture;
             _count = positions.Count / 4;
             _vao = new VertexArray();
 
@@ -47,17 +50,32 @@ namespace RetroEngine.Core.Components
 
             _indices = new ElementBuffer(indices);
 
-            _texture = texture;
+            _program = new();
+            _program.AddShader(new Shader(ShaderDefaults.DEFAULT_VERTEX_SHADER, ShaderType.VertexShader));
+            _program.AddShader(new Shader(ShaderDefaults.DEFAULT_FRAGMENT_SHADER, ShaderType.FragmentShader));
+            _program.Link();
         }
 
         /// <summary>
         /// Prepares elements in this sprite batch to begin drawing.
         /// </summary>
-        public void Begin()
+        public void Begin(Matrix4 projection)
         {
             _vao.Bind();
             _indices.Bind();
             _texture.Bind();
+            _program.Bind();
+
+            Matrix4 model = Matrix4.Identity;
+            Matrix4 view = Matrix4.Identity;
+
+            int modelLocation = GL.GetUniformLocation(1, "model");
+            int viewLocation = GL.GetUniformLocation(1, "view");
+            int projectionLocation = GL.GetUniformLocation(1, "projection");
+
+            GL.UniformMatrix4(modelLocation, true, ref model);
+            GL.UniformMatrix4(viewLocation, true, ref view);
+            GL.UniformMatrix4(projectionLocation, true, ref projection);
         }
 
         /// <summary>
@@ -76,6 +94,7 @@ namespace RetroEngine.Core.Components
             _vao.Unbind();
             _indices.Unbind();
             _texture.Unbind();
+            _program.Unbind();
         }
     }
 }

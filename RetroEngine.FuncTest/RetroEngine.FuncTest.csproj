@@ -12,4 +12,10 @@
     <ProjectReference Include="..\RetroEngine.ECS\RetroEngine.ECS.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Sprites\person.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
