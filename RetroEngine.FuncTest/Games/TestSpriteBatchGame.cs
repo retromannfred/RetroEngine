@@ -1,6 +1,6 @@
 ﻿using OpenTK.Mathematics;
 using RetroEngine.Core;
-using RetroEngine.Core.Components;
+using RetroEngine.Core.Batching;
 using RetroEngine.ECS;
 using RetroEngine.FuncTest.ECS;
 

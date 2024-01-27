@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RetroEngine.Core.Components
+namespace RetroEngine.Core.Shaders
 {
     internal class ShaderProgram
     {

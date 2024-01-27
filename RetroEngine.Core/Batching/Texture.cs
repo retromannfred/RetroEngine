@@ -1,7 +1,7 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using StbImageSharp;
 
-namespace RetroEngine.Core.Components
+namespace RetroEngine.Core.Batching
 {
     /// <summary>
     /// Abstracts the texture functionallity from OpenGL.

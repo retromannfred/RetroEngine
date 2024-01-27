@@ -1,8 +1,9 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using RetroEngine.Core.Buffers;
+using RetroEngine.Core.Shaders;
 
-namespace RetroEngine.Core.Components
+namespace RetroEngine.Core.Batching
 {
     /// <summary>
     /// Defines a spritebatch for drawing multiple sprites from a single texture.
