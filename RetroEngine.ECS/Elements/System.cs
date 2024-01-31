@@ -8,9 +8,9 @@ namespace RetroEngine.ECS.Elements
     public abstract class System
     {
         private Aspect _aspect;
-        private AspectBuilder _aspectBuilder;
+        private readonly AspectBuilder _aspectBuilder;
 
-        protected World? World { get; private set; }
+        protected World World { get; private set; }
 
         /// <summary>
         /// Creates a new System with a given aspect specification.

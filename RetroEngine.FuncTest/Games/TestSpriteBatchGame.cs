@@ -24,43 +24,7 @@ namespace RetroEngine.FuncTest.Games
         protected override void LoadContent()
         {
             _texture = new Texture("Sprites/person.png");
-
-            var positions = new List<Vector3>()
-            {
-                new Vector3(-16.0f, 16.0f, -1.0f),
-                new Vector3(16.0f, 16.0f, -1.0f),
-                new Vector3(16.0f, -16.0f, -1.0f),
-                new Vector3(-16.0f, -16.0f, -1.0f)
-            };
-
-            var texCoords = new List<Vector2>()
-            {
-                new Vector2(0.0f, 1.0f),
-                new Vector2(1.0f, 1.0f),
-                new Vector2(1.0f, 0.0f),
-                new Vector2(0.0f, 0.0f)
-            };
-
-            var colors = new List<Vector3>()
-            {
-                new Vector3(1.0f, 1.0f, 1.0f),
-                new Vector3(1.0f, 1.0f, 1.0f),
-                new Vector3(1.0f, 1.0f, 1.0f),
-                new Vector3(1.0f, 1.0f, 1.0f)
-            };
-
-            var indices = new List<uint>()
-            {
-                0, 1, 3, 1, 2, 3
-            };
-
-            _spriteBatch = new SpriteBatch(
-                _texture,
-                positions,
-                texCoords,
-                colors,
-                indices
-            );
+            _spriteBatch = new SpriteBatch(_texture);
         }
 
         protected override void Update(GameTime gameTime)
@@ -73,7 +37,8 @@ namespace RetroEngine.FuncTest.Games
             ClearScreen(Color4.CornflowerBlue);
 
             _spriteBatch.Begin(Matrix4.CreateOrthographic(this.Width, this.Height, 0.01f, 3000f));
-            _spriteBatch.Draw();
+            _spriteBatch.Draw(new Vector3(3f, 3f, -1f), Vector2.Zero, new Vector2(_texture.Width, _texture.Height), ((Vector4)Color4.White), 0.1f, Vector2.One);
+            //_spriteBatch.Draw(Vector3.One * -10, new Vector2(_texture.Width / 2, _texture.Height / 2), new Vector2(_texture.Width / 2, _texture.Height / 2), ((Vector4)Color4.White), 0f, Vector2.One);
             _spriteBatch.End();
         }
     }

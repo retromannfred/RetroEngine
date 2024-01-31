@@ -20,36 +20,30 @@ namespace RetroEngine.Core.Buffers
         /// <summary>
         /// Creates a new element buffer object.
         /// </summary>
-        /// <param name="data">Collection of vertex indices.</param>
-        public ElementBuffer(List<uint> data)
+        public ElementBuffer()
         {
             Id = GL.GenBuffer();
-            Count = data.Count;
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, Id);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, data.Count * sizeof(uint), data.ToArray(), BufferUsageHint.StaticDraw);
         }
 
         /// <summary>
-        /// Arrange the vertex indices to match a new element list.
+        /// Updates all data of this element buffer.
         /// </summary>
-        /// <param name="elements"></param>
-        public void Arrange(List<int> elements)
+        /// <param name="data">New data of this buffer.</param>
+        public void UpdateData(uint[] data)
         {
-            List<uint> newIndices = new();
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, Id);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, data.Length * sizeof(uint), data.ToArray(), BufferUsageHint.StaticDraw);
+        }
 
-            foreach (var item in elements)
-            {
-                uint quadOffset = (uint)item * 4;
-                newIndices.AddRange(new List<uint>
-                {
-                    quadOffset + 0, quadOffset + 1, quadOffset + 3,
-                    quadOffset + 1, quadOffset + 2, quadOffset + 3,
-                });
-            }
-
-            Bind();
-            GL.BufferSubData<uint>(BufferTarget.ElementArrayBuffer, IntPtr.Zero, newIndices.Count * sizeof(uint), newIndices.ToArray());
-            Unbind();
+        /// <summary>
+        /// Updates a section of data of this element buffer object.
+        /// </summary>
+        /// <param name="offset">Index of first element of data.</param>
+        /// <param name="data">Data to be updated.</param>
+        public void UpdateData(int offset, uint[] data)
+        {
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, Id);
+            GL.BufferSubData(BufferTarget.ElementArrayBuffer, (IntPtr)offset, data.Length * sizeof(uint), data);
         }
 
         /// <summary>

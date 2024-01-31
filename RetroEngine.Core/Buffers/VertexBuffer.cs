@@ -1,5 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
+using System.Runtime.CompilerServices;
 
 namespace RetroEngine.Core.Buffers
 {
@@ -14,27 +15,34 @@ namespace RetroEngine.Core.Buffers
         public int Id { get; private set; }
 
         /// <summary>
-        /// Creates a new vertex buffer object with 3-dimension vertices.
+        /// Creates a new vertex buffer object.
         /// </summary>
-        /// <param name="data">Collection of 3-dimension vertices data for the buffer.</param>
-        public VertexBuffer(List<Vector3> data)
+        public VertexBuffer()
         {
             Id = GL.GenBuffer();
-
-            GL.BindBuffer(BufferTarget.ArrayBuffer, Id);
-            GL.BufferData(BufferTarget.ArrayBuffer, data.Count * Vector3.SizeInBytes, data.ToArray(), BufferUsageHint.StaticDraw);
         }
 
         /// <summary>
-        /// Creates a new vertex buffer object with 2-dimension vertices.
+        /// Updates all data of this vertex buffer.
         /// </summary>
-        /// <param name="data">Collection of 2-dimension vertices data for the buffer.</param>
-        public VertexBuffer(List<Vector2> data)
+        /// <typeparam name="T">Type of vertex.</typeparam>
+        /// <param name="data">New data of this buffer.</param>
+        public void UpdateData<T>(T[] data) where T : struct
         {
-            Id = GL.GenBuffer();
+            Bind();
+            GL.BufferData(BufferTarget.ArrayBuffer, data.Length * Unsafe.SizeOf<T>(), data, BufferUsageHint.StaticDraw);
+        }
 
-            GL.BindBuffer(BufferTarget.ArrayBuffer, Id);
-            GL.BufferData(BufferTarget.ArrayBuffer, data.Count * Vector2.SizeInBytes, data.ToArray(), BufferUsageHint.StaticDraw);
+        /// <summary>
+        /// Updates a section of data of this vertex buffer object.
+        /// </summary>
+        /// <typeparam name="T">Type of vertex.</typeparam>
+        /// <param name="offset">Index of first element of data.</param>
+        /// <param name="data">New data of this buffer.</param>
+        public void UpdateData<T>(int offset, T[] data) where T : struct
+        {
+            Bind();
+            GL.BufferSubData(BufferTarget.ArrayBuffer, (IntPtr)offset, data.Length * Unsafe.SizeOf<T>(), data);
         }
 
         /// <summary>
