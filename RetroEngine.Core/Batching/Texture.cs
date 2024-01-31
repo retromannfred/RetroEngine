@@ -1,4 +1,5 @@
 ﻿using OpenTK.Graphics.OpenGL4;
+using OpenTK.Windowing.Desktop;
 using StbImageSharp;
 
 namespace RetroEngine.Core.Batching
@@ -24,15 +25,15 @@ namespace RetroEngine.Core.Batching
         public int Height { get; private set; }
 
         /// <summary>
-        /// Creates a new texture from an image file.
+        /// Creates a new texture.
         /// </summary>
-        /// <param name="filepath">Path of the image file.</param>
-        public Texture(string filepath)
+        /// <param name="width">Texture width in pixels.</param>
+        /// <param name="height">Texture height in pixels.</param>
+        /// <param name="data">Data containing colors of the texture.</param>
+        public Texture(int width, int height, byte[] data)
         {
-            StbImage.stbi_set_flip_vertically_on_load(1);
-            ImageResult image = ImageResult.FromStream(File.OpenRead(filepath), ColorComponents.RedGreenBlueAlpha);
-            Width = image.Width;
-            Height = image.Height;
+            Width = width;
+            Height = height;
 
             Id = GL.GenTexture();
             Bind();
@@ -40,7 +41,7 @@ namespace RetroEngine.Core.Batching
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
-            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, image.Width, image.Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, image.Data);
+            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, data);
 
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMinFilter.Nearest);

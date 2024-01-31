@@ -35,11 +35,7 @@ namespace RetroEngine.Core
         /// <summary>
         /// Gets or sets the title of the window.
         /// </summary>
-        public string Title
-        {
-            get { return _nativeWindowSettings.Title; }
-            set { _nativeWindowSettings.Title = value; }
-        }
+        public string Title { get; set; }
 
         /// <summary>
         /// Gets the keyboard state of the game.
@@ -57,6 +53,7 @@ namespace RetroEngine.Core
             _nativeWindowSettings.ClientSize = new Vector2i(initialWindowWidth, initialWindowHeight);
             _nativeWindowSettings.Title = title;
 
+            Title = title;
             Width = initialWindowWidth;
             Height = initialWindowHeight;
         }
@@ -75,8 +72,9 @@ namespace RetroEngine.Core
             gameWindow.Load += LoadContent;
             gameWindow.UpdateFrame += (FrameEventArgs eventArgs) =>
             {
-                gameTime.ElapsedGameTime = TimeSpan.FromMilliseconds(eventArgs.Time);
-                gameTime.TotalGameTime += TimeSpan.FromMilliseconds(eventArgs.Time);
+                gameWindow.Title = Title;
+                gameTime.ElapsedGameTime = TimeSpan.FromSeconds(eventArgs.Time);
+                gameTime.TotalGameTime += TimeSpan.FromSeconds(eventArgs.Time);
                 Update(gameTime);
             };
             gameWindow.RenderFrame += (FrameEventArgs eventArgs) =>
