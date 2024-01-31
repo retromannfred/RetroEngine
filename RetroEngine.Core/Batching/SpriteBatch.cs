@@ -111,7 +111,33 @@ namespace RetroEngine.Core.Batching
                 }
             };
 
-            //TODO: apply rotation
+            if( rotation != 0f)
+            {
+                float sin = (float) MathHelper.Sin(rotation);
+                float cos = (float) MathHelper.Cos(rotation);
+
+                float x, y;
+
+                x = (item.TopLeft.Position.X - position.X) * cos - (item.TopLeft.Position.Y - position.Y) * sin + position.X;
+                y = (item.TopLeft.Position.X - position.X) * sin + (item.TopLeft.Position.Y - position.Y) * cos + position.Y;
+                item.TopLeft.Position.X = x;
+                item.TopLeft.Position.Y = y;
+
+                x = (item.TopRight.Position.X - position.X) * cos - (item.TopRight.Position.Y - position.Y) * sin + position.X;
+                y = (item.TopRight.Position.X - position.X) * sin + (item.TopRight.Position.Y - position.Y) * cos + position.Y;
+                item.TopRight.Position.X = x;
+                item.TopRight.Position.Y = y;
+
+                x = (item.BottomRight.Position.X - position.X) * cos - (item.BottomRight.Position.Y - position.Y) * sin + position.X;
+                y = (item.BottomRight.Position.X - position.X) * sin + (item.BottomRight.Position.Y - position.Y) * cos + position.Y;
+                item.BottomRight.Position.X = x;
+                item.BottomRight.Position.Y = y;
+
+                x = (item.BottomLeft.Position.X - position.X) * cos - (item.BottomLeft.Position.Y - position.Y) * sin + position.X;
+                y = (item.BottomLeft.Position.X - position.X) * sin + (item.BottomLeft.Position.Y - position.Y) * cos + position.Y;
+                item.BottomLeft.Position.X = x;
+                item.BottomLeft.Position.Y = y;
+            }
 
             _batchItems.Add(item);
         }

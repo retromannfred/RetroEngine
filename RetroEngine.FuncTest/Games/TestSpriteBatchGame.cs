@@ -37,7 +37,7 @@ namespace RetroEngine.FuncTest.Games
             ClearScreen(Color4.CornflowerBlue);
 
             _spriteBatch.Begin(Matrix4.CreateOrthographic(this.Width, this.Height, 0.01f, 3000f));
-            _spriteBatch.Draw(new Vector3(3f, 3f, -1f), Vector2.Zero, new Vector2(_texture.Width, _texture.Height), ((Vector4)Color4.White), 0.1f, Vector2.One);
+            _spriteBatch.Draw(new Vector3(3f, 3f, -1f), Vector2.Zero, new Vector2(_texture.Width, _texture.Height), ((Vector4)Color4.White), 0.1f, Vector2.One * 10);
             //_spriteBatch.Draw(Vector3.One * -10, new Vector2(_texture.Width / 2, _texture.Height / 2), new Vector2(_texture.Width / 2, _texture.Height / 2), ((Vector4)Color4.White), 0f, Vector2.One);
             _spriteBatch.End();
         }
