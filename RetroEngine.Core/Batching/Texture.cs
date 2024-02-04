@@ -52,6 +52,18 @@ namespace RetroEngine.Core.Batching
             Unbind();
         }
 
+        public Texture(int textureId)
+        {
+            Id = textureId;
+            Bind();
+
+            int width, height;
+            GL.GetTexParameter(TextureTarget.Texture2D, GetTextureParameter.TextureWidth, out width);
+            GL.GetTexParameter(TextureTarget.Texture2D, GetTextureParameter.TextureWidth, out height);
+            Width = width;
+            Height = height;
+        }
+
         /// <summary>
         /// Binds this OpenGL texture.
         /// </summary>

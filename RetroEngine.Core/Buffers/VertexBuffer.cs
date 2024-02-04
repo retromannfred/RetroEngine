@@ -7,7 +7,7 @@ namespace RetroEngine.Core.Buffers
     /// <summary>
     /// Abstracts the vertex buffer object functionallity from OpenGL.
     /// </summary>
-    internal class VertexBuffer
+    internal class VertexBuffer<T> where T : struct
     {
         /// <summary>
         /// Gets the OpenGL ID of this object.
@@ -25,9 +25,8 @@ namespace RetroEngine.Core.Buffers
         /// <summary>
         /// Updates all data of this vertex buffer.
         /// </summary>
-        /// <typeparam name="T">Type of vertex.</typeparam>
         /// <param name="data">New data of this buffer.</param>
-        public void UpdateData<T>(T[] data) where T : struct
+        public void UpdateData(T[] data)
         {
             Bind();
             GL.BufferData(BufferTarget.ArrayBuffer, data.Length * Unsafe.SizeOf<T>(), data, BufferUsageHint.StaticDraw);
@@ -36,10 +35,9 @@ namespace RetroEngine.Core.Buffers
         /// <summary>
         /// Updates a section of data of this vertex buffer object.
         /// </summary>
-        /// <typeparam name="T">Type of vertex.</typeparam>
         /// <param name="offset">Index of first element of data.</param>
         /// <param name="data">New data of this buffer.</param>
-        public void UpdateData<T>(int offset, T[] data) where T : struct
+        public void UpdateData(int offset, T[] data)
         {
             Bind();
             GL.BufferSubData(BufferTarget.ArrayBuffer, (IntPtr)offset, data.Length * Unsafe.SizeOf<T>(), data);

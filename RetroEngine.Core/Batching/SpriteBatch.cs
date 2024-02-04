@@ -17,11 +17,12 @@ namespace RetroEngine.Core.Batching
         private readonly VertexArray _vao;
         private readonly ElementBuffer _indices;
 
-        private readonly VertexBuffer _positions;
-        private readonly VertexBuffer _textureCoords;
-        private readonly VertexBuffer _colors;
+        private readonly VertexBuffer<Vector3> _positions;
+        private readonly VertexBuffer<Vector2> _textureCoords;
+        private readonly VertexBuffer<Vector4> _colors;
 
-        private readonly List<SpriteBatchItem> _batchItems;
+        private SpriteBatchItem[] _batchItems;
+        private int _batchItemCount;
 
         /// <summary>
         /// Creates a new sprite batch.
@@ -31,14 +32,14 @@ namespace RetroEngine.Core.Batching
         {
             _texture = texture;
             _vao = new VertexArray();
-            _batchItems = new List<SpriteBatchItem>();
+            _batchItems = new SpriteBatchItem[256];
 
-            _positions = new VertexBuffer();
-            _vao.Link(0, 3, _positions);
-            _textureCoords = new VertexBuffer();
-            _vao.Link(1, 2, _textureCoords);
-            _colors = new VertexBuffer();
-            _vao.Link(2, 3, _colors);
+            _positions = new VertexBuffer<Vector3>();
+            _vao.Link(0, _positions);
+            _textureCoords = new VertexBuffer<Vector2>();
+            _vao.Link(1, _textureCoords);
+            _colors = new VertexBuffer<Vector4>();
+            _vao.Link(2, _colors);
 
             _indices = new ElementBuffer();
 
@@ -54,11 +55,11 @@ namespace RetroEngine.Core.Batching
         /// <param name="projection">Projection matrix representing camera view</param>
         public void Begin(Matrix4 projection)
         {
+            _batchItemCount = 0;
+
             _vao.Bind();
             _texture.Bind();
             _program.Bind();
-
-            _batchItems.Clear();
 
             Matrix4 model = Matrix4.Identity;
             Matrix4 view = Matrix4.Identity;
@@ -81,33 +82,38 @@ namespace RetroEngine.Core.Batching
         /// <param name="color">Color of the sprite.</param>
         /// <param name="rotation">Rotation of the sprite.</param>
         /// <param name="scale">Scale of the sprite.</param>
-        public void Draw(Vector3 position, Vector2 offset, Vector2 size, Vector4 color, float rotation, Vector2 scale)
+        public void Draw(Vector2 position, Vector2 offset, Vector2 size, Color4 color, float rotation, Vector2 scale, float layerDepth)
         {
+            if( _batchItemCount >= _batchItems.Length)
+            {
+                Array.Resize(ref _batchItems, _batchItemCount + 64);
+            }
+
             var item = new SpriteBatchItem()
             {
                 TopLeft = new VertexInfo()
                 {
-                    Position = new Vector3(position.X - size.X * scale.X / 2, position.Y + size.Y * scale.Y / 2, position.Z),
+                    Position = new Vector3(position.X - size.X * scale.X / 2, position.Y + size.Y * scale.Y / 2, layerDepth),
                     TextureCoord = new Vector2(offset.X / _texture.Width, (_texture.Height - offset.Y) / _texture.Height),
-                    Color = color
+                    Color = (Vector4) color
                 },
                 TopRight = new VertexInfo()
                 {
-                    Position = new Vector3(position.X + size.X * scale.X / 2, position.Y + size.Y * scale.Y / 2, position.Z),
+                    Position = new Vector3(position.X + size.X * scale.X / 2, position.Y + size.Y * scale.Y / 2, layerDepth),
                     TextureCoord = new Vector2((offset.X + size.X) / _texture.Width, (_texture.Height - offset.Y) / _texture.Height),
-                    Color = color
+                    Color = (Vector4) color
                 },
                 BottomRight = new VertexInfo()
                 {
-                    Position = new Vector3(position.X + size.X * scale.X / 2, position.Y - size.Y * scale.Y / 2, position.Z),
+                    Position = new Vector3(position.X + size.X * scale.X / 2, position.Y - size.Y * scale.Y / 2, layerDepth),
                     TextureCoord = new Vector2((offset.X + size.X) / _texture.Width, (_texture.Height - offset.Y - size.Y) / _texture.Height),
-                    Color = color
+                    Color = (Vector4) color
                 },
                 BottomLeft = new VertexInfo()
                 {
-                    Position = new Vector3(position.X - size.X * scale.X / 2, position.Y - size.Y * scale.Y / 2, position.Z),
+                    Position = new Vector3(position.X - size.X * scale.X / 2, position.Y - size.Y * scale.Y / 2, layerDepth),
                     TextureCoord = new Vector2(offset.X / _texture.Width, (_texture.Height - offset.Y - size.Y) / _texture.Height),
-                    Color = color
+                    Color = (Vector4) color
                 }
             };
 
@@ -139,7 +145,7 @@ namespace RetroEngine.Core.Batching
                 item.BottomLeft.Position.Y = y;
             }
 
-            _batchItems.Add(item);
+            _batchItems[_batchItemCount++] = item;
         }
 
         /// <summary>
@@ -147,31 +153,34 @@ namespace RetroEngine.Core.Batching
         /// </summary>
         public void End()
         {
-            var positions = new List<Vector3>();
-            var textCoords = new List<Vector2>();
-            var colors = new List<Vector4>();
-            var indices = new List<uint>();
+            var positions = new Vector3[_batchItemCount * 4];
+            var textCoords = new Vector2[_batchItemCount * 4];
+            var colors = new Vector4[_batchItemCount * 4];
+            var indices = new uint[_batchItemCount * 6];
 
-            foreach (var item in _batchItems)
+            for (int i = 0; i < _batchItemCount; i++)
             {
-                uint count = (uint)positions.Count;
+                positions[i * 4] =     _batchItems[i].TopLeft.Position;
+                positions[i * 4 + 1] = _batchItems[i].TopRight.Position;
+                positions[i * 4 + 2] = _batchItems[i].BottomRight.Position;
+                positions[i * 4 + 3] = _batchItems[i].BottomLeft.Position;
 
-                positions.Add(item.TopLeft.Position);
-                positions.Add(item.TopRight.Position);
-                positions.Add(item.BottomRight.Position);
-                positions.Add(item.BottomLeft.Position);
+                textCoords[i * 4] =     _batchItems[i].TopLeft.TextureCoord;
+                textCoords[i * 4 + 1] = _batchItems[i].TopRight.TextureCoord;
+                textCoords[i * 4 + 2] = _batchItems[i].BottomRight.TextureCoord;
+                textCoords[i * 4 + 3] = _batchItems[i].BottomLeft.TextureCoord;
 
-                textCoords.Add(item.TopLeft.TextureCoord);
-                textCoords.Add(item.TopRight.TextureCoord);
-                textCoords.Add(item.BottomRight.TextureCoord);
-                textCoords.Add(item.BottomLeft.TextureCoord);
+                colors[i * 4] =     _batchItems[i].TopLeft.Color;
+                colors[i * 4 + 1] = _batchItems[i].TopRight.Color;
+                colors[i * 4 + 2] = _batchItems[i].BottomRight.Color;
+                colors[i * 4 + 3] = _batchItems[i].BottomLeft.Color;
 
-                colors.Add(item.TopLeft.Color);
-                colors.Add(item.TopRight.Color);
-                colors.Add(item.BottomRight.Color);
-                colors.Add(item.BottomLeft.Color);
-
-                indices.AddRange(new uint[6] {0 + count, 1 + count, 2 + count, 2 + count, 3 + count, 0 + count });
+                indices[i * 6] = (uint) i * 4;
+                indices[i * 6 + 1] = (uint)i * 4 + 1;
+                indices[i * 6 + 2] = (uint)i * 4 + 2;
+                indices[i * 6 + 3] = (uint)i * 4 + 2;
+                indices[i * 6 + 4] = (uint)i * 4 + 3;
+                indices[i * 6 + 5] = (uint)i * 4;
             }
 
             _positions.UpdateData(positions.ToArray());
@@ -179,7 +188,7 @@ namespace RetroEngine.Core.Batching
             _colors.UpdateData(colors.ToArray());
             _indices.UpdateData(indices.ToArray());
 
-            GL.DrawElements(PrimitiveType.Triangles, indices.Count, DrawElementsType.UnsignedInt, 0);
+            GL.DrawElements(PrimitiveType.Triangles, indices.Length, DrawElementsType.UnsignedInt, 0);
 
             _vao.Unbind();
             _indices.Unbind();

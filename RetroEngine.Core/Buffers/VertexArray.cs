@@ -1,4 +1,5 @@
 ﻿using OpenTK.Graphics.OpenGL4;
+using System.Runtime.CompilerServices;
 
 namespace RetroEngine.Core.Buffers
 {
@@ -26,11 +27,11 @@ namespace RetroEngine.Core.Buffers
         /// <param name="location">Shader location of the vertex buffer object.</param>
         /// <param name="size">Dimensions of the vertices in the vertex buffer object.</param>
         /// <param name="vbo">Vertext buffer object to link.</param>
-        public void Link(int location, int size, VertexBuffer vbo)
+        public void Link<T>(int location, VertexBuffer<T> vbo) where T : struct
         {
             Bind();
             vbo.Bind();
-            GL.VertexAttribPointer(location, size, VertexAttribPointerType.Float, false, 0, 0);
+            GL.VertexAttribPointer(location, Unsafe.SizeOf<T>() / sizeof(float), VertexAttribPointerType.Float, false, 0, 0);
             GL.EnableVertexAttribArray(location);
             Unbind();
         }

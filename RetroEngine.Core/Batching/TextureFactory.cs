@@ -26,10 +26,10 @@ namespace RetroEngine.Core.Batching
             {
                 switch (i % 4)
                 {
-                    case 0: data[i] = (byte)(color.R * 256); break;
-                    case 1: data[i] = (byte)(color.G * 256); break;
-                    case 2: data[i] = (byte)(color.B * 256); break;
-                    case 3: data[i] = (byte)(color.A * 256); break;
+                    case 0: data[i] = (byte)(color.R * 255); break;
+                    case 1: data[i] = (byte)(color.G * 255); break;
+                    case 2: data[i] = (byte)(color.B * 255); break;
+                    case 3: data[i] = (byte)(color.A * 255); break;
                 }
             }
 

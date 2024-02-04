@@ -11,12 +11,12 @@ namespace RetroEngine.FuncTest.Games
         private Texture _texture;
         private SpriteBatch _spriteBatch;
 
-        private List<Vector3> _positions;
-        private List<Vector4> _colors;
+        private List<Vector2> _positions;
+        private List<Color4> _colors;
         private float _rotation;
 
-        private const int NUMBER_OF_ITEMS = 10000;
-        private const float SPEED = MathHelper.TwoPi * 2;
+        private const int NUMBER_OF_ITEMS = 100000;
+        private const float SPEED = MathHelper.Pi;
 
         private float _lastUpdate = 0f;
 
@@ -27,8 +27,8 @@ namespace RetroEngine.FuncTest.Games
 
         protected override void Initialize()
         {
-            _positions = new List<Vector3>();
-            _colors = new List<Vector4>();
+            _positions = new List<Vector2>();
+            _colors = new List<Color4>();
         }
 
         protected override void LoadContent()
@@ -46,19 +46,19 @@ namespace RetroEngine.FuncTest.Games
             Random rand = new Random();
             for (int i = 1; i <= NUMBER_OF_ITEMS; i++)
             {
-                _positions.Add(new Vector3(rand.Next(-Width / 2, Width / 2), rand.Next(-Height / 2, Height / 2), 0f));
-                _colors.Add(new Vector4((float)rand.NextDouble(), (float)rand.NextDouble(), (float)rand.NextDouble(), 1f));
+                _positions.Add(new Vector2(rand.Next(-Width / 2, Width / 2), rand.Next(-Height / 2, Height / 2)));
+                _colors.Add(new Color4((float)rand.NextDouble(), (float)rand.NextDouble(), (float)rand.NextDouble(), 1f));
             }
         }
 
         protected override void Update(GameTime gameTime)
         {
-            _rotation += SPEED * gameTime.DeltaTime;
+            //_rotation += SPEED * gameTime.DeltaTime;
         }
 
         protected override void Render(GameTime gameTime)
         {
-            //ClearScreen(Color4.CornflowerBlue);
+            ClearScreen(Color4.CornflowerBlue);
 
             _spriteBatch.Begin(Matrix4.CreateTranslation(Vector3.UnitZ * -10) * Matrix4.CreateOrthographic(this.Width, this.Height, 0.3f, 1000f));
 
@@ -70,7 +70,8 @@ namespace RetroEngine.FuncTest.Games
                     new Vector2(_texture.Width, _texture.Height),
                     _colors[i],
                     _rotation,
-                    Vector2.One * 1.0f
+                    Vector2.One * 1.0f,
+                    0f
                     );
             }
             _spriteBatch.End();
