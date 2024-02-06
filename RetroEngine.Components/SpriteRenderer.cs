@@ -13,6 +13,10 @@ namespace RetroEngine.Components
     {
         public int SpriteId { get; set; }
 
+        public int Width { get; set; }
+
+        public int Height { get; set; }
+
         public Color4 Color { get; set; }
 
         public Flip Flip { get; set; }
@@ -22,6 +26,8 @@ namespace RetroEngine.Components
         public SpriteRenderer()
         {
             SpriteId = 0;
+            Width = 0;
+            Height = 0;
             Color = Color4.White;
             Flip = Flip.None;
             LayerDepth = 0;

@@ -10,6 +10,7 @@
   <ItemGroup>
     <ProjectReference Include="..\RetroEngine.Core\RetroEngine.Core.csproj" />
     <ProjectReference Include="..\RetroEngine.ECS\RetroEngine.ECS.csproj" />
+    <ProjectReference Include="..\RetroEngine.Systems\RetroEngine.Systems.csproj" />
   </ItemGroup>
 
   <ItemGroup>

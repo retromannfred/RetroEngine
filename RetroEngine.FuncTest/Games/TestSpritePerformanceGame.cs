@@ -15,7 +15,7 @@ namespace RetroEngine.FuncTest.Games
         private List<Color4> _colors;
         private float _rotation;
 
-        private const int NUMBER_OF_ITEMS = 100000;
+        private const int NUMBER_OF_ITEMS = 10000;
         private const float SPEED = MathHelper.Pi;
 
         private float _lastUpdate = 0f;
@@ -46,7 +46,7 @@ namespace RetroEngine.FuncTest.Games
             Random rand = new Random();
             for (int i = 1; i <= NUMBER_OF_ITEMS; i++)
             {
-                _positions.Add(new Vector2(rand.Next(-Width / 2, Width / 2), rand.Next(-Height / 2, Height / 2)));
+                _positions.Add(new Vector2(rand.Next(-GraphicSettings.Width / 2, GraphicSettings.Width / 2), rand.Next(-GraphicSettings.Height / 2, GraphicSettings.Height / 2)));
                 _colors.Add(new Color4((float)rand.NextDouble(), (float)rand.NextDouble(), (float)rand.NextDouble(), 1f));
             }
         }
@@ -60,7 +60,7 @@ namespace RetroEngine.FuncTest.Games
         {
             ClearScreen(Color4.CornflowerBlue);
 
-            _spriteBatch.Begin(Matrix4.CreateTranslation(Vector3.UnitZ * -10) * Matrix4.CreateOrthographic(this.Width, this.Height, 0.3f, 1000f));
+            _spriteBatch.Begin(Matrix4.CreateTranslation(Vector3.UnitZ * -10) * Matrix4.CreateOrthographic(GraphicSettings.Width, GraphicSettings.Height, 0.3f, 1000f));
 
             for (int i = 0; i < NUMBER_OF_ITEMS; i++)
             {

@@ -55,9 +55,8 @@ namespace RetroEngine.Core.Batching
         /// <param name="projection">Projection matrix representing camera view</param>
         public void Begin(Matrix4 projection)
         {
-            _batchItemCount = 0;
-
             _vao.Bind();
+            _indices.Bind();
             _texture.Bind();
             _program.Bind();
 
@@ -86,7 +85,7 @@ namespace RetroEngine.Core.Batching
         {
             if( _batchItemCount >= _batchItems.Length)
             {
-                Array.Resize(ref _batchItems, _batchItemCount + 64);
+                Array.Resize(ref _batchItems, _batchItemCount * 2);
             }
 
             var item = new SpriteBatchItem()
@@ -194,6 +193,8 @@ namespace RetroEngine.Core.Batching
             _indices.Unbind();
             _texture.Unbind();
             _program.Unbind();
+
+            _batchItemCount = 0;
         }
     }
 }
