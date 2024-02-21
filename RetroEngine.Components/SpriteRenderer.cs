@@ -11,7 +11,7 @@ namespace RetroEngine.Components
 {
     public struct SpriteRenderer : IComponent
     {
-        public int SpriteId { get; set; }
+        public int TextureId { get; set; }
 
         public int Width { get; set; }
 
@@ -25,7 +25,7 @@ namespace RetroEngine.Components
 
         public SpriteRenderer()
         {
-            SpriteId = 0;
+            TextureId = 0;
             Width = 0;
             Height = 0;
             Color = Color4.White;

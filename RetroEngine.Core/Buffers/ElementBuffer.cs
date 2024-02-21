@@ -1,4 +1,5 @@
 ﻿using OpenTK.Graphics.OpenGL4;
+using System.Runtime.CompilerServices;
 
 namespace RetroEngine.Core.Buffers
 {
@@ -13,7 +14,7 @@ namespace RetroEngine.Core.Buffers
         public int Id { get; private set; }
 
         /// <summary>
-        /// Gets the number of elements in this buffer.
+        /// Gets the number of items in this buffer.
         /// </summary>
         public int Count { get; private set; }
 
@@ -31,8 +32,9 @@ namespace RetroEngine.Core.Buffers
         /// <param name="data">New data of this buffer.</param>
         public void UpdateData(uint[] data)
         {
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, Id);
+            Bind();
             GL.BufferData(BufferTarget.ElementArrayBuffer, data.Length * sizeof(uint), data.ToArray(), BufferUsageHint.StaticDraw);
+            Count = data.Length;
         }
 
         /// <summary>
@@ -42,8 +44,8 @@ namespace RetroEngine.Core.Buffers
         /// <param name="data">Data to be updated.</param>
         public void UpdateData(int offset, uint[] data)
         {
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, Id);
-            GL.BufferSubData(BufferTarget.ElementArrayBuffer, (IntPtr)offset, data.Length * sizeof(uint), data);
+            Bind();
+            GL.BufferSubData(BufferTarget.ElementArrayBuffer, new IntPtr(IntPtr.Zero.ToInt64() + offset * sizeof(uint)), data.Length * sizeof(uint), data);
         }
 
         /// <summary>

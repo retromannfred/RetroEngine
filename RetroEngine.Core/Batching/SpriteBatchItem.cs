@@ -9,7 +9,7 @@ namespace RetroEngine.Core.Batching
     /// <summary>
     /// Defines how a sprite will be drawn in a sprite batch.
     /// </summary>
-    internal struct SpriteBatchItem
+    public struct SpriteBatchItem
     {
         /// <summary>
         /// Gets or sets top left vertex info.

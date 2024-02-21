@@ -59,7 +59,7 @@ namespace RetroEngine.Core.Batching
 
             int width, height;
             GL.GetTexParameter(TextureTarget.Texture2D, GetTextureParameter.TextureWidth, out width);
-            GL.GetTexParameter(TextureTarget.Texture2D, GetTextureParameter.TextureWidth, out height);
+            GL.GetTexParameter(TextureTarget.Texture2D, GetTextureParameter.TextureHeight, out height);
             Width = width;
             Height = height;
         }

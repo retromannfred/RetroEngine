@@ -15,6 +15,11 @@ namespace RetroEngine.Core.Buffers
         public int Id { get; private set; }
 
         /// <summary>
+        /// Gets the number of items in this buffer.
+        /// </summary>
+        public int Count { get; private set; }
+
+        /// <summary>
         /// Creates a new vertex buffer object.
         /// </summary>
         public VertexBuffer()
@@ -30,6 +35,7 @@ namespace RetroEngine.Core.Buffers
         {
             Bind();
             GL.BufferData(BufferTarget.ArrayBuffer, data.Length * Unsafe.SizeOf<T>(), data, BufferUsageHint.StaticDraw);
+            Count = data.Length;
         }
 
         /// <summary>
@@ -40,7 +46,7 @@ namespace RetroEngine.Core.Buffers
         public void UpdateData(int offset, T[] data)
         {
             Bind();
-            GL.BufferSubData(BufferTarget.ArrayBuffer, (IntPtr)offset, data.Length * Unsafe.SizeOf<T>(), data);
+            GL.BufferSubData(BufferTarget.ArrayBuffer, new IntPtr(IntPtr.Zero.ToInt64() + offset * Unsafe.SizeOf<T>()), data.Length * Unsafe.SizeOf<T>(), data);
         }
 
         /// <summary>

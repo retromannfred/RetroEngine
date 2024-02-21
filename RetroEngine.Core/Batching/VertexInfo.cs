@@ -10,7 +10,7 @@ namespace RetroEngine.Core.Batching
     /// <summary>
     /// Represents position, texture coord and color of a vertex.
     /// </summary>
-    internal struct VertexInfo
+    public struct VertexInfo
     {
         /// <summary>
         /// Gets or sets vertex position.

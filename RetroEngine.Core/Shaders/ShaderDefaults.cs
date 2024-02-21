@@ -27,7 +27,7 @@ namespace RetroEngine.Core.Shaders
             {
                 pass_texCoord = in_texCoord;
                 pass_color = in_color;
-                gl_Position = vec4(in_position.xyz, 1.0) * model * view * projection;
+                gl_Position = projection * view * model * vec4(in_position.xyz, 1.0);
             }";
 
         public const string DEFAULT_FRAGMENT_SHADER = @"
