@@ -32,5 +32,10 @@ namespace RetroEngine.Components
         {
             Rotation += radians;
         }
+
+        public void Rescale(Vector2 scale)
+        {
+            Scale *= scale;
+        }
     }
 }

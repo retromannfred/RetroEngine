@@ -60,21 +60,21 @@ namespace RetroEngine.FuncTest.Games
         {
             ClearScreen(Color4.CornflowerBlue);
 
-            _spriteBatch.Begin(Matrix4.CreateTranslation(Vector3.UnitZ * -10) * Matrix4.CreateOrthographic(GraphicSettings.Width, GraphicSettings.Height, 0.3f, 1000f));
+            //_spriteBatch.Begin(Matrix4.CreateTranslation(Vector3.UnitZ * -10) * Matrix4.CreateOrthographic(GraphicSettings.Width, GraphicSettings.Height, 0.3f, 1000f));
 
-            for (int i = 0; i < NUMBER_OF_ITEMS; i++)
-            {
-                _spriteBatch.Draw(
-                    _positions[i],
-                    Vector2.Zero,
-                    new Vector2(_texture.Width, _texture.Height),
-                    _colors[i],
-                    _rotation,
-                    Vector2.One * 1.0f,
-                    0f
-                    );
-            }
-            _spriteBatch.End();
+            //for (int i = 0; i < NUMBER_OF_ITEMS; i++)
+            //{
+            //    _spriteBatch.Draw(
+            //        _positions[i],
+            //        Vector2.Zero,
+            //        new Vector2(_texture.Width, _texture.Height),
+            //        _colors[i],
+            //        _rotation,
+            //        Vector2.One * 1.0f,
+            //        0f
+            //        );
+            //}
+            //_spriteBatch.End();
 
             _lastUpdate += gameTime.DeltaTime;
             if (_lastUpdate >= 1f)
