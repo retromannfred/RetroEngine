@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RetroEngine.Components\RetroEngine.Components.csproj" />
-    <ProjectReference Include="..\RetroEngine.Core\RetroEngine.Core.csproj" />
+    <PackageReference Include="OpenTK" Version="4.8.2" />
+    <PackageReference Include="StbImageSharp" Version="2.27.13" />
   </ItemGroup>
 
 </Project>

@@ -1,21 +1,25 @@
 ﻿using OpenTK.Mathematics;
-using RetroEngine.Components;
+using RetroEngine.Core.Elements;
+using RetroEngine.Core.Managers;
+using RetroEngine.Ecs.Components;
 using RetroEngine.Graphics;
 using RetroEngine.Graphics.Batching;
 using RetroEngine.Graphics.Settings;
-using RetroEngine.Core.Elements;
-using RetroEngine.Core.Managers;
-using System.Drawing;
-using System.Transactions;
-using static System.Formats.Asn1.AsnWriter;
 
-namespace RetroEngine.Systems
+namespace RetroEngine.Ecs.Systems
 {
+    /// <summary>
+    /// Renders sprites into the game screen.
+    /// </summary>
     public class SpriteRendererSystem : RenderSystem
     {
         private GraphicSettings _graphicSettings;
         private Dictionary<int, SpriteBatch> _batches;
 
+        /// <summary>
+        /// Creates a new sprite renderer system.
+        /// </summary>
+        /// <param name="graphicSettings">Graphic settings of the game.</param>
         public SpriteRendererSystem(GraphicSettings graphicSettings)
             : base(Aspect.All<Transform>().All<SpriteRenderer>())
         {
@@ -23,6 +27,10 @@ namespace RetroEngine.Systems
             _batches = new Dictionary<int, SpriteBatch>();
         }
 
+        /// <summary>
+        /// Renders entities filtered in this system.
+        /// </summary>
+        /// <param name="gameTime">Elapsed time of the game.</param>
         public override void Render(GameTime gameTime)
         {
             foreach (var entity in ActiveEntities)
@@ -50,6 +58,11 @@ namespace RetroEngine.Systems
             }
         }
 
+        /// <summary>
+        /// Gets the sprite batch which renders a texture.
+        /// </summary>
+        /// <param name="textureId">ID of the texture.</param>
+        /// <returns>Found batch if was already created, or a new batch for that texture.</returns>
         private SpriteBatch GetSpriteBatch(int textureId)
         {
             if (_batches.ContainsKey(textureId) == false)
@@ -63,6 +76,18 @@ namespace RetroEngine.Systems
             return _batches[textureId];
         }
 
+        /// <summary>
+        /// Converts transform + sprite renderer components into OpenGL vertices.
+        /// </summary>
+        /// <param name="textureSize">Size of the whole texture.</param>
+        /// <param name="position">Position of the sprite.</param>
+        /// <param name="offset">Offset position of the rectangle section in the texture to render.</param>
+        /// <param name="size">Size of the rectangle section in the texture to render.</param>
+        /// <param name="color">Color tincture of the sprite.</param>
+        /// <param name="rotation">Rotation in radians of the sprite.</param>
+        /// <param name="scale">Scale of the sprite.</param>
+        /// <param name="layerDepth">Depth of the sprite (z-position).</param>
+        /// <returns>SpriteBatchItem representing four vertices of the rectangle to render in the GPU.</returns>
         private SpriteBatchItem GetBatchItem(Vector2 textureSize, Vector2 position, Vector2 offset, Vector2 size, Color4 color, float rotation, Vector2 scale, float layerDepth)
         {
             var item = new SpriteBatchItem()

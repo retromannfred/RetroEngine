@@ -1,6 +1,6 @@
 ﻿using OpenTK.Mathematics;
+using RetroEngine.Graphics;
 using RetroEngine.Core;
-using RetroEngine.ECS;
 using RetroEngine.FuncTest.ECS;
 
 namespace RetroEngine.FuncTest.Games

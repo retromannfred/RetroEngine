@@ -7,7 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RetroEngine.Components\RetroEngine.Components.csproj" />
+    <PackageReference Include="OpenTK" Version="4.8.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\RetroEngine.Core\RetroEngine.Core.csproj" />
   </ItemGroup>
 

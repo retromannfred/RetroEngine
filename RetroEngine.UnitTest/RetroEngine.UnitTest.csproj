@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RetroEngine.ECS\RetroEngine.ECS.csproj" />
+    <ProjectReference Include="..\RetroEngine.Core\RetroEngine.Core.csproj" />
   </ItemGroup>
 
 </Project>

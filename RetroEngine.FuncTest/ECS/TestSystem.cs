@@ -1,7 +1,7 @@
-﻿using RetroEngine.Core;
-using RetroEngine.ECS;
-using RetroEngine.ECS.Elements;
-using RetroEngine.ECS.Managers;
+﻿using RetroEngine.Graphics;
+using RetroEngine.Core;
+using RetroEngine.Core.Elements;
+using RetroEngine.Core.Managers;
 
 namespace RetroEngine.FuncTest.ECS
 {

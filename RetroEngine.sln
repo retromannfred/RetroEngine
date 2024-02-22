@@ -3,17 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RetroEngine.ECS", "RetroEngine.ECS\RetroEngine.ECS.csproj", "{D6DAE2E3-4F87-4980-B960-31B821CF91CB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RetroEngine.Core", "RetroEngine.Core\RetroEngine.Core.csproj", "{D6DAE2E3-4F87-4980-B960-31B821CF91CB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RetroEngine.Core", "RetroEngine.Core\RetroEngine.Core.csproj", "{4154C2D2-6CF9-43E8-A131-A0DCF5E7F943}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RetroEngine.Graphics", "RetroEngine.Graphics\RetroEngine.Graphics.csproj", "{4154C2D2-6CF9-43E8-A131-A0DCF5E7F943}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RetroEngine.FuncTest", "RetroEngine.FuncTest\RetroEngine.FuncTest.csproj", "{4321A31B-8314-4FB5-864E-A918AB7336D2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RetroEngine.UnitTest", "RetroEngine.UnitTest\RetroEngine.UnitTest.csproj", "{1433D2DE-6077-4C69-BE4C-E3DA7C374103}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RetroEngine.Components", "RetroEngine.Components\RetroEngine.Components.csproj", "{71BBD593-9C22-4560-A0CD-A7DEA24F8761}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RetroEngine.Ecs", "RetroEngine.Ecs\RetroEngine.Ecs.csproj", "{00232FC8-4FAA-4721-9D25-5A6342F83480}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RetroEngine.Systems", "RetroEngine.Systems\RetroEngine.Systems.csproj", "{5CC1B664-4D4A-4BBB-94A9-55A99C8C911C}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{71C0427E-16DD-4575-88BC-F9A17EB5C291}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "testing", "testing", "{CABF16B9-870B-44E5-9DB8-9FD646A380EE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,17 +39,20 @@ Global
 		{1433D2DE-6077-4C69-BE4C-E3DA7C374103}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1433D2DE-6077-4C69-BE4C-E3DA7C374103}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1433D2DE-6077-4C69-BE4C-E3DA7C374103}.Release|Any CPU.Build.0 = Release|Any CPU
-		{71BBD593-9C22-4560-A0CD-A7DEA24F8761}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{71BBD593-9C22-4560-A0CD-A7DEA24F8761}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{71BBD593-9C22-4560-A0CD-A7DEA24F8761}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{71BBD593-9C22-4560-A0CD-A7DEA24F8761}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5CC1B664-4D4A-4BBB-94A9-55A99C8C911C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5CC1B664-4D4A-4BBB-94A9-55A99C8C911C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5CC1B664-4D4A-4BBB-94A9-55A99C8C911C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5CC1B664-4D4A-4BBB-94A9-55A99C8C911C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00232FC8-4FAA-4721-9D25-5A6342F83480}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00232FC8-4FAA-4721-9D25-5A6342F83480}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00232FC8-4FAA-4721-9D25-5A6342F83480}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00232FC8-4FAA-4721-9D25-5A6342F83480}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D6DAE2E3-4F87-4980-B960-31B821CF91CB} = {71C0427E-16DD-4575-88BC-F9A17EB5C291}
+		{4154C2D2-6CF9-43E8-A131-A0DCF5E7F943} = {71C0427E-16DD-4575-88BC-F9A17EB5C291}
+		{4321A31B-8314-4FB5-864E-A918AB7336D2} = {CABF16B9-870B-44E5-9DB8-9FD646A380EE}
+		{1433D2DE-6077-4C69-BE4C-E3DA7C374103} = {CABF16B9-870B-44E5-9DB8-9FD646A380EE}
+		{00232FC8-4FAA-4721-9D25-5A6342F83480} = {71C0427E-16DD-4575-88BC-F9A17EB5C291}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5F240087-AC5A-4DBD-8264-987BADCCA195}

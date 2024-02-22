@@ -1,7 +1,7 @@
 ﻿using OpenTK.Mathematics;
+using RetroEngine.Graphics;
+using RetroEngine.Graphics.Batching;
 using RetroEngine.Core;
-using RetroEngine.Core.Batching;
-using RetroEngine.ECS;
 using RetroEngine.FuncTest.ECS;
 
 namespace RetroEngine.FuncTest.Games

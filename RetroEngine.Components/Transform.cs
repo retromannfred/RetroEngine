@@ -1,5 +1,5 @@
 ﻿using OpenTK.Mathematics;
-using RetroEngine.ECS.Elements;
+using RetroEngine.Core.Elements;
 
 namespace RetroEngine.Components
 {

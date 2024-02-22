@@ -1,13 +1,13 @@
 ﻿using OpenTK.Mathematics;
-using RetroEngine.Core.Batching;
-using RetroEngine.ECS.Elements;
+using RetroEngine.Graphics.Batching;
+using RetroEngine.Core.Elements;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RetroEngine.Components
+namespace RetroEngine.Ecs.Components
 {
     public struct SpriteRenderer : IComponent
     {
