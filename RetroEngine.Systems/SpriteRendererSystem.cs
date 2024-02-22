@@ -15,7 +15,6 @@ namespace RetroEngine.Systems
     {
         private GraphicSettings _graphicSettings;
         private Dictionary<int, SpriteBatch> _batches;
-        private bool _rendered = false;
 
         public SpriteRendererSystem(GraphicSettings graphicSettings)
             : base(Aspect.All<Transform>().All<SpriteRenderer>())
@@ -26,33 +25,29 @@ namespace RetroEngine.Systems
 
         public override void Render(GameTime gameTime)
         {
-            if (_rendered == false)
+            foreach (var entity in ActiveEntities)
             {
-                foreach (var entity in ActiveEntities)
-                {
-                    ref var transform = ref World.GetComponent<Transform>(entity);
-                    ref var renderer = ref World.GetComponent<SpriteRenderer>(entity);
+                ref var transform = ref World.GetComponent<Transform>(entity);
+                ref var renderer = ref World.GetComponent<SpriteRenderer>(entity);
 
-                    var batch = GetSpriteBatch(renderer.TextureId);
-                    var spriteBatchItem = GetBatchItem(
-                        new Vector2(renderer.Width, renderer.Height),
-                        transform.Position,
-                        Vector2.Zero,
-                        new Vector2(renderer.Width, renderer.Height),
-                        renderer.Color,
-                        transform.Rotation,
-                        Vector2.One,
-                        renderer.LayerDepth);
+                var batch = GetSpriteBatch(renderer.TextureId);
+                var spriteBatchItem = GetBatchItem(
+                    new Vector2(renderer.Width, renderer.Height),
+                    transform.Position,
+                    Vector2.Zero,
+                    new Vector2(renderer.Width, renderer.Height),
+                    renderer.Color,
+                    transform.Rotation,
+                    Vector2.One,
+                    renderer.LayerDepth);
 
-                    batch.Update(entity, spriteBatchItem);
-                }
+                batch.Update(entity, spriteBatchItem);
             }
 
             foreach (var batch in _batches.Values)
             {
                 batch.Draw(Matrix4.CreateTranslation(Vector3.UnitZ * -10), Matrix4.CreateOrthographic(_graphicSettings.Width, _graphicSettings.Height, 0.3f, 1000f));
             }
-            //_rendered = true;
         }
 
         private SpriteBatch GetSpriteBatch(int textureId)
