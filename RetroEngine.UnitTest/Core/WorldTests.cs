@@ -9,7 +9,7 @@ namespace RetroEngine.UnitTest.Core
     public class WorldTests
     {
         [Test]
-        public void TestCannotInstanceWorld()
+        public void CannotInstanceWorld()
         {
             ConstructorInfo[] ctors;
 
@@ -20,7 +20,7 @@ namespace RetroEngine.UnitTest.Core
         }
 
         [Test]
-        public void TestBuildEmptyWorld()
+        public void BuildEmptyWorld()
         {
             World world;
 
@@ -30,7 +30,7 @@ namespace RetroEngine.UnitTest.Core
         }
 
         [Test]
-        public void TestCreateEntities()
+        public void CreateEntities()
         {
             World world;
 
@@ -44,7 +44,7 @@ namespace RetroEngine.UnitTest.Core
         }
 
         [Test]
-        public void TestGetExistingEntities()
+        public void GetExistingEntities()
         {
             World world;
             Entity? one;
@@ -70,7 +70,7 @@ namespace RetroEngine.UnitTest.Core
         }
 
         [Test]
-        public void TestGetNonExistingEntities()
+        public void GetNonExistingEntities()
         {
             World world;
             Entity? one;
@@ -89,7 +89,7 @@ namespace RetroEngine.UnitTest.Core
         }
 
         [Test]
-        public void TestDestroyExistingEntities()
+        public void DestroyExistingEntities()
         {
             World world;
             bool one;
@@ -113,7 +113,7 @@ namespace RetroEngine.UnitTest.Core
         }
 
         [Test]
-        public void TestDestroyNonExistingEntities()
+        public void DestroyNonExistingEntities()
         {
             World world;
             bool one;
