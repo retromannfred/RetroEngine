@@ -1,5 +1,5 @@
-﻿using RetroEngine.Graphics;
-using RetroEngine.Core.Managers;
+﻿using RetroEngine.Core.Mapping;
+using RetroEngine.Graphics;
 
 namespace RetroEngine.Core.Elements
 {

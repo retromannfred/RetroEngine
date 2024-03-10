@@ -1,4 +1,4 @@
-﻿using RetroEngine.Core.Managers;
+﻿using RetroEngine.Core.Mapping;
 
 namespace RetroEngine.Core.Elements
 {

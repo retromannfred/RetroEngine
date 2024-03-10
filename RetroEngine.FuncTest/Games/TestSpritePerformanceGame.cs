@@ -41,7 +41,7 @@ namespace RetroEngine.FuncTest.Games
                 data[i] = 255;
             }
             _texture = new Texture(width, height, data);
-            _spriteBatch = new SpriteBatch(_texture);
+            _spriteBatch = new SpriteBatch(GraphicSettings, _texture);
 
             Random rand = new Random();
             for (int i = 1; i <= NUMBER_OF_ITEMS; i++)

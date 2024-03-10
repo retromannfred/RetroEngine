@@ -1,6 +1,6 @@
 ﻿using RetroEngine.Core.Elements;
 
-namespace RetroEngine.Core.Managers
+namespace RetroEngine.Core.Mapping
 {
     /// <summary>
     /// Defines how entities are filter in a system, so just entities with specified components are used in the system.

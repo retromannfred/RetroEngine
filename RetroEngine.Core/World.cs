@@ -1,6 +1,7 @@
 ﻿using RetroEngine.Core.Elements;
 using RetroEngine.Core.Managers;
 using RetroEngine.Graphics;
+using RetroEngine.Graphics.Batching;
 
 namespace RetroEngine.Core
 {
@@ -28,8 +29,8 @@ namespace RetroEngine.Core
             _updateSystems = new List<IUpdateSystem>();
             _renderSystems = new List<IRenderSystem>();
 
-            _entityManager = new EntityManager(this);
-            _componentManager = new ComponentManager(this);
+            _entityManager = new(this);
+            _componentManager = new(this);
         }
 
         /// <summary>

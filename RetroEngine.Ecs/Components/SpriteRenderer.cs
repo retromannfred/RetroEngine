@@ -1,5 +1,7 @@
-﻿using OpenTK.Mathematics;
+﻿using OpenTK.Graphics.ES11;
+using OpenTK.Mathematics;
 using RetroEngine.Core.Elements;
+using RetroEngine.Graphics.Batching;
 
 namespace RetroEngine.Ecs.Components
 {
@@ -9,7 +11,7 @@ namespace RetroEngine.Ecs.Components
     public struct SpriteRenderer : IComponent
     {
         /// <summary>
-        /// Gets or sets the texture ID of the sprite.
+        /// Gets or sets the texture of the sprite.
         /// </summary>
         public int TextureId { get; set; }
 

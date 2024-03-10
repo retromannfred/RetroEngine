@@ -1,6 +1,6 @@
 ﻿using RetroEngine.Graphics;
 using RetroEngine.Core.Elements;
-using RetroEngine.Core.Managers;
+using RetroEngine.Core.Mapping;
 
 namespace RetroEngine.UnitTest.Core.Utils
 {

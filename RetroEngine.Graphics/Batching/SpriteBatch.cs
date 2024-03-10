@@ -1,10 +1,12 @@
-﻿using OpenTK.Compute.OpenCL;
-using OpenTK.Graphics.OpenGL4;
+﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using RetroEngine.Graphics.Buffers;
+using RetroEngine.Graphics.Settings;
 using RetroEngine.Graphics.Shaders;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,21 +15,34 @@ namespace RetroEngine.Graphics.Batching
 {
     public class SpriteBatch
     {
-        private const int FIXED_CAPACITY = 25000;
+        private const int FIXED_CAPACITY = 2048;
+
+        private GraphicSettings _graphicSettings;
 
         private ShaderProgram _program;
-        private Texture _texture;
         private VertexArray _vao;
         private ElementBuffer _indices;
+        private Texture _texture;
 
         private VertexBuffer<Vector3> _positions;
         private VertexBuffer<Vector2> _texCoords;
         private VertexBuffer<Vector4> _colors;
 
-        private Dictionary<long, int> _itemOffsets;
+        private List<VertexInfo> _items;
 
-        public SpriteBatch(Texture texture)
+        public SpriteBatch(GraphicSettings graphicSettings, Texture texture)
         {
+            _items = new();
+
+            _program = new();
+            _program.AddShader(new Shader(ShaderDefaults.DEFAULT_VERTEX_SHADER, ShaderType.VertexShader));
+            _program.AddShader(new Shader(ShaderDefaults.DEFAULT_FRAGMENT_SHADER, ShaderType.FragmentShader));
+            _program.Link();
+
+            _graphicSettings = graphicSettings;
+            _texture = texture;
+            _vao = new();
+
             _positions = new();
             _positions.UpdateData(new Vector3[FIXED_CAPACITY * 4]);
             _texCoords = new();
@@ -35,54 +50,117 @@ namespace RetroEngine.Graphics.Batching
             _colors = new();
             _colors.UpdateData(new Vector4[FIXED_CAPACITY * 4]);
 
-            _texture = texture;
             _indices = new();
-            _indices.UpdateData(new uint[FIXED_CAPACITY * 6]);
-            _vao = new VertexArray();
+            List<uint> itemIndices = new();
+            for (uint i = 0; i < FIXED_CAPACITY * 4; i += 4) itemIndices.AddRange(new List<uint>() { i, i + 1, i + 2, i + 2, i + 3, i });
+            _indices.UpdateData(itemIndices.ToArray());
+
             _vao.Link(0, _positions);
             _vao.Link(1, _texCoords);
             _vao.Link(2, _colors);
-
-            _program = new();
-            _program.AddShader(new Shader(ShaderDefaults.DEFAULT_VERTEX_SHADER, ShaderType.VertexShader));
-            _program.AddShader(new Shader(ShaderDefaults.DEFAULT_FRAGMENT_SHADER, ShaderType.FragmentShader));
-            _program.Link();
-
-            _itemOffsets = new();
         }
 
-        public void Update(long itemId, SpriteBatchItem item)
-        {
-            if (_itemOffsets.ContainsKey(itemId) == false)
-                _itemOffsets.Add(itemId, _itemOffsets.Count);
-
-            int offset = _itemOffsets[itemId];
-            uint uintOffset = (uint)offset * 4;
-
-            _positions.UpdateData(offset * 4, new Vector3[4] { item.TopLeft.Position, item.TopRight.Position, item.BottomRight.Position, item.BottomLeft.Position });
-            _texCoords.UpdateData(offset * 4, new Vector2[4] { item.TopLeft.TextureCoord, item.TopRight.TextureCoord, item.BottomRight.TextureCoord, item.BottomLeft.TextureCoord });
-            _colors.UpdateData(offset * 4, new Vector4[4] { item.TopLeft.Color, item.TopRight.Color, item.BottomRight.Color, item.BottomLeft.Color });
-            _indices.UpdateData(offset * 6, new uint[6] { uintOffset + 0, uintOffset + 1, uintOffset + 2, uintOffset + 2, uintOffset + 3, uintOffset + 0 });
-        }
-
-        public void Draw(Matrix4 view, Matrix4 projection)
+        public void Begin(Matrix4 mvp)
         {
             _vao.Bind();
             _indices.Bind();
             _texture.Bind();
             _program.Bind();
 
-            Matrix4 model = Matrix4.Identity;
+            int modelViewProjection = GL.GetUniformLocation(1, "mvp");
+            GL.UniformMatrix4(modelViewProjection, true, ref mvp);
+        }
 
-            int modelLocation = GL.GetUniformLocation(1, "model");
-            int viewLocation = GL.GetUniformLocation(1, "view");
-            int projectionLocation = GL.GetUniformLocation(1, "projection");
+        public void Draw(Vector2 position,
+            Vector2 sourceOffset,
+            Vector2 sourceSize,
+            Color4 color,
+            float rotation,
+            Vector2 scale,
+            bool flipX,
+            bool flipY,
+            float layerDepth)
+        {
+            var TL = new VertexInfo()
+            {
+                Position = new Vector3(position.X - sourceSize.X * scale.X / 2, position.Y + sourceSize.Y * scale.Y / 2, layerDepth),
+                TextureCoord = new Vector2(sourceOffset.X / _texture.Width, (_texture.Height - sourceOffset.Y) / _texture.Height),
+                Color = (Vector4)color
+            };
+            var TR = new VertexInfo()
+            {
+                Position = new Vector3(position.X + sourceSize.X * scale.X / 2, position.Y + sourceSize.Y * scale.Y / 2, layerDepth),
+                TextureCoord = new Vector2((sourceOffset.X + sourceSize.X) / _texture.Width, (_texture.Height - sourceOffset.Y) / _texture.Height),
+                Color = (Vector4)color
+            };
+            var BR = new VertexInfo()
+            {
+                Position = new Vector3(position.X + sourceSize.X * scale.X / 2, position.Y - sourceSize.Y * scale.Y / 2, layerDepth),
+                TextureCoord = new Vector2((sourceOffset.X + sourceSize.X) / _texture.Width, (_texture.Height - sourceOffset.Y - sourceSize.Y) / _texture.Height),
+                Color = (Vector4)color
+            };
+            var BL = new VertexInfo()
+            {
+                Position = new Vector3(position.X - sourceSize.X * scale.X / 2, position.Y - sourceSize.Y * scale.Y / 2, layerDepth),
+                TextureCoord = new Vector2(sourceOffset.X / _texture.Width, (_texture.Height - sourceOffset.Y - sourceSize.Y) / _texture.Height),
+                Color = (Vector4)color
+            };
 
-            GL.UniformMatrix4(modelLocation, true, ref model);
-            GL.UniformMatrix4(viewLocation, true, ref view);
-            GL.UniformMatrix4(projectionLocation, true, ref projection);
+            if( flipX )
+            {
+                var aux = TL.TextureCoord;
+                TL.TextureCoord = TR.TextureCoord;
+                TR.TextureCoord = aux;
+                aux = BL.TextureCoord;
+                BL.TextureCoord = BR.TextureCoord;
+                BR.TextureCoord = aux;
+            }
+            if( flipY )
+            {
+                var aux = TL.TextureCoord;
+                TL.TextureCoord = BL.TextureCoord;
+                BL.TextureCoord = aux;
+                aux = TR.TextureCoord;
+                TR.TextureCoord = BR.TextureCoord;
+                BR.TextureCoord = aux;
+            }
 
-            GL.DrawElements(PrimitiveType.Triangles, _itemOffsets.Count * 6, DrawElementsType.UnsignedInt, 0);
+            if (rotation != 0f)
+            {
+                TL.Position = Matrix3.CreateRotationZ(rotation) * TL.Position;
+                TR.Position = Matrix3.CreateRotationZ(rotation) * TR.Position;
+                BR.Position = Matrix3.CreateRotationZ(rotation) * BR.Position;
+                BL.Position = Matrix3.CreateRotationZ(rotation) * BL.Position;
+            }
+
+            _items.Add(TL);
+            _items.Add(TR);
+            _items.Add(BR);
+            _items.Add(BL);
+
+            if (_items.Count >= FIXED_CAPACITY)
+            {
+                DrawBatch();
+            }
+        }
+
+        private void DrawBatch()
+        {
+            if (_items.Count > 0)
+            {
+                _positions.UpdateData(0, _items.Select(v => v.Position).ToArray());
+                _texCoords.UpdateData(0, _items.Select(v => v.TextureCoord).ToArray());
+                _colors.UpdateData(0, _items.Select(v => v.Color).ToArray());
+
+                GL.DrawElements(PrimitiveType.Triangles, _items.Count / 4 * 6, DrawElementsType.UnsignedInt, 0);
+
+                _items.Clear();
+            }
+        }
+
+        public void End()
+        {
+            DrawBatch();
 
             _vao.Unbind();
             _indices.Unbind();

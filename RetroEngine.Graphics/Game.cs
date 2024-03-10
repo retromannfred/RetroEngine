@@ -53,6 +53,8 @@ namespace RetroEngine.Graphics
             GameTime gameTime = new();
             KeyboardState = gameWindow.KeyboardState;
 
+            GL.Enable(EnableCap.DepthTest);
+
             gameWindow.Load += LoadContent;
             gameWindow.UpdateFrame += (FrameEventArgs eventArgs) =>
             {

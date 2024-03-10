@@ -1,6 +1,6 @@
 ﻿using RetroEngine.Core.Elements;
 
-namespace RetroEngine.Core.Managers
+namespace RetroEngine.Core.Mapping
 {
     /// <summary>
     /// Defines how an aspect of a system is created.
@@ -16,9 +16,9 @@ namespace RetroEngine.Core.Managers
         /// </summary>
         public AspectBuilder()
         {
-            this._allTypes = new List<Type>();
-            this._anyTypes = new List<Type>();
-            this._noneTypes = new List<Type>();
+            _allTypes = new List<Type>();
+            _anyTypes = new List<Type>();
+            _noneTypes = new List<Type>();
         }
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace RetroEngine.Core.Managers
         /// <returns>This aspect builder.</returns>
         public AspectBuilder All<T>() where T : struct, IComponent
         {
-            this._allTypes.Add(typeof(T));
+            _allTypes.Add(typeof(T));
             return this;
         }
 
@@ -39,7 +39,7 @@ namespace RetroEngine.Core.Managers
         /// <returns>This aspect builder.</returns>
         public AspectBuilder Any<T>() where T : struct, IComponent
         {
-            this._anyTypes.Add(typeof(T));
+            _anyTypes.Add(typeof(T));
             return this;
         }
 
@@ -50,7 +50,7 @@ namespace RetroEngine.Core.Managers
         /// <returns>This aspect builder.</returns>
         public AspectBuilder None<T>() where T : struct, IComponent
         {
-            this._noneTypes.Add(typeof(T));
+            _noneTypes.Add(typeof(T));
             return this;
         }
 
@@ -63,16 +63,16 @@ namespace RetroEngine.Core.Managers
         {
             IQueryable<long> entities = world.GetAllEntityIDs();
 
-            if (this._noneTypes.Any())
+            if (_noneTypes.Any())
                 entities = entities.Except(
-                    entities.Where(e => this._noneTypes.Any(t => world.EntityHasComponent(e, t)))
+                    entities.Where(e => _noneTypes.Any(t => world.EntityHasComponent(e, t)))
                 );
 
-            if (this._allTypes.Any())
-                entities = entities.Where(e => this._allTypes.All(t => world.EntityHasComponent(e, t)));
+            if (_allTypes.Any())
+                entities = entities.Where(e => _allTypes.All(t => world.EntityHasComponent(e, t)));
 
-            if (this._anyTypes.Any())
-                entities = entities.Where(e => this._anyTypes.Any(t => world.EntityHasComponent(e, t)));
+            if (_anyTypes.Any())
+                entities = entities.Where(e => _anyTypes.Any(t => world.EntityHasComponent(e, t)));
 
             return new Aspect(entities);
         }

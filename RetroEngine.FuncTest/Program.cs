@@ -6,7 +6,7 @@ namespace RetroEngine.FuncTest
     {
         static void Main(string[] args)
         {
-            var game = new TestSpriteRendererGame();
+            var game = new TestMultipleBatchesGame();
             game.Run();
         }
     }

@@ -1,6 +1,6 @@
 ﻿using RetroEngine.Core.Elements;
 
-namespace RetroEngine.Core.Managers
+namespace RetroEngine.Core.Mapping
 {
     /// <summary>
     /// Defines basic functionallity non-type dependant of a component mapper.

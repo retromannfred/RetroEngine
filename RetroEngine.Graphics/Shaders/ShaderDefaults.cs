@@ -16,9 +16,7 @@ namespace RetroEngine.Graphics.Shaders
             layout (location = 1) in vec2 in_texCoord;
             layout (location = 2) in vec4 in_color;
 
-            uniform mat4 model;
-            uniform mat4 view;
-            uniform mat4 projection;
+            uniform mat4 mvp;
             
             out vec2 pass_texCoord;
             out vec4 pass_color;
@@ -27,7 +25,7 @@ namespace RetroEngine.Graphics.Shaders
             {
                 pass_texCoord = in_texCoord;
                 pass_color = in_color;
-                gl_Position = projection * view * model * vec4(in_position.xyz, 1.0);
+                gl_Position = vec4(in_position.xyz, 1.0) * mvp;
             }";
 
         public const string DEFAULT_FRAGMENT_SHADER = @"
