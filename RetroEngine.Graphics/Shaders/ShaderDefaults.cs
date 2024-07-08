@@ -7,8 +7,14 @@ using System.Threading.Tasks;
 
 namespace RetroEngine.Graphics.Shaders
 {
+    /// <summary>
+    /// Defines default shader behaviours to render sprites.
+    /// </summary>
     internal class ShaderDefaults
     {
+        /// <summary>
+        /// Gets the default shader to transform a sprite.
+        /// </summary>
         public const string DEFAULT_VERTEX_SHADER = @"
             #version 330 core
             
@@ -28,6 +34,9 @@ namespace RetroEngine.Graphics.Shaders
                 gl_Position = vec4(in_position.xyz, 1.0) * mvp;
             }";
 
+        /// <summary>
+        /// Gets the default shader to color a sprite.
+        /// </summary>
         public const string DEFAULT_FRAGMENT_SHADER = @"
             #version 330 core
             

@@ -1,4 +1,5 @@
-﻿using RetroEngine.Core.Elements;
+﻿using OpenTK.Mathematics;
+using RetroEngine.Core.Elements;
 using RetroEngine.Core.Managers;
 using RetroEngine.Graphics;
 using RetroEngine.Graphics.Batching;
@@ -20,6 +21,8 @@ namespace RetroEngine.Core
         internal event Action<long>? OnEntityDestroyed;
         internal event Action<long>? OnComponentAdded;
         internal event Action<long>? OnComponentRemoved;
+
+        public Matrix4 AuxTransform = Matrix4.Identity;
 
         /// <summary>
         /// Creates a new world.

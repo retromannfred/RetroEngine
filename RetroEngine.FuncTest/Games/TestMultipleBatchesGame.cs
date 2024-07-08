@@ -2,6 +2,7 @@
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using RetroEngine.Core;
 using RetroEngine.Ecs.Components;
+using RetroEngine.Ecs.Systems;
 using RetroEngine.Graphics;
 using RetroEngine.Graphics.Batching;
 using RetroEngine.Graphics.Settings;
@@ -16,8 +17,6 @@ namespace RetroEngine.FuncTest.Games
 {
     internal class TestMultipleBatchesGame : Game
     {
-        private SpriteBatch _batching;
-        private SpriteBatch _batching2;
         private World _world;
         private Texture _texture;
         private Texture _texture2;
@@ -35,19 +34,22 @@ namespace RetroEngine.FuncTest.Games
         public TestMultipleBatchesGame()
             : base("Test multiple batching", 800, 600)
         {
+            _world = new WorldBuilder().Build();
         }
 
         protected override void Initialize()
         {
-            _world = new WorldBuilder().Build();
+            _world = new WorldBuilder()
+                .AddSystem(new RendererSystem(GraphicSettings))
+                .Build();
         }
 
         protected override void LoadContent()
         {
             _texture = TextureFactory.CreateRectangle(1, 1, Color4.Blue);
             _texture2 = TextureFactory.CreateRectangle(1, 1, Color4.Red);
-            _batching = new SpriteBatch(GraphicSettings, _texture);
-            _batching2 = new SpriteBatch(GraphicSettings, _texture2);
+            //_texture = TextureFactory.CreateFromFile("Sprites/person.png");
+            //_texture2 = TextureFactory.CreateFromFile("Sprites/person.png");
 
             Random rand = new Random();
             for (int i = 1; i <= 10; i++)
@@ -57,7 +59,7 @@ namespace RetroEngine.FuncTest.Games
                     {
                         Position = new Vector2((float)rand.NextDouble() * 10f - 5f, (float)rand.NextDouble() * 10f - 5f)
                     })
-                    .Attach(new SpriteRenderer()
+                    .Attach(new SpriteRenderer(i % 2 == 0 ? _texture : _texture2)
                     {
                         //Color = new Color4((float)rand.NextDouble(), (float)rand.NextDouble(), (float)rand.NextDouble(), 1f),
                         LayerDepth = i % 2 * 10
@@ -73,6 +75,9 @@ namespace RetroEngine.FuncTest.Games
                 ref var transform = ref _world.GetComponent<Transform>(id);
                 transform.Rotation = _rotation;
             }
+
+            if (KeyboardState == null)
+                return;
 
             var input = KeyboardState;
             var speed = _cameraSpeed * gameTime.DeltaTime;
@@ -104,7 +109,7 @@ namespace RetroEngine.FuncTest.Games
 
             if (input.IsKeyDown(Keys.LeftShift))
             {
-                position -= up * speed; //Down
+                position -= up * speed; //Downs
             }
         }
 
@@ -113,8 +118,8 @@ namespace RetroEngine.FuncTest.Games
             ClearScreen(Color4.CornflowerBlue);
 
             Matrix4 model = Matrix4.Identity;
-            //Matrix4 model = Matrix4.CreateScale(100f); // pixels per unit
-            //Matrix4 model = Matrix4.CreateTranslation(Vector3.UnitZ * -1f);
+            //Matrix4 model = Matrix4.CreateScale(10f); // pixels per unit
+            //Matrix4 model = Matrix4.CreateTranslation(Vector3.UnitZ * -1000f);
             //model.Transpose();
 
             //Matrix4 view = Matrix4.Identity;
@@ -123,50 +128,12 @@ namespace RetroEngine.FuncTest.Games
             //view.Transpose();
 
             //Matrix4 projection = Matrix4.Identity;
-            Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.PiOver3, GraphicSettings.AspectRatio, 0.3f, 100f);
-            //Matrix4 projection = Matrix4.CreateOrthographic(GraphicSettings.Width, GraphicSettings.Height, 0.3f, 100f); // camera view
-            //projection.Transpose();
+            Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.PiOver3, GraphicSettings.AspectRatio, 0.3f, 1000f);
+            //Matrix4 projection = Matrix4.CreateOrthographic(GraphicSettings.Width, GraphicSettings.Height, 0.3f, 1000f);
 
-            //_batching.Transformation = projection * view * model;
 
-            _batching.Begin(model * view * projection);
-            for (int i = 1; i <= 10; i += 2)
-            {
-                ref var transform = ref _world.GetComponent<Transform>(i);
-                ref var renderer = ref _world.GetComponent<SpriteRenderer>(i);
-
-                _batching.Draw(
-                    transform.Position,
-                    Vector2.Zero,
-                    new Vector2(_texture.Width, _texture.Height),
-                    renderer.Color,
-                    transform.Rotation,
-                    transform.Scale,
-                    (renderer.Flip & Flip.X) == Flip.X,
-                    (renderer.Flip & Flip.Y) == Flip.Y,
-                    renderer.LayerDepth
-                );
-            }
-            _batching.End();
-            _batching2.Begin(model * view * projection);
-            for (int i = 2; i <= 10; i += 2)
-            {
-                ref var transform = ref _world.GetComponent<Transform>(i);
-                ref var renderer = ref _world.GetComponent<SpriteRenderer>(i);
-
-                _batching2.Draw(
-                    transform.Position,
-                    Vector2.Zero,
-                    new Vector2(_texture2.Width, _texture2.Height),
-                    renderer.Color,
-                    transform.Rotation,
-                    transform.Scale,
-                    (renderer.Flip & Flip.X) == Flip.X,
-                    (renderer.Flip & Flip.Y) == Flip.Y,
-                    renderer.LayerDepth
-                );
-            }
-            _batching2.End();
+            _world.AuxTransform = model * view * projection;
+            _world.Render(gameTime);
 
             _lastUpdate += gameTime.DeltaTime;
             if (_lastUpdate >= 1f)

@@ -3,26 +3,29 @@ using RetroEngine.Graphics;
 using RetroEngine.Graphics.Batching;
 using RetroEngine.Core;
 using RetroEngine.FuncTest.ECS;
+using RetroEngine.Ecs.Components;
 
 namespace RetroEngine.FuncTest.Games
 {
     internal class TestSpritePerformanceGame : Game
     {
         private Texture _texture;
-        private SpriteBatch _spriteBatch;
+        private SpriteBatch? _spriteBatch;
 
         private List<Vector2> _positions;
         private List<Color4> _colors;
-        private float _rotation;
+        private float _rotation = 0f;
 
         private const int NUMBER_OF_ITEMS = 10000;
         private const float SPEED = MathHelper.Pi;
 
         private float _lastUpdate = 0f;
 
-        public TestSpritePerformanceGame() : base("Test game", 800, 600)
+        public TestSpritePerformanceGame()
+            : base("Test game", 800, 600)
         {
-            
+            _positions = new List<Vector2>();
+            _colors = new List<Color4>();
         }
 
         protected override void Initialize()
@@ -53,28 +56,33 @@ namespace RetroEngine.FuncTest.Games
 
         protected override void Update(GameTime gameTime)
         {
-            //_rotation += SPEED * gameTime.DeltaTime;
+            _rotation += SPEED * gameTime.DeltaTime;
         }
 
         protected override void Render(GameTime gameTime)
         {
             ClearScreen(Color4.CornflowerBlue);
 
-            //_spriteBatch.Begin(Matrix4.CreateTranslation(Vector3.UnitZ * -10) * Matrix4.CreateOrthographic(GraphicSettings.Width, GraphicSettings.Height, 0.3f, 1000f));
+            if (_spriteBatch == null)
+                return;
 
-            //for (int i = 0; i < NUMBER_OF_ITEMS; i++)
-            //{
-            //    _spriteBatch.Draw(
-            //        _positions[i],
-            //        Vector2.Zero,
-            //        new Vector2(_texture.Width, _texture.Height),
-            //        _colors[i],
-            //        _rotation,
-            //        Vector2.One * 1.0f,
-            //        0f
-            //        );
-            //}
-            //_spriteBatch.End();
+            _spriteBatch.Begin(Matrix4.CreateTranslation(Vector3.UnitZ * -10) * Matrix4.CreateOrthographic(GraphicSettings.Width, GraphicSettings.Height, 0.3f, 1000f));
+
+            for (int i = 0; i < NUMBER_OF_ITEMS; i++)
+            {
+                _spriteBatch.Draw(
+                    _positions[i],
+                    Vector2.Zero,
+                    new Vector2(_texture.Width, _texture.Height),
+                    _colors[i],
+                    _rotation,
+                    Vector2.One * 1.0f,
+                    false,
+                    false,
+                    0f
+                    );
+            }
+            _spriteBatch.End();
 
             _lastUpdate += gameTime.DeltaTime;
             if (_lastUpdate >= 1f)

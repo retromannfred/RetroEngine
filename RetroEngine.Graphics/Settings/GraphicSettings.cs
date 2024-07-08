@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace RetroEngine.Graphics.Settings
 {
+    /// <summary>
+    /// Defines a group of graphic settings of a game.
+    /// </summary>
     public class GraphicSettings
     {
         /// <summary>
@@ -26,6 +29,11 @@ namespace RetroEngine.Graphics.Settings
             get { return (float)Width / Height; }
         }
 
+        /// <summary>
+        /// Creates a new
+        /// </summary>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
         internal GraphicSettings(int width, int height)
         {
             Width = width;

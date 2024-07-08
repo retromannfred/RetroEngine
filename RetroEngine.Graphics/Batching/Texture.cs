@@ -7,7 +7,7 @@ namespace RetroEngine.Graphics.Batching
     /// <summary>
     /// Abstracts the texture functionallity from OpenGL.
     /// </summary>
-    public class Texture
+    public struct Texture
     {
         /// <summary>
         /// Gets this texture ID in OpenGL.
@@ -50,18 +50,6 @@ namespace RetroEngine.Graphics.Batching
             GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
 
             Unbind();
-        }
-
-        public Texture(int textureId)
-        {
-            Id = textureId;
-            Bind();
-
-            int width, height;
-            GL.GetTexParameter(TextureTarget.Texture2D, GetTextureParameter.TextureWidth, out width);
-            GL.GetTexParameter(TextureTarget.Texture2D, GetTextureParameter.TextureHeight, out height);
-            Width = width;
-            Height = height;
         }
 
         /// <summary>

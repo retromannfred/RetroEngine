@@ -10,8 +10,16 @@ using System.Threading.Tasks;
 
 namespace RetroEngine.Graphics.Batching
 {
+    /// <summary>
+    /// Defines functionallity to create textures.
+    /// </summary>
     public static class TextureFactory
     {
+        /// <summary>
+        /// Creates a new texture from file.
+        /// </summary>
+        /// <param name="filepath">File path of the image.</param>
+        /// <returns>A new texture struct.</returns>
         public static Texture CreateFromFile(string filepath)
         {
             StbImage.stbi_set_flip_vertically_on_load(1);
@@ -20,6 +28,13 @@ namespace RetroEngine.Graphics.Batching
             return new Texture(image.Width, image.Height, image.Data);
         }
 
+        /// <summary>
+        /// Creates a new rectangle texture.
+        /// </summary>
+        /// <param name="width">Width of the rectangle.</param>
+        /// <param name="height">Height of the rectangle.</param>
+        /// <param name="color">Color of the rectangle.</param>
+        /// <returns>A new texture struct representing the rectangle.</returns>
         public static Texture CreateRectangle(int width, int height, Color4 color)
         {
             var data = new byte[width * height * 4];

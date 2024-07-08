@@ -13,7 +13,7 @@ namespace RetroEngine.Ecs.Components
         /// <summary>
         /// Gets or sets the texture of the sprite.
         /// </summary>
-        public int TextureId { get; set; }
+        public Texture Texture { get; private set; }
 
         /// <summary>
         /// Gets or sets the width of the sprite.
@@ -44,10 +44,11 @@ namespace RetroEngine.Ecs.Components
 
         /// <summary>
         /// Creates a new sprite renderer.
+        /// <param name="texture">Texture to render.</param>
         /// </summary>
-        public SpriteRenderer()
+        public SpriteRenderer(Texture texture)
         {
-            TextureId = 0;
+            Texture = texture;
             Width = 0;
             Height = 0;
             Color = Color4.White;

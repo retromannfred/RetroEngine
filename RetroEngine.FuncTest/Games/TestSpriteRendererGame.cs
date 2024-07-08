@@ -22,13 +22,13 @@ namespace RetroEngine.FuncTest.Games
 
         public TestSpriteRendererGame() : base("Test sprite renderer", 800, 600)
         {
-            
+            _world = new WorldBuilder().Build();
         }
 
         protected override void Initialize()
         {
             _world = new WorldBuilder()
-                .AddSystem(new SpriteRendererSystem(GraphicSettings))
+                .AddSystem(new RendererSystem(GraphicSettings))
                 .Build();
         }
 
@@ -52,9 +52,8 @@ namespace RetroEngine.FuncTest.Games
                     {
                         Position = new Vector2(rand.Next(-GraphicSettings.Width / 2, GraphicSettings.Width / 2), rand.Next(-GraphicSettings.Height / 2, GraphicSettings.Height / 2))
                     })
-                    .Attach(new SpriteRenderer()
+                    .Attach(new SpriteRenderer(_texture)
                     {
-                        TextureId = _texture.Id,
                         Width = _texture.Width,
                         Height = _texture.Height,
                         Color = new Color4((float)rand.NextDouble(), (float)rand.NextDouble(), (float)rand.NextDouble(), 1f)

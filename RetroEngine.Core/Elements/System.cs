@@ -20,6 +20,7 @@ namespace RetroEngine.Core.Elements
         {
             _aspect = new Aspect();
             _aspectBuilder = builder;
+            World = new World();
         }
 
         /// <summary>
