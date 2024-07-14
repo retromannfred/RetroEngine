@@ -18,6 +18,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RetroEngine.Core\RetroEngine.Core.csproj" />
+    <ProjectReference Include="..\RetroEngine.Ecs\RetroEngine.Ecs.csproj" />
+    <ProjectReference Include="..\RetroEngine.Graphics\RetroEngine.Graphics.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Ecs\Systems\" />
   </ItemGroup>
 
 </Project>

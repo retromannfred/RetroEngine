@@ -53,11 +53,11 @@ namespace RetroEngine.Ecs.Components
         /// <returns></returns>
         public Vector3 GetFrontDirection(Transform transform)
         {
-            var x = (float)Math.Cos(transform.Rotation.X) * (float)Math.Sin(transform.Rotation.Y);
-            var y = (float)Math.Sin(transform.Rotation.X);
-            var z = (float)Math.Cos(transform.Rotation.X) * (float)Math.Cos(transform.Rotation.Y);
+            var x = (float)Math.Round(MathHelper.Cos(transform.Rotation.X), 6) * (float)Math.Round(MathHelper.Sin(transform.Rotation.Y), 6);
+            var y = (float)Math.Round(MathHelper.Sin(transform.Rotation.X), 6);
+            var z = (float)Math.Round(MathHelper.Cos(transform.Rotation.X), 6) * (float)Math.Round(MathHelper.Cos(transform.Rotation.Y), 6);
 
-            return new Vector3(x, y, z);
+            return Vector3.Normalize(new Vector3(x, y, z));
         }
 
         /// <summary>
