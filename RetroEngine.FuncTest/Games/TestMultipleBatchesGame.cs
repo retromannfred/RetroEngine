@@ -1,6 +1,8 @@
 ﻿using OpenTK.Mathematics;
+using OpenTK.Platform.Windows;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using RetroEngine.Core;
+using RetroEngine.Core.Elements;
 using RetroEngine.Ecs.Components;
 using RetroEngine.Ecs.Systems;
 using RetroEngine.Graphics;
@@ -19,17 +21,10 @@ namespace RetroEngine.FuncTest.Games
     {
         private World _world;
         private Texture _texture;
-        private Texture _texture2;
         private float _lastUpdate;
-        private float _rotation;
-
-        public const float SPEED = 0f;// MathHelper.Pi;
 
         float _cameraSpeed = 15f;
-
-        Vector3 position = Vector3.UnitZ * 10f;
-        Vector3 front = -Vector3.UnitZ;
-        Vector3 up = Vector3.UnitY;
+        private Entity? _camera;
 
         public TestMultipleBatchesGame()
             : base("Test multiple batching", 800, 600)
@@ -40,16 +35,14 @@ namespace RetroEngine.FuncTest.Games
         protected override void Initialize()
         {
             _world = new WorldBuilder()
-                .AddSystem(new RendererSystem(GraphicSettings))
+                .AddSystem(new SpriteSystem(GraphicSettings))
+                .AddSystem(new CameraSystem(GraphicSettings))
                 .Build();
         }
 
         protected override void LoadContent()
         {
-            _texture = TextureFactory.CreateRectangle(1, 1, Color4.Blue);
-            _texture2 = TextureFactory.CreateRectangle(1, 1, Color4.Red);
-            //_texture = TextureFactory.CreateFromFile("Sprites/person.png");
-            //_texture2 = TextureFactory.CreateFromFile("Sprites/person.png");
+            _texture = TextureFactory.CreateRectangle(1, 1, Color4.White);
 
             Random rand = new Random();
             for (int i = 1; i <= 10; i++)
@@ -57,82 +50,72 @@ namespace RetroEngine.FuncTest.Games
                 var entity = _world.CreateEntity()
                     .Attach(new Transform()
                     {
-                        Position = new Vector2((float)rand.NextDouble() * 10f - 5f, (float)rand.NextDouble() * 10f - 5f)
+                        Position = new Vector3((float)rand.NextDouble() * 10f - 5f, (float)rand.NextDouble() * 10f - 5f, i % 2 * -10)
                     })
-                    .Attach(new SpriteRenderer(i % 2 == 0 ? _texture : _texture2)
+                    .Attach(new SpriteRenderer(_texture)
                     {
-                        //Color = new Color4((float)rand.NextDouble(), (float)rand.NextDouble(), (float)rand.NextDouble(), 1f),
-                        LayerDepth = i % 2 * 10
+                        Color = i % 2 == 0 ? Color4.Blue : Color4.Red
                     });
             }
+
+            _camera = _world.CreateEntity()
+                .Attach(new Transform()
+                {
+                    Position = Vector3.UnitZ * 10f,
+                    Rotation = Vector3.UnitY * -MathHelper.Pi
+                })
+                .Attach(new Camera()
+                {
+                    Projection = Projections.Perspective
+                });
         }
 
         protected override void Update(GameTime gameTime)
         {
-            _rotation += SPEED * gameTime.DeltaTime;
-            foreach (var id in _world.GetAllEntityIDs())
-            {
-                ref var transform = ref _world.GetComponent<Transform>(id);
-                transform.Rotation = _rotation;
-            }
-
             if (KeyboardState == null)
                 return;
 
             var input = KeyboardState;
-            var speed = _cameraSpeed * gameTime.DeltaTime;
+            var movement = _cameraSpeed * gameTime.DeltaTime;
+
+            ref var trans = ref _camera.Get<Transform>();
+            ref var cam = ref _camera.Get<Camera>();
 
             if (input.IsKeyDown(Keys.W))
-            {
-                position += front * speed; //Forward 
-            }
+                cam.MoveForward(ref trans, movement);
 
             if (input.IsKeyDown(Keys.S))
-            {
-                position -= front * speed; //Backwards
-            }
+                cam.MoveBackwards(ref trans, movement);
 
             if (input.IsKeyDown(Keys.A))
-            {
-                position -= Vector3.Normalize(Vector3.Cross(front, up)) * speed; //Left
-            }
+                cam.MoveLeft(ref trans, movement);
 
             if (input.IsKeyDown(Keys.D))
-            {
-                position += Vector3.Normalize(Vector3.Cross(front, up)) * speed; //Right
-            }
+                cam.MoveRight(ref trans, movement);
 
             if (input.IsKeyDown(Keys.Space))
-            {
-                position += up * speed; //Up 
-            }
+                cam.MoveUp(ref trans, movement);
 
             if (input.IsKeyDown(Keys.LeftShift))
-            {
-                position -= up * speed; //Downs
-            }
+                cam.MoveDown(ref trans, movement);
+
+            if (input.IsKeyDown(Keys.Right))
+                cam.LookRight(ref trans, movement / 15);
+
+            if (input.IsKeyDown(Keys.Left))
+                cam.LookLeft(ref trans, movement / 15);
+
+            if (input.IsKeyDown(Keys.Up))
+                cam.LookUp(ref trans, movement / 15);
+
+            if (input.IsKeyDown(Keys.Down))
+                cam.LookDown(ref trans, movement / 15);
         }
 
         protected override void Render(GameTime gameTime)
         {
             ClearScreen(Color4.CornflowerBlue);
 
-            Matrix4 model = Matrix4.Identity;
-            //Matrix4 model = Matrix4.CreateScale(10f); // pixels per unit
-            //Matrix4 model = Matrix4.CreateTranslation(Vector3.UnitZ * -1000f);
-            //model.Transpose();
-
-            //Matrix4 view = Matrix4.Identity;
-            //Matrix4 view = Matrix4.LookAt(new Vector3(100f, 0f, -1f), new Vector3(100f, 0f, 0f), new Vector3(0f, 1f, 0f)); //CreateTranslation(Vector3.UnitZ * -10f); // camera position
-            Matrix4 view = Matrix4.LookAt(position, position + front, up);
-            //view.Transpose();
-
-            //Matrix4 projection = Matrix4.Identity;
-            Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.PiOver3, GraphicSettings.AspectRatio, 0.3f, 1000f);
-            //Matrix4 projection = Matrix4.CreateOrthographic(GraphicSettings.Width, GraphicSettings.Height, 0.3f, 1000f);
-
-
-            _world.AuxTransform = model * view * projection;
             _world.Render(gameTime);
 
             _lastUpdate += gameTime.DeltaTime;

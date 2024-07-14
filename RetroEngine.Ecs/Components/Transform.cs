@@ -11,38 +11,45 @@ namespace RetroEngine.Ecs.Components
         /// <summary>
         /// Gets or sets the position of the entity.
         /// </summary>
-        public Vector2 Position { get; set; }
+        public Vector3 Position { get; set; }
 
-        private float _rotation;
+        private Vector3 _rotation;
         /// <summary>
         /// Gets or sets the angle of rotation in radians of the entity.
         /// </summary>
-        public float Rotation
+        public Vector3 Rotation
         {
             get { return _rotation; }
-            set { _rotation = MathHelper.ClampRadians(value); }
+            set
+            {
+                _rotation = new Vector3(
+                    MathHelper.ClampRadians(value.X),
+                    MathHelper.ClampRadians(value.Y),
+                    MathHelper.ClampRadians(value.Z)
+                );
+            }
         }
 
         /// <summary>
         /// Gets or sets the scale of the entity.
         /// </summary>
-        public Vector2 Scale { get; set; }
+        public Vector3 Scale { get; set; }
 
         /// <summary>
         /// Creates a new transform component.
         /// </summary>
         public Transform()
         {
-            Position = Vector2.Zero;
-            _rotation = 0f;
-            Scale = Vector2.One;
+            Position = Vector3.Zero;
+            _rotation = Vector3.Zero;
+            Scale = Vector3.One;
         }
 
         /// <summary>
-        /// Adds a given value in the X and Y axis to the current component.
+        /// Translates the current component.
         /// </summary>
         /// <param name="translation">Translation to be added to current position.</param>
-        public void Translate(Vector2 translation)
+        public void Translate(Vector3 translation)
         {
             Position += translation;
         }
@@ -50,8 +57,8 @@ namespace RetroEngine.Ecs.Components
         /// <summary>
         /// Rotates the current component.
         /// </summary>
-        /// <param name="radians">Angle to be added to the current rotation.</param>
-        public void Rotate(float radians)
+        /// <param name="radians">Rotation vector in radians to be added to current rotation.</param>
+        public void Rotate(Vector3 radians)
         {
             Rotation += radians;
         }
@@ -60,7 +67,7 @@ namespace RetroEngine.Ecs.Components
         /// Rescales the current component.
         /// </summary>
         /// <param name="scale">Module to multiply the current scale.</param>
-        public void Rescale(Vector2 scale)
+        public void Rescale(Vector3 scale)
         {
             Scale *= scale;
         }

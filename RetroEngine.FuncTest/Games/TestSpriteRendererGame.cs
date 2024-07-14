@@ -15,7 +15,7 @@ namespace RetroEngine.FuncTest.Games
 
         private float _rotation;
 
-        private const int NUMBER_OF_ITEMS = 100000;
+        private const int NUMBER_OF_ITEMS = 1;
         private const float SPEED = MathHelper.Pi;
 
         private float _lastUpdate = 0f;
@@ -28,7 +28,7 @@ namespace RetroEngine.FuncTest.Games
         protected override void Initialize()
         {
             _world = new WorldBuilder()
-                .AddSystem(new RendererSystem(GraphicSettings))
+                .AddSystem(new SpriteSystem(GraphicSettings))
                 .Build();
         }
 
@@ -50,7 +50,7 @@ namespace RetroEngine.FuncTest.Games
                 _world.CreateEntity()
                     .Attach(new Transform()
                     {
-                        Position = new Vector2(rand.Next(-GraphicSettings.Width / 2, GraphicSettings.Width / 2), rand.Next(-GraphicSettings.Height / 2, GraphicSettings.Height / 2))
+                        Position = new Vector3(rand.Next(-GraphicSettings.Width / 2, GraphicSettings.Width / 2), rand.Next(-GraphicSettings.Height / 2, GraphicSettings.Height / 2), 0f)
                     })
                     .Attach(new SpriteRenderer(_texture)
                     {
@@ -67,7 +67,7 @@ namespace RetroEngine.FuncTest.Games
             foreach (var id in _world.GetAllEntityIDs())
             {
                 ref var transform = ref _world.GetComponent<Transform>(id);
-                transform.Rotation = _rotation;
+                transform.Rotation = Vector3.UnitZ * _rotation;
             }
             _world.Update(gameTime);
         }

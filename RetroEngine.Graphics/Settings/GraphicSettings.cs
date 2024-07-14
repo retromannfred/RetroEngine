@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenTK.Mathematics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,6 +30,8 @@ namespace RetroEngine.Graphics.Settings
             get { return (float)Width / Height; }
         }
 
+        public List<Matrix4> ClipSpaces { get; internal set; }
+
         /// <summary>
         /// Creates a new
         /// </summary>
@@ -38,6 +41,7 @@ namespace RetroEngine.Graphics.Settings
         {
             Width = width;
             Height = height;
+            ClipSpaces = new List<Matrix4>();
         }
     }
 }

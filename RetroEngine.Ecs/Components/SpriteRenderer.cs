@@ -38,11 +38,6 @@ namespace RetroEngine.Ecs.Components
         public Flip Flip { get; set; }
 
         /// <summary>
-        /// Gets or sets how deep this sprite is drawn (z component of its position).
-        /// </summary>
-        public int LayerDepth { get; set; }
-
-        /// <summary>
         /// Creates a new sprite renderer.
         /// <param name="texture">Texture to render.</param>
         /// </summary>
@@ -53,7 +48,6 @@ namespace RetroEngine.Ecs.Components
             Height = 0;
             Color = Color4.White;
             Flip = Flip.None;
-            LayerDepth = 0;
         }
 
         /// <summary>
@@ -74,7 +68,7 @@ namespace RetroEngine.Ecs.Components
     }
 
     /// <summary>
-    /// Defines all flipping moves of an image.
+    /// Enumerates all flipping moves of an image.
     /// </summary>
     public enum Flip
     {

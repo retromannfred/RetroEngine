@@ -22,8 +22,6 @@ namespace RetroEngine.Core
         internal event Action<long>? OnComponentAdded;
         internal event Action<long>? OnComponentRemoved;
 
-        public Matrix4 AuxTransform = Matrix4.Identity;
-
         /// <summary>
         /// Creates a new world.
         /// </summary>

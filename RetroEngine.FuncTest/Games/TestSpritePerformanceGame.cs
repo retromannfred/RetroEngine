@@ -12,7 +12,7 @@ namespace RetroEngine.FuncTest.Games
         private Texture _texture;
         private SpriteBatch? _spriteBatch;
 
-        private List<Vector2> _positions;
+        private List<Vector3> _positions;
         private List<Color4> _colors;
         private float _rotation = 0f;
 
@@ -24,13 +24,13 @@ namespace RetroEngine.FuncTest.Games
         public TestSpritePerformanceGame()
             : base("Test game", 800, 600)
         {
-            _positions = new List<Vector2>();
+            _positions = new List<Vector3>();
             _colors = new List<Color4>();
         }
 
         protected override void Initialize()
         {
-            _positions = new List<Vector2>();
+            _positions = new List<Vector3>();
             _colors = new List<Color4>();
         }
 
@@ -49,7 +49,7 @@ namespace RetroEngine.FuncTest.Games
             Random rand = new Random();
             for (int i = 1; i <= NUMBER_OF_ITEMS; i++)
             {
-                _positions.Add(new Vector2(rand.Next(-GraphicSettings.Width / 2, GraphicSettings.Width / 2), rand.Next(-GraphicSettings.Height / 2, GraphicSettings.Height / 2)));
+                _positions.Add(new Vector3(rand.Next(-GraphicSettings.Width / 2, GraphicSettings.Width / 2), rand.Next(-GraphicSettings.Height / 2, GraphicSettings.Height / 2), 0f));
                 _colors.Add(new Color4((float)rand.NextDouble(), (float)rand.NextDouble(), (float)rand.NextDouble(), 1f));
             }
         }
@@ -75,11 +75,10 @@ namespace RetroEngine.FuncTest.Games
                     Vector2.Zero,
                     new Vector2(_texture.Width, _texture.Height),
                     _colors[i],
-                    _rotation,
-                    Vector2.One * 1.0f,
+                    Vector3.UnitZ * _rotation,
+                    Vector3.One,
                     false,
-                    false,
-                    0f
+                    false
                     );
             }
             _spriteBatch.End();

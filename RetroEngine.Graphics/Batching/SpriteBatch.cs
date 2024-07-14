@@ -106,37 +106,36 @@ namespace RetroEngine.Graphics.Batching
         /// <param name="flipX"></param>
         /// <param name="flipY"></param>
         /// <param name="layerDepth"></param>
-        public void Draw(Vector2 position,
+        public void Draw(Vector3 position,
             Vector2 sourceOffset,
             Vector2 sourceSize,
             Color4 color,
-            float rotation,
-            Vector2 scale,
+            Vector3 rotation,
+            Vector3 scale,
             bool flipX,
-            bool flipY,
-            float layerDepth)
+            bool flipY)
         {
             var TL = new VertexInfo()
             {
-                Position = new Vector3(position.X - sourceSize.X * scale.X / 2, position.Y + sourceSize.Y * scale.Y / 2, layerDepth),
+                Position = new Vector3(position.X - sourceSize.X * scale.X / 2, position.Y + sourceSize.Y * scale.Y / 2, position.Z),
                 TextureCoord = new Vector2(sourceOffset.X / _texture.Width, (_texture.Height - sourceOffset.Y) / _texture.Height),
                 Color = (Vector4)color
             };
             var TR = new VertexInfo()
             {
-                Position = new Vector3(position.X + sourceSize.X * scale.X / 2, position.Y + sourceSize.Y * scale.Y / 2, layerDepth),
+                Position = new Vector3(position.X + sourceSize.X * scale.X / 2, position.Y + sourceSize.Y * scale.Y / 2, position.Z),
                 TextureCoord = new Vector2((sourceOffset.X + sourceSize.X) / _texture.Width, (_texture.Height - sourceOffset.Y) / _texture.Height),
                 Color = (Vector4)color
             };
             var BR = new VertexInfo()
             {
-                Position = new Vector3(position.X + sourceSize.X * scale.X / 2, position.Y - sourceSize.Y * scale.Y / 2, layerDepth),
+                Position = new Vector3(position.X + sourceSize.X * scale.X / 2, position.Y - sourceSize.Y * scale.Y / 2, position.Z),
                 TextureCoord = new Vector2((sourceOffset.X + sourceSize.X) / _texture.Width, (_texture.Height - sourceOffset.Y - sourceSize.Y) / _texture.Height),
                 Color = (Vector4)color
             };
             var BL = new VertexInfo()
             {
-                Position = new Vector3(position.X - sourceSize.X * scale.X / 2, position.Y - sourceSize.Y * scale.Y / 2, layerDepth),
+                Position = new Vector3(position.X - sourceSize.X * scale.X / 2, position.Y - sourceSize.Y * scale.Y / 2, position.Z),
                 TextureCoord = new Vector2(sourceOffset.X / _texture.Width, (_texture.Height - sourceOffset.Y - sourceSize.Y) / _texture.Height),
                 Color = (Vector4)color
             };
@@ -160,12 +159,14 @@ namespace RetroEngine.Graphics.Batching
                 BR.TextureCoord = aux;
             }
 
-            if (rotation != 0f)
+            if (rotation != Vector3.Zero)
             {
-                TL.Position = Matrix3.CreateRotationZ(rotation) * TL.Position;
-                TR.Position = Matrix3.CreateRotationZ(rotation) * TR.Position;
-                BR.Position = Matrix3.CreateRotationZ(rotation) * BR.Position;
-                BL.Position = Matrix3.CreateRotationZ(rotation) * BL.Position;
+                var matrixRotate = Matrix3.CreateRotationX(rotation.X) * Matrix3.CreateRotationY(rotation.Y) * Matrix3.CreateRotationZ(rotation.Z);
+
+                TL.Position = (TL.Position - position) * matrixRotate + position;
+                TR.Position = (TR.Position - position) * matrixRotate + position;
+                BR.Position = (BR.Position - position) * matrixRotate + position;
+                BL.Position = (BL.Position - position) * matrixRotate + position;
             }
 
             _items.Add(TL);

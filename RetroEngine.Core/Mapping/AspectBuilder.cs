@@ -57,8 +57,8 @@ namespace RetroEngine.Core.Mapping
         /// <summary>
         /// Builds a new aspect.
         /// </summary>
-        /// <param name="world">world</param>
-        /// <returns></returns>
+        /// <param name="world">World from the entities are filtered.</param>
+        /// <returns>An aspect with the proper filter.</returns>
         internal Aspect Build(World world)
         {
             IQueryable<long> entities = world.GetAllEntityIDs();
