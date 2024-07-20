@@ -2,6 +2,7 @@
 using RetroEngine.Core.Elements;
 using RetroEngine.Core.Mapping;
 using RetroEngine.Ecs.Components;
+using RetroEngine.Ecs.Helpers;
 using RetroEngine.Graphics;
 using RetroEngine.Graphics.Settings;
 
@@ -39,8 +40,8 @@ namespace RetroEngine.Ecs.Systems
 
                 var view = Matrix4.LookAt(
                     new Vector3(transform.Position),
-                    new Vector3(transform.Position) + camera.GetFrontDirection(transform),
-                    camera.GetUpDirection(transform));
+                    new Vector3(transform.Position) + CameraHelper.GetFrontDirection(transform),
+                    CameraHelper.GetUpDirection(transform));
 
                 var projection = camera.Projection == Projections.Ortographic ?
                     Matrix4.CreateOrthographic(

@@ -14,7 +14,7 @@ namespace RetroEngine.UnitTest.Core
         private static GameTime h2m35s49 = new(TimeSpan.FromSeconds(9349), TimeSpan.FromSeconds(9349));
 
         [Test]
-        public void CreateWorldWithSystems()
+        public void TestCreateWorldWithSystemsIsNotNull()
         {
             World world;
 
@@ -27,7 +27,7 @@ namespace RetroEngine.UnitTest.Core
         }
 
         [Test]
-        public void EntityUpdatesRunningSystem()
+        public void TestEntityUpdatesWhenUpdatingWorld()
         {
             World world = new WorldBuilder()
                 .AddSystem(new TestUpdateSystem())
@@ -41,7 +41,7 @@ namespace RetroEngine.UnitTest.Core
         }
 
         [Test]
-        public void EntityRendersRunningSystem()
+        public void TestEntityRendersWhenRenderingWorld()
         {
             World world = new WorldBuilder()
                 .AddSystem(new TestRenderSystem())
@@ -55,7 +55,7 @@ namespace RetroEngine.UnitTest.Core
         }
 
         [Test]
-        public void NewEntityUpdatesAfterUpdate()
+        public void TestNewEntityUpdatesAfterUpdate()
         {
             Entity newEntity;
             World world = new WorldBuilder()
@@ -72,7 +72,7 @@ namespace RetroEngine.UnitTest.Core
         }
 
         [Test]
-        public void RemovedComponentDoesNotUpdate()
+        public void TestRemovedComponentDoesNotUpdate()
         {
             Entity firstEntity;
             Entity secondEntity;

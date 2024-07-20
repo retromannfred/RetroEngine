@@ -4,6 +4,7 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 using RetroEngine.Core;
 using RetroEngine.Core.Elements;
 using RetroEngine.Ecs.Components;
+using RetroEngine.Ecs.Helpers;
 using RetroEngine.Ecs.Systems;
 using RetroEngine.Graphics;
 using RetroEngine.Graphics.Batching;
@@ -24,7 +25,7 @@ namespace RetroEngine.FuncTest.Games
         private float _lastUpdate;
 
         float _cameraSpeed = 15f;
-        private Entity? _camera;
+        private long _cameraId = 0;
 
         public TestMultipleBatchesGame()
             : base("Test multiple batching", 800, 600)
@@ -58,16 +59,17 @@ namespace RetroEngine.FuncTest.Games
                     });
             }
 
-            _camera = _world.CreateEntity()
+            _cameraId = _world.CreateEntity()
                 .Attach(new Transform()
                 {
                     Position = Vector3.UnitZ * 10f,
-                    Rotation = Vector3.UnitY * -MathHelper.Pi
+                    Rotation = Vector3.UnitY * MathHelper.Pi
                 })
                 .Attach(new Camera()
                 {
                     Projection = Projections.Perspective
-                });
+                })
+            .Id;
         }
 
         protected override void Update(GameTime gameTime)
@@ -77,39 +79,43 @@ namespace RetroEngine.FuncTest.Games
 
             var input = KeyboardState;
             var movement = _cameraSpeed * gameTime.DeltaTime;
+            var camera = _world.GetEntity(_cameraId);
 
-            ref var trans = ref _camera.Get<Transform>();
-            ref var cam = ref _camera.Get<Camera>();
+            if (camera == null)
+                return;
+
+            ref var trans = ref camera.Get<Transform>();
+            ref var cam = ref camera.Get<Camera>();
 
             if (input.IsKeyDown(Keys.W))
-                cam.MoveForward(ref trans, movement);
+                CameraHelper.MoveForward(ref trans, movement);
 
             if (input.IsKeyDown(Keys.S))
-                cam.MoveBackwards(ref trans, movement);
+                CameraHelper.MoveBackwards(ref trans, movement);
 
             if (input.IsKeyDown(Keys.A))
-                cam.MoveLeft(ref trans, movement);
+                CameraHelper.MoveLeft(ref trans, movement);
 
             if (input.IsKeyDown(Keys.D))
-                cam.MoveRight(ref trans, movement);
+                CameraHelper.MoveRight(ref trans, movement);
 
             if (input.IsKeyDown(Keys.Space))
-                cam.MoveUp(ref trans, movement);
+                CameraHelper.MoveUp(ref trans, movement);
 
             if (input.IsKeyDown(Keys.LeftShift))
-                cam.MoveDown(ref trans, movement);
+                CameraHelper.MoveDown(ref trans, movement);
 
             if (input.IsKeyDown(Keys.Right))
-                cam.LookRight(ref trans, movement / 15);
+                CameraHelper.LookRight(ref trans, movement / 15);
 
             if (input.IsKeyDown(Keys.Left))
-                cam.LookLeft(ref trans, movement / 15);
+                CameraHelper.LookLeft(ref trans, movement / 15);
 
             if (input.IsKeyDown(Keys.Up))
-                cam.LookUp(ref trans, movement / 15);
+                CameraHelper.LookUp(ref trans, movement / 15);
 
             if (input.IsKeyDown(Keys.Down))
-                cam.LookDown(ref trans, movement / 15);
+                CameraHelper.LookDown(ref trans, movement / 15);
         }
 
         protected override void Render(GameTime gameTime)
