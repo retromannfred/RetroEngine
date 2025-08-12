@@ -1,92 +1,103 @@
 ﻿using RetroEngine.Core.Elements;
-using RetroEngine.Core.Mapping;
+using RetroEngine.Core.Exceptions;
 
 namespace RetroEngine.Core.Managers
 {
     /// <summary>
-    /// Defines functionallity to manage all component mappers in a ECS world.
+    /// Manages collection of component mappers.
     /// </summary>
-    internal class ComponentManager
+    public class ComponentManager()
     {
-        private World _world;
-        private Dictionary<Type, IComponentMapper> _mappers;
+        private readonly IDictionary<Type, IComponentMapper> _mappers = new Dictionary<Type, IComponentMapper>();
+        private readonly IDictionary<Type, int> _signatureIndices = new Dictionary<Type, int>();
 
         /// <summary>
-        /// Creates a new component manager for a ECS world.
+        /// Registers a new type of component, adding its mapper to the manager.
         /// </summary>
-        /// <param name="world">ECS world containing this manager.</param>
-        public ComponentManager(World world)
+        /// <typeparam name="T">Type of the component to add.</typeparam>
+        public void Register<T>()
+            where T : struct
         {
-            _world = world;
-            _mappers = new Dictionary<Type, IComponentMapper>();
+            _mappers.Add(typeof(T), new ComponentMapper<T>());
         }
 
         /// <summary>
-        /// Gets the component mapper of a specified component type.
+        /// Gets the register index of a component, that matches same position in a signature.
         /// </summary>
         /// <typeparam name="T">Type of the component.</typeparam>
-        /// <returns>An instance of the mapper of the component type.</returns>
-        internal ComponentMapper<T> GetMapper<T>() where T : struct, IComponent
+        /// <returns>Flag position of the component in a signature.</returns>
+        public int GetSignatureIndex<T>()
+            where T : struct
         {
-            ComponentMapper<T> mapper;
-            Type type = typeof(T);
-
-            if (_mappers.ContainsKey(type))
-            {
-                mapper = (ComponentMapper<T>)_mappers[type];
-            }
-            else
-            {
-                mapper = new ComponentMapper<T>();
-                _mappers.Add(type, mapper);
-            }
-
-            return mapper;
+            return _signatureIndices[typeof(T)];
         }
 
         /// <summary>
-        /// Adds a component to an entity.
+        /// Adds a component of a specified type to an entity.
         /// </summary>
-        /// <typeparam name="T">Type of the component.</typeparam>
-        /// <param name="entity">Entity containing the compomnent.</param>
+        /// <typeparam name="T">Type of the component to add.</typeparam>
+        /// <param name="entityId">Entity ID to attach the component.</param>
         /// <param name="component">Component to add.</param>
-        public void AddComponent<T>(long entity, T component) where T : struct, IComponent
+        /// <exception cref="EntityException">Thrown if entityId is lower than 1.</exception>
+        public void AddComponent<T>(int entityId, T component)
+            where T : struct
         {
-            GetMapper<T>().Add(entity, component);
+            if (_mappers.TryGetValue(typeof(T), out var mapper))
+                ((ComponentMapper<T>)mapper).Insert(entityId, component);
+            else
+                throw new RegisterException("Cannot get a non registered component.");
         }
 
         /// <summary>
-        /// Gets the component of a specified type from an entity.
+        /// Gets the component of an specified type attached to an entity.
         /// </summary>
-        /// <typeparam name="T">Type of the component.</typeparam>
-        /// <param name="entity">Entity containing the component.</param>
-        /// <returns>A reference to the component.</returns>
-        /// <remarks>As this method is obtaining a reference, all modification on the returned component will affect the entity behaviour.</remarks>
-        public ref T GetComponent<T>(long entity) where T : struct, IComponent
+        /// <typeparam name="T">Type of the component to add.</typeparam>
+        /// <param name="entityId">Entity ID where the component is attached.</param>
+        /// <exception cref="RegisterException">Thrown when try to retrieve a component that was not registered.</exception>
+        /// <exception cref="EntityException">Thrown if entityId is lower than 1.</exception>
+        /// <exception cref="ComponentException">Thrown if the entity doesn't have a component of this mapper type.</exception>
+        public ref T GetComponent<T>(int entityId)
+            where T : struct
         {
-            return ref GetMapper<T>().Get(entity);
+            if (_mappers.TryGetValue(typeof(T), out var mapper))
+            {
+                return ref ((ComponentMapper<T>)mapper).Get(entityId);
+            }
+
+            throw new RegisterException("Cannot get a non registered component.");
         }
 
         /// <summary>
-        /// Checks if a component
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <param name="type"></param>
-        /// <returns>True if the entity have a component of the specified type, and false otherwise.</returns>
-        internal bool HasComponent(long entity, Type type)
-        {
-            return _mappers.ContainsKey(type) && _mappers[type].Has(entity);
-        }
-
-        /// <summary>
-        /// Removes a component from an entity.
+        /// Removes a component of a specified type from an entity.
         /// </summary>
         /// <typeparam name="T">Type of the component to remove.</typeparam>
-        /// <param name="entity">Entity to remove the component from.</param>
-        /// <returns>True if the component was succesfully removed, false otherwise.</returns>
-        public bool RemoveComponent<T>(long entity) where T : struct, IComponent
+        /// <param name="entityId">Entity ID to remove the component from.</param>
+        /// <exception cref="EntityException">Thrown if entityId is lower than 1.</exception>
+        /// <exception cref="ComponentException">Thrown if the entity doesn't have a component of this mapper type.</exception>
+        public void RemoveComponent<T>(int entityId)
+            where T : struct
         {
-            return GetMapper<T>().Remove(entity);
+            if (_mappers.TryGetValue(typeof(T), out var mapper))
+            {
+                ((ComponentMapper<T>)mapper).Remove(entityId);
+            }
+        }
+
+        /// <summary>
+        /// Removes all the components from an entity.
+        /// </summary>
+        /// <param name="entityId">Entity ID to remove the components from.</param>
+        /// <exception cref="EntityException">Thrown if entityId is lower than 1.</exception>
+        public void RemoveAllComponents(int entityId)
+        {
+            foreach (var mapper in _mappers.Values)
+            {
+                try
+                {
+                    mapper.Remove(entityId);
+                }
+                catch (ComponentException) { }
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using RetroEngine.FuncTest.Games;
+﻿using RetroEngine.Core;
 
 namespace RetroEngine.FuncTest
 {
@@ -6,8 +6,7 @@ namespace RetroEngine.FuncTest
     {
         static void Main(string[] args)
         {
-            var game = new TestMultipleBatchesGame();
-            game.Run();
+            
         }
     }
 }

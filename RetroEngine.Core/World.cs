@@ -1,178 +1,142 @@
-﻿using OpenTK.Mathematics;
-using RetroEngine.Core.Elements;
+﻿using RetroEngine.Core.Elements;
 using RetroEngine.Core.Managers;
-using RetroEngine.Graphics;
-using RetroEngine.Graphics.Batching;
+using System.Security.Cryptography;
 
 namespace RetroEngine.Core
 {
     /// <summary>
-    /// Represents an entity-component-system abstraction.
+    /// Defines an orchestrator that manages info between ECS managers.
     /// </summary>
     public class World
     {
-        private List<IUpdateSystem> _updateSystems;
-        private List<IRenderSystem> _renderSystems;
+        private readonly EntityManager _entityManager;
+        private readonly ComponentManager _componentManager;
+        private readonly SystemManager _systemManager;
 
-        private EntityManager _entityManager { get; set; }
-        private ComponentManager _componentManager { get; set; }
+        private readonly HashSet<int> _destroyedEntities = [];
+        private readonly HashSet<int> _modifiedEntities = [];
 
-        internal event Action<long>? OnEntityCreated;
-        internal event Action<long>? OnEntityDestroyed;
-        internal event Action<long>? OnComponentAdded;
-        internal event Action<long>? OnComponentRemoved;
-
-        /// <summary>
-        /// Creates a new world.
-        /// </summary>
-        internal World()
+        internal World(
+            EntityManager entityManager,
+            ComponentManager componentManager,
+            SystemManager systemManager)
         {
-            _updateSystems = new List<IUpdateSystem>();
-            _renderSystems = new List<IRenderSystem>();
-
-            _entityManager = new(this);
-            _componentManager = new(this);
+            _entityManager = entityManager;
+            _componentManager = componentManager;
+            _systemManager = systemManager;
         }
 
         /// <summary>
-        /// Creates an entity on this world.
+        /// Creates a new entity in this world.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>An instance of Entity class.</returns>
         public Entity CreateEntity()
         {
-            var entity =_entityManager.Create();
-
-            if (OnEntityCreated != null)
-                OnEntityCreated(entity.Id);
-
-            return entity;
+            return new(_entityManager.Create(), _componentManager);
         }
 
         /// <summary>
-        /// Gets an entity in this world.
+        /// Gets a component of an entity.
         /// </summary>
-        /// <param name="id">Entity's ID.</param>
-        /// <returns>An instance of this entity if exists.</returns>
-        public Entity? GetEntity(long id) => _entityManager.Get(id);
-
-        /// <summary>
-        /// Removes an entity from this world.
-        /// </summary>
-        /// <param name="id">Entity's ID.</param>
-        /// <returns>True if the entity weas removed sucessfully, false otherwise.</returns>
-        public bool DestroyEntity(long id)
-        {
-            if (_entityManager.Destroy(id))
-            {
-                if (OnEntityDestroyed != null)
-                    OnEntityDestroyed(id);
-
-                return true;
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Adds a new system to this world.
-        /// </summary>
-        /// <param name="system">System to add.</param>
-        internal void Register(Elements.System system)
-        {
-            if (system is IUpdateSystem u)
-                _updateSystems.Add(u);
-
-            if (system is IRenderSystem d)
-                _renderSystems.Add(d);
-
-            system.Initialize(this);
-        }
-
-        /// <summary>
-        /// Updates the logic of the world.
-        /// </summary>
-        /// <param name="gameTime">Elapsed time of the game.</param>
-        public void Update(GameTime gameTime)
-        {
-            foreach (var system in _updateSystems)
-            {
-                system.Update(gameTime);
-            }
-        }
-
-        /// <summary>
-        /// Renders the graphgics of the world.
-        /// </summary>
-        /// <param name="gameTime">Elapsed time of the game.</param>
-        public void Render(GameTime gameTime)
-        {
-            foreach (var system in _renderSystems)
-            {
-                system.Render(gameTime);
-            }
-        }
-
-        /// <summary>
-        /// Gets a query list of all entities IDs in the game.
-        /// </summary>
-        /// <returns>A queryable list of all entities ready to filter them.</returns>
-        public IQueryable<long> GetAllEntityIDs()
-        {
-            return _entityManager.GetAllIDs();
-        }
-
-        /// <summary>
-        /// Gets a query list of all entities IDs in the game.
-        /// </summary>
-        /// <returns>A queryable list of all entities ready to filter them.</returns>
-        internal bool EntityHasComponent(long entity, Type type)
-        {
-            return _componentManager.HasComponent(entity, type);
-        }
-
-        /// <summary>
-        /// Adds a component to an entity.
-        /// </summary>
-        /// <typeparam name="T">Type of the component.</typeparam>
-        /// <param name="entityId">Entity containing the compomnent.</param>
-        /// <param name="component">Component to add.</param>
-        public void AddComponent<T>(long entityId, T component) where T : struct, IComponent
-        {
-            _componentManager.AddComponent(entityId, component);
-
-            if (OnComponentAdded != null)
-                OnComponentAdded(entityId);
-        }
-
-        /// <summary>
-        /// Gets the component of a specified type from an entity.
-        /// </summary>
-        /// <typeparam name="T">Type of the component.</typeparam>
-        /// <param name="entityId">Entity containing the component.</param>
-        /// <returns>A reference to the component.</returns>
-        /// <remarks>As this method is obtaining a reference, all modification on the returned component will affect the entity behaviour.</remarks>
-        public ref T GetComponent<T>(long entityId) where T : struct, IComponent
+        /// <typeparam name="T">Type of the component to get.</typeparam>
+        /// <param name="entityId">Entity ID to get the component from.</param>
+        /// <returns>A reference of the component from the respective mapper.</returns>
+        public ref T GetComponent<T>(int entityId)
+            where T : struct
         {
             return ref _componentManager.GetComponent<T>(entityId);
         }
 
         /// <summary>
-        /// Removes a component from an entity.
+        /// Gets a component of an Entity.
         /// </summary>
-        /// <typeparam name="T">Type of the component to remove.</typeparam>
-        /// <param name="entityId">Entity to remove the component from.</param>
-        /// <returns>True if the component was succesfully removed, false otherwise.</returns>
-        public bool RemoveComponent<T>(long entityId) where T : struct, IComponent
+        /// <typeparam name="T">Type of the component to get.</typeparam>
+        /// <param name="entity">Entity to get the component from.</param>
+        /// <returns>A reference of the component from the respective mapper.</returns>
+        public ref T GetComponent<T>(Entity entity)
+            where T : struct
         {
-            if (_componentManager.RemoveComponent<T>(entityId))
-            {
-                if (OnComponentRemoved != null)
-                    OnComponentRemoved(entityId);
+            return ref GetComponent<T>(entity.Id);
+        }
 
-                return true;
+        /// <summary>
+        /// Attaches a component to an entity.
+        /// </summary>
+        /// <typeparam name="T">Type of the component to attach.</typeparam>
+        /// <param name="entityId">Entity ID where to attach the component.</param>
+        /// <param name="component">Component to attach.</param>
+        public void AttachComponent<T>(int entityId, T component)
+            where T : struct
+        {
+            _componentManager.AddComponent(entityId, component);
+
+            var signature = _entityManager.GetSignature(entityId);
+            signature[_componentManager.GetSignatureIndex<T>()] = true;
+            _entityManager.SetSignature(entityId, signature);
+
+            _modifiedEntities.Add(entityId);
+        }
+
+        /// <summary>
+        /// Attaches a component to an entity.
+        /// </summary>
+        /// <typeparam name="T">Type of the component to attach.</typeparam>
+        /// <param name="entity">Entity where to attach the component.</param>
+        /// <param name="component">Component to attach.</param>
+        public void AttachComponent<T>(Entity entity, T component)
+            where T : struct
+        {
+            AttachComponent(entity.Id, component);
+        }
+
+        /// <summary>
+        /// Destroys an entity from this world.
+        /// </summary>
+        /// <param name="entityId">Entity ID to destroy.</param>
+        public void DestroyEntity(int entityId)
+        {
+            _entityManager.Destroy(entityId);
+            _destroyedEntities.Add(entityId);
+        }
+
+        /// <summary>
+        /// Destroys an entity from this world.
+        /// </summary>
+        /// <param name="entityId">Entity to destroy.</param>
+        public void DestroyEntity(Entity entity)
+        {
+            DestroyEntity(entity.Id);
+        }
+
+        /// <summary>
+        /// Performs the processing of update systems.
+        /// </summary>
+        /// <param name="deltaTime">Time passed in seconds since the last rendering.</param>
+        public void Update(float deltaTime)
+        {
+            foreach (var entityId in _modifiedEntities)
+            {
+                _systemManager.NotifyChangedEntitySignature(entityId, _entityManager.GetSignature(entityId));
             }
 
-            return false;
+            foreach (var entityId in _destroyedEntities)
+            {
+                _systemManager.NotifyDestroyedEntity(entityId);
+            }
+
+            _modifiedEntities.Clear();
+            _destroyedEntities.Clear();
+
+            _systemManager.PerformUpdate(this, deltaTime);
+        }
+
+        /// <summary>
+        /// Performs the processing of render systems.
+        /// </summary>
+        /// <param name="deltaTime">Time passed in seconds since the last rendering.</param>
+        public void Render(float deltaTime)
+        {
+            _systemManager.PerformRender(this, deltaTime);
         }
     }
 }

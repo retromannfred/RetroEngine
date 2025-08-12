@@ -1,88 +1,82 @@
-﻿using RetroEngine.Core.Elements;
+﻿using RetroEngine.Core.Exceptions;
+using RetroEngine.Core.Signing;
+using RetroEngine.Core.Utils;
 
 namespace RetroEngine.Core.Managers
 {
     /// <summary>
-    /// Defines functionallity to manage all entities in a ECS world.
+    /// Manages a pool of game entities.
     /// </summary>
-    internal class EntityManager
+    /// <param name="maxComponents">Maximum number of components an entity will have.</param>
+    /// <param name="entitiesCount">Initial size for component pool.</param>
+    public class EntityManager(int maxComponents, int entitiesCount = 1024)
     {
-        private World _world;
-        private long _maxId;
-        private List<long> _existingIds;
-        private Stack<long> _freeIds;
+        private int _createdEntities = 0;
+        private Signature[] _signatures = new Signature[entitiesCount];
+
+        private readonly int _maxComponents = maxComponents;
+        private readonly Queue<int> _freeEntities = new();
 
         /// <summary>
-        /// Creates a new entity manager.
+        /// Creates a new entity in the entity pool.
         /// </summary>
-        /// <param name="world">World containing this entity manager.</param>
-        public EntityManager(World world)
+        /// <returns>ID of the new entity.</returns>
+        public int Create()
         {
-            _world = world;
-            _maxId = 0;
-            _existingIds = new List<long>();
-            _freeIds = new Stack<long>();
-        }
-
-        /// <summary>
-        /// Creates a new entity in the game.
-        /// </summary>
-        /// <returns>An instance representing functionallity for the new entity.</returns>
-        public Entity Create()
-        {
-            var id =
-                _freeIds.Any()
-                ? _freeIds.Pop()
-                : ++ _maxId;
-
-            _existingIds.Add(id);
-
-            return new Entity(id, _world);
-        }
-
-        /// <summary>
-        /// Gets an entity by its ID.
-        /// </summary>
-        /// <param name="id">ID of the entity.</param>
-        /// <returns>An instance representing functionallity for this entity.</returns>
-        public Entity? Get(long id)
-        {
-            return _existingIds.Contains(id) ? new Entity(id, _world) : null;
-        }
-
-        /// <summary>
-        /// Removes an entity from the game.
-        /// </summary>
-        /// <param name="entity">Entity to remove.</param>
-        /// <returns>True if the entity was removed successfuly, false otherwise.</returns>
-        public bool Destroy(Entity entity)
-        {
-            return Destroy(entity.Id);
-        }
-
-        /// <summary>
-        /// Removes an entity from the game.
-        /// </summary>
-        /// <param name="id">Entity ID to remove.</param>
-        /// <returns>True if the entity was removed successfuly, false otherwise.</returns>
-        public bool Destroy(long id)
-        {
-            if (_existingIds.Remove(id))
+            if (_freeEntities.Count > 0)
             {
-                _freeIds.Push(id);
-                return true;
+                return _freeEntities.Dequeue();
             }
 
-            return false;
+            ArrayHelper.EnsureCapacity(ref _signatures, ++_createdEntities);
+            _signatures[_createdEntities] = new Signature(_maxComponents);
+            return _createdEntities;
         }
 
         /// <summary>
-        /// Gets a query list of all entities IDs in the game.
+        /// Gets the signature of a given entity.
         /// </summary>
-        /// <returns>A queryable list of all entities ready to filter them.</returns>
-        public IQueryable<long> GetAllIDs()
+        /// <param name="entityId">Entity ID to get the signature from.</param>
+        /// <returns></returns>
+        /// <exception cref="EntityException">Thrown if the given entity doesn't exists.</exception>
+        public Signature GetSignature(int entityId)
         {
-            return _existingIds.AsQueryable();
+            EnsureEntityId(entityId);
+            return _signatures[entityId];
+        }
+
+        /// <summary>
+        /// Sets the signature of a given entity.
+        /// </summary>
+        /// <param name="entityId">Entity ID to get the signature from.</param>
+        /// <param name="signature">Signature to set.</param>
+        /// <exception cref="EntityException">Thrown if the given entity doesn't exists.</exception>
+        public void SetSignature(int entityId, Signature signature)
+        {
+            EnsureEntityId(entityId);
+
+            if (signature.Length != _maxComponents)
+                throw new ArgumentException("The signature to set does not have the same length than the max components of the entity manager.");
+
+            _signatures[entityId] = signature;
+        }
+
+        /// <summary>
+        /// Destroys an entity from the entity pool.
+        /// </summary>
+        /// <param name="entityId">Entity ID to destroy.</param>
+        /// <exception cref="EntityException">Thrown if the given entity doesn't exists.</exception>
+        public void Destroy(int entityId)
+        {
+            EnsureEntityId(entityId);
+            SetSignature(entityId, new Signature(_maxComponents));
+            _freeEntities.Enqueue(entityId);
+        }
+
+        private void EnsureEntityId(int entityId)
+        {
+            if (entityId <= 0 || entityId > _createdEntities || _freeEntities.Contains(entityId))
+                throw new EntityException($"Entity {entityId} doesn't exist.");
         }
     }
 }

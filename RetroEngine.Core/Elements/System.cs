@@ -1,46 +1,103 @@
-﻿using RetroEngine.Core.Mapping;
+﻿using RetroEngine.Core.Exceptions;
+using RetroEngine.Core.Signing;
 
 namespace RetroEngine.Core.Elements
 {
     /// <summary>
-    /// Defines the basic behaviour of a component system.
+    /// Defines basic functionallity of a system in a ECS engine.
+    /// <param name="negotiation">Negotiation containing component types to be processed by this system.</param>
     /// </summary>
-    public abstract class System
+    public abstract class BaseSystem(Negotiation negotiation)
     {
-        private Aspect _aspect;
-        private readonly AspectBuilder _aspectBuilder;
-
-        protected World World { get; private set; }
+        private readonly HashSet<int> _entities = [];
+        private readonly Negotiation _negotiation = negotiation;
 
         /// <summary>
-        /// Creates a new System with a given aspect specification.
+        /// Processes this system in a specified world.
         /// </summary>
-        /// <param name="builder">AspectBuilder for component restriction.</param>
-        public System(AspectBuilder builder)
+        /// <param name="world">World containing all entities and components to be processed.</param>
+        /// <param name="deltaTime">Time passed in seconds since the last processing.</param>
+        public abstract void Process(World world, float deltaTime);
+
+        /// <summary>
+        /// Adds an entity to be processed for this system.
+        /// </summary>
+        /// <param name="entityId"></param>
+        /// <exception cref="EntityException"></exception>
+        public void AddEntity(int entityId)
         {
-            _aspect = new Aspect();
-            _aspectBuilder = builder;
-            World = new World();
+            if (entityId < 1)
+                throw new EntityException("Entity ID must be greater than zero.");
+
+            _entities.Add(entityId);
         }
 
         /// <summary>
-        /// Initializes this system in a given world.
+        /// Gets entities to be processed in this system.
         /// </summary>
-        /// <param name="world"></param>
-        internal void Initialize(World world)
+        /// <returns>An instance of IEnumerable with the ID values.</returns>
+        public IEnumerable<int> GetEntities()
         {
-            World = world;
-            _aspect = _aspectBuilder.Build(world);
-
-            World.OnEntityCreated += _aspect.EntitiesChangedHandler;
-            World.OnEntityDestroyed += _aspect.EntitiesChangedHandler;
-            World.OnComponentAdded += _aspect.EntitiesChangedHandler;
-            World.OnComponentRemoved += _aspect.EntitiesChangedHandler;
+            return _entities.AsEnumerable();
         }
 
         /// <summary>
-        /// Gets active entities for this system.
+        /// Removes an entity from being processed in this system.
         /// </summary>
-        protected List<long> ActiveEntities => _aspect.GetActiveEntities();
+        /// <param name="entityId">Entity ID to be removed.</param>
+        public void RemoveEntity(int entityId)
+        {
+            if (entityId < 1)
+                throw new EntityException("Entity ID must be greater than zero.");
+
+            _entities.Remove(entityId);
+        }
+
+        /// <summary>
+        /// Gets the types added to this system's negotation.
+        /// </summary>
+        /// <returns>An instance of IEnumerable with the Type values.</returns>
+        internal IEnumerable<Type> GetNegotiationClauses()
+        {
+            return _negotiation.GetClauses();
+        }
+
+        /// <summary>
+        /// Signs the contract for this system.
+        /// </summary>
+        /// <param name="offer">Contract having all components of the engine.</param>
+        /// <returns></returns>
+        internal Signature SignNegotiation(Contract offer)
+        {
+            return _negotiation.Sign(offer);
+        }
+    }
+
+    /// <summary>
+    /// Defines a system that is processed on the update game loop.
+    /// <param name="negotiation">Negotiation containing component types to be processed by this system.</param>
+    /// </summary>
+    public abstract class UpdateSystem(Negotiation negotiation) : BaseSystem(negotiation)
+    {
+        /// <summary>
+        /// Wrapper for the process method.
+        /// </summary>
+        /// <param name="world">World containing all entities and components to be processed.</param>
+        /// <param name="deltaTime">Time passed in seconds since the last updating.</param>
+        public void Update(World world, float deltaTime) => this.Process(world, deltaTime);
+    }
+
+    /// <summary>
+    /// Defines a system that is processed on the render game loop.
+    /// <param name="negotiation">Negotiation containing component types to be processed by this system.</param>
+    /// </summary>
+    public abstract class RenderSystem(Negotiation negotiation) : BaseSystem(negotiation)
+    {
+        /// <summary>
+        /// Wrapper for the process method.
+        /// </summary>
+        /// <param name="world">World containing all entities and components to be processed.</param>
+        /// <param name="deltaTime">Time passed in seconds since the last rendering.</param>
+        public void Render(World world, float deltaTime) => this.Process(world, deltaTime);
     }
 }

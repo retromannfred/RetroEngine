@@ -1,136 +1,122 @@
-using NUnit.Framework;
 using RetroEngine.Core;
 using RetroEngine.Core.Elements;
+using RetroEngine.Core.Exceptions;
+using RetroEngine.UnitTest.TestData.Components;
+using RetroEngine.UnitTest.TestData.Systems;
+using System.Collections.Specialized;
 using System.Reflection;
-using System.Threading;
 
 namespace RetroEngine.UnitTest.Core
 {
+    /// <summary>
+    /// Tests functionality of classes World and WorldBuilder.
+    /// </summary>
     public class WorldTests
     {
-        [Test]
-        public void CannotInstanceWorld()
+        [Fact]
+        public void World_AccessConstructor_CannotBeDone()
         {
+            // Arrange
             ConstructorInfo[] ctors;
 
+            // Act
             Type type = typeof(World);
             ctors = type.GetConstructors();
 
-            Assert.That(ctors.Length, Is.EqualTo(0), "World constructor is accessible");
+            // Assert
+            Assert.Empty(ctors);
         }
 
-        [Test]
-        public void BuildEmptyWorld()
+        [Fact]
+        public void World_CreateEmptyWorld_CanBeDone()
         {
-            World world;
+            // Arrange
+            var builder = new WorldBuilder();
 
-            world = new WorldBuilder().Build();
+            // Act
+            var world = builder.Build();
 
-            Assert.IsNotNull(world, "World is not builded");
+            // Assert
+            Assert.NotNull(world);
         }
 
-        [Test]
-        public void CreateEntities()
+        [Fact]
+        public void World_CreateEntities_EnumeratesIdsFromOneToN()
         {
-            World world;
+            // Arrange
+            var world = new WorldBuilder().Build();
 
-            world = new WorldBuilder().Build();
-            for (int i = 0; i < 1000; i++)
-            {
-                world.CreateEntity();
-            }
+            // Act
+            var one = world.CreateEntity();
+            var two = world.CreateEntity();
+            var three = world.CreateEntity();
+            var four = world.CreateEntity();
 
-            Assert.That(world.GetAllEntityIDs().Count(), Is.EqualTo(1000), "There are different entities than create entity calls");
+            // Assert
+            Assert.Equal(1, one.Id);
+            Assert.Equal(2, two.Id);
+            Assert.Equal(3, three.Id);
+            Assert.Equal(4, four.Id);
         }
 
-        [Test]
-        public void GetExistingEntities()
+        [Fact]
+        public void World_DestroyAndCreateEntities_RecyclesIds()
         {
-            World world;
-            Entity? one;
-            Entity? two;
-            Entity? three;
+            // Arrange
+            var world = new WorldBuilder().Build();
 
-            world = new WorldBuilder().Build();
-            for (int i = 0; i < 1000; i++)
-            {
-                world.CreateEntity();
-            }
-            one = world.GetEntity(101);
-            two = world.GetEntity(24);
-            three = world.GetEntity(1000);
+            // Act
+            var one = world.CreateEntity();
+            var two = world.CreateEntity();
+            var three = world.CreateEntity();
+            world.DestroyEntity(two);
+            var four = world.CreateEntity();
 
-            Assert.IsNotNull(one);
-            Assert.IsNotNull(two);
-            Assert.IsNotNull(three);
-
-            Assert.That(one.Id, Is.EqualTo(101), "Entity 101 is not created");
-            Assert.That(two.Id, Is.EqualTo(24), "Entity 24 is not created");
-            Assert.That(three.Id, Is.EqualTo(1000), "Entity 1000 is not created");
+            // Assert
+            Assert.Equal(1, one.Id);
+            Assert.Equal(2, two.Id);
+            Assert.Equal(3, three.Id);
+            Assert.Equal(2, four.Id);
         }
 
-        [Test]
-        public void GetNonExistingEntities()
+        [Fact]
+        public void World_RegisterSystems_PermitsAttachComponentsOfTheirNegotiations()
         {
-            World world;
-            Entity? one;
-            Entity? two;
+            // Arrange
+            var world = new WorldBuilder()
+                .RegisterSystem(new FlagSystem())
+                .RegisterSystem(new CountSystem())
+                .Build();
 
-            world = new WorldBuilder().Build();
-            for (int i = 0; i < 1000; i++)
-            {
-                world.CreateEntity();
-            }
-            one = world.GetEntity(-10);
-            two = world.GetEntity(1001);
+            // Act
+            var entity = world.CreateEntity()
+                .Attach(new TagComponent("test"))
+                .Attach(new FlagsComponent() { FlagB = true })
+                .Attach(new CountComponent() { Count = 567});
 
-            Assert.IsNull(one, "Entity -10 shouldn't exist");
-            Assert.IsNull(two, "Entity 1001 shouldn't exist");
+            // Assert
+            Assert.Equal("test", world.GetComponent<TagComponent>(entity).Tag);
+            Assert.True(world.GetComponent<FlagsComponent>(entity).FlagB);
+            Assert.Equal(567, world.GetComponent<CountComponent>(entity).Count);
         }
 
-        [Test]
-        public void DestroyExistingEntities()
+        [Fact]
+        public void World_RegisterSystems_DoesNotPermitAttachComponentsOutsideNegotiations()
         {
-            World world;
-            bool one;
-            bool two;
-            bool three;
+            // Arrange
+            var world = new WorldBuilder()
+                .RegisterSystem(new FlagSystem())
+                .RegisterSystem(new CountSystem())
+                .Build();
+            var entity = world.CreateEntity();
 
-            world = new WorldBuilder().Build();
-            for (int i = 0; i < 1000; i++)
-            {
-                world.CreateEntity();
-            }
+            // Act
+            void actionDateTime() => entity.Attach(new DateTime());
+            void actionBitVector() => entity.Attach(new BitVector32());
 
-            one = world.DestroyEntity(101);
-            two = world.DestroyEntity(24);
-            three = world.DestroyEntity(1000);
-
-            Assert.IsTrue(one, "Entity 101 is not destroyed");
-            Assert.IsTrue(two, "Entity 24 is not destroyed");
-            Assert.IsTrue(three, "Entity 1001 is not destroyed");
-            Assert.That(world.GetAllEntityIDs().Count(), Is.EqualTo(997), "World entities are not removed when deleted");
-        }
-
-        [Test]
-        public void DestroyNonExistingEntities()
-        {
-            World world;
-            bool one;
-            bool two;
-
-            world = new WorldBuilder().Build();
-            for (int i = 0; i < 1000; i++)
-            {
-                world.CreateEntity();
-            }
-
-            one = world.DestroyEntity(-10);
-            two = world.DestroyEntity(1001);
-
-            Assert.IsFalse(one, "Entity -10 has been removed without existing");
-            Assert.IsFalse(two, "Entity 1001 has been removed without existing");
-            Assert.That(world.GetAllEntityIDs().Count(), Is.EqualTo(1000), "There are removed emptities that shouldn't be removed");
+            // Assert
+            Assert.Throws<RegisterException>(actionDateTime);
+            Assert.Throws<RegisterException>(actionBitVector);
         }
     }
 }

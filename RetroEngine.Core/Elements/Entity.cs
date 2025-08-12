@@ -1,54 +1,60 @@
-﻿namespace RetroEngine.Core.Elements
+﻿using RetroEngine.Core.Exceptions;
+using RetroEngine.Core.Managers;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("RetroEngine.UnitTest")]
+namespace RetroEngine.Core.Elements
 {
     /// <summary>
-    /// Defines an object inside the game.
+    /// Defines a wrapper for both entity and component manager to create entities and attach components to it.
     /// </summary>
     public class Entity
     {
-        private World _world;
+        private readonly int _id;
+        private readonly ComponentManager _componentManager;
 
         /// <summary>
-        /// Gets the ID of this entity.
+        /// Initializes a new instance of the <see cref="Entity"/> class.
         /// </summary>
-        public long Id { get; private set; }
-
-        internal Entity(long id, World world)
+        /// <param name="id">New entity ID created.</param>
+        /// <param name="componentManager">Component manager used to edit components after.</param>
+        internal Entity(int id, ComponentManager componentManager)
         {
-            Id = id;
-            _world = world;
+            if (id < 1)
+                throw new EntityException("Entity ID must be greater than zero.");
+
+            _id = id;
+            _componentManager = componentManager;
         }
 
         /// <summary>
-        /// Adds a component to this entity.
+        /// Gets this entity's ID.
         /// </summary>
-        /// <typeparam name="T">Type of the component to add.</typeparam>
-        /// <param name="component">Component to add.</param>
+        public int Id => _id;
+
+        /// <summary>
+        /// Attaches a component to this entity.
+        /// </summary>
+        /// <typeparam name="T">Type of component to attach.</typeparam>
+        /// <param name="component">Component to attach.</param>
         /// <returns>This entity instance.</returns>
-        public Entity Attach<T>(T component) where T : struct, IComponent
+        public Entity Attach<T>(T component)
+            where T : struct
         {
-            _world.AddComponent(Id, component);
+            _componentManager.AddComponent(_id, component);
             return this;
         }
 
         /// <summary>
-        /// Gets the component of a specified type from this entity.
+        /// Deattaches the component of specified type from this entity.
         /// </summary>
-        /// <typeparam name="T">Type of the component to get.</typeparam>
-        /// <returns>And reference instance of the component to get.</returns>
-        /// <remarks>As this method gets the component struct as reference, any modification on it will be reflected on the entity behaviour.</remarks>
-        public ref T Get<T>() where T : struct, IComponent
+        /// <typeparam name="T">Type of component to deattach.</typeparam>
+        /// <returns>This entity instance.</returns>
+        public Entity Deattach<T>()
+            where T : struct
         {
-            return ref _world.GetComponent<T>(Id);
-        }
-
-        /// <summary>
-        /// Removes a component from this entity.
-        /// </summary>
-        /// <typeparam name="T">Type of the component to remove.</typeparam>
-        /// <returns>True if the component was removed successfully, false otherwise.</returns>
-        public bool Remove<T>() where T : struct, IComponent
-        {
-            return _world.RemoveComponent<T>(Id);
+            _componentManager.RemoveComponent<T>(_id);
+            return this;
         }
     }
 }
