@@ -1,8 +1,8 @@
 ﻿using Moq;
 using RetroEngine.Core;
+using RetroEngine.Core.Elements;
 using RetroEngine.Core.Exceptions;
 using RetroEngine.Core.Managers;
-using RetroEngine.Core.Signing;
 using RetroEngine.UnitTest.TestData.Systems;
 
 namespace RetroEngine.UnitTest.Core.Managers
@@ -251,14 +251,14 @@ namespace RetroEngine.UnitTest.Core.Managers
             manager.AddSystem(flagSystemMock.Object);
             manager.AddSystem(countSystemMock.Object);
             var world = new WorldBuilder().Build();
-            var deltaTime = 1.8f;
+            var time = new GameTime(TimeSpan.FromSeconds(1.8), TimeSpan.FromSeconds(1.8));
 
             // Act
-            manager.PerformUpdate(world, deltaTime);
+            manager.PerformUpdate(world, time);
 
             // Assert
-            flagSystemMock.Verify(s => s.Process(world, deltaTime), Times.Never());
-            countSystemMock.Verify(s => s.Process(world, deltaTime), Times.Once());
+            flagSystemMock.Verify(s => s.Process(world, time), Times.Never());
+            countSystemMock.Verify(s => s.Process(world, time), Times.Once());
         }
 
         [Fact]
@@ -271,14 +271,14 @@ namespace RetroEngine.UnitTest.Core.Managers
             manager.AddSystem(flagSystemMock.Object);
             manager.AddSystem(countSystemMock.Object);
             var world = new WorldBuilder().Build();
-            var deltaTime = 1.8f;
+            var time = new GameTime(TimeSpan.FromSeconds(1.8), TimeSpan.FromSeconds(1.8));
 
             // Act
-            manager.PerformRender(world, deltaTime);
+            manager.PerformRender(world, time);
 
             // Assert
-            flagSystemMock.Verify(s => s.Process(world, deltaTime), Times.Once());
-            countSystemMock.Verify(s => s.Process(world, deltaTime), Times.Never());
+            flagSystemMock.Verify(s => s.Process(world, time), Times.Once());
+            countSystemMock.Verify(s => s.Process(world, time), Times.Never());
         }
     }
 }

@@ -1,6 +1,6 @@
-﻿using RetroEngine.Core.Signing;
+﻿using RetroEngine.Core.Elements;
 
-namespace RetroEngine.UnitTest.Core.Signing
+namespace RetroEngine.UnitTest.Core.Elements
 {
     /// <summary>
     /// Defines unit test cases for Signature struct.

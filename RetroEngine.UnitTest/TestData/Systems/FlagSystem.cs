@@ -1,6 +1,5 @@
 ﻿using RetroEngine.Core;
 using RetroEngine.Core.Elements;
-using RetroEngine.Core.Signing;
 using RetroEngine.UnitTest.TestData.Components;
 
 namespace RetroEngine.UnitTest.TestData.Systems
@@ -15,7 +14,7 @@ namespace RetroEngine.UnitTest.TestData.Systems
 
         }
 
-        public override void Process(World world, float deltaTime)
+        public override void Process(World world, GameTime time)
         {
             foreach (var entityId in GetEntities())
             {

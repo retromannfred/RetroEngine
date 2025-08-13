@@ -32,7 +32,7 @@ namespace RetroEngine.Core
         /// <returns>An instance of Entity class.</returns>
         public Entity CreateEntity()
         {
-            return new(_entityManager.Create(), _componentManager);
+            return new(_entityManager.Create(), this);
         }
 
         /// <summary>
@@ -90,6 +90,34 @@ namespace RetroEngine.Core
         }
 
         /// <summary>
+        /// Deattaches a component from an entity.
+        /// </summary>
+        /// <typeparam name="T">Type of the component to deattach.</typeparam>
+        /// <param name="entityId">Entity ID where to dettach the component.</param>
+        public void DeattachComponent<T>(int entityId)
+            where T : struct
+        {
+            _componentManager.RemoveComponent<T>(entityId);
+
+            var signature = _entityManager.GetSignature(entityId);
+            signature[_componentManager.GetSignatureIndex<T>()] = false;
+            _entityManager.SetSignature(entityId, signature);
+
+            _modifiedEntities.Add(entityId);
+        }
+
+        /// <summary>
+        /// Deattaches a component from an entity.
+        /// </summary>
+        /// <typeparam name="T">Type of the component to deattach.</typeparam>
+        /// <param name="entity">Entity where to dettach the component.</param>
+        public void DeattachComponent<T>(Entity entity)
+            where T : struct
+        {
+            DeattachComponent<T>(entity.Id);
+        }
+
+        /// <summary>
         /// Destroys an entity from this world.
         /// </summary>
         /// <param name="entityId">Entity ID to destroy.</param>
@@ -111,8 +139,8 @@ namespace RetroEngine.Core
         /// <summary>
         /// Performs the processing of update systems.
         /// </summary>
-        /// <param name="deltaTime">Time passed in seconds since the last rendering.</param>
-        public void Update(float deltaTime)
+        /// <param name="time">Info about the gametime.</param>
+        public void Update(GameTime time)
         {
             foreach (var entityId in _modifiedEntities)
             {
@@ -127,16 +155,16 @@ namespace RetroEngine.Core
             _modifiedEntities.Clear();
             _destroyedEntities.Clear();
 
-            _systemManager.PerformUpdate(this, deltaTime);
+            _systemManager.PerformUpdate(this, time);
         }
 
         /// <summary>
         /// Performs the processing of render systems.
         /// </summary>
-        /// <param name="deltaTime">Time passed in seconds since the last rendering.</param>
-        public void Render(float deltaTime)
+        /// <param name="time">Info about the gametime.</param>
+        public void Render(GameTime time)
         {
-            _systemManager.PerformRender(this, deltaTime);
+            _systemManager.PerformRender(this, time);
         }
     }
 }

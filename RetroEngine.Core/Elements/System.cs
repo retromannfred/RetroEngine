@@ -1,5 +1,4 @@
 ﻿using RetroEngine.Core.Exceptions;
-using RetroEngine.Core.Signing;
 
 namespace RetroEngine.Core.Elements
 {
@@ -16,13 +15,13 @@ namespace RetroEngine.Core.Elements
         /// Processes this system in a specified world.
         /// </summary>
         /// <param name="world">World containing all entities and components to be processed.</param>
-        /// <param name="deltaTime">Time passed in seconds since the last processing.</param>
-        public abstract void Process(World world, float deltaTime);
+        /// <param name="time">Info about the gametime.</param>
+        public abstract void Process(World world, GameTime time);
 
         /// <summary>
         /// Adds an entity to be processed for this system.
         /// </summary>
-        /// <param name="entityId"></param>
+        /// <param name="entityId">Entity ID to add.</param>
         /// <exception cref="EntityException"></exception>
         public void AddEntity(int entityId)
         {
@@ -83,8 +82,8 @@ namespace RetroEngine.Core.Elements
         /// Wrapper for the process method.
         /// </summary>
         /// <param name="world">World containing all entities and components to be processed.</param>
-        /// <param name="deltaTime">Time passed in seconds since the last updating.</param>
-        public void Update(World world, float deltaTime) => this.Process(world, deltaTime);
+        /// <param name="time">Info about the gametime.</param>
+        public void Update(World world, GameTime time) => this.Process(world, time);
     }
 
     /// <summary>
@@ -97,7 +96,7 @@ namespace RetroEngine.Core.Elements
         /// Wrapper for the process method.
         /// </summary>
         /// <param name="world">World containing all entities and components to be processed.</param>
-        /// <param name="deltaTime">Time passed in seconds since the last rendering.</param>
-        public void Render(World world, float deltaTime) => this.Process(world, deltaTime);
+        /// <param name="time">Info about the gametime.</param>
+        public void Render(World world, GameTime time) => this.Process(world, time);
     }
 }

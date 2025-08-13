@@ -1,14 +1,6 @@
 ﻿using RetroEngine.Core.Elements;
-using RetroEngine.Core.Exceptions;
 using RetroEngine.Core.Managers;
-using RetroEngine.Core.Signing;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RetroEngine.Core
 {
@@ -17,7 +9,7 @@ namespace RetroEngine.Core
     /// </summary>
     public class WorldBuilder()
     {
-        private readonly List<BaseSystem> _registeredSystems = [];
+        private readonly Dictionary<Type, BaseSystem> _registeredSystems = [];
 
         /// <summary>
         /// Registers a new system to be processed in the constructed world.
@@ -28,8 +20,8 @@ namespace RetroEngine.Core
         public WorldBuilder RegisterSystem<T>(T system)
             where T : BaseSystem
         {
-            if (_registeredSystems.Contains(system) == false)
-                _registeredSystems.Add(system);
+            if (_registeredSystems.ContainsKey(typeof(T)) == false)
+                _registeredSystems.Add(typeof(T), system);
 
             return this;
         }
@@ -41,7 +33,7 @@ namespace RetroEngine.Core
         public World Build()
         {
             var worldContract = new Contract();
-            foreach (var system in _registeredSystems)
+            foreach (var system in _registeredSystems.Values)
             {
                 worldContract.Extend(system.GetNegotiationClauses());
             }
@@ -60,8 +52,15 @@ namespace RetroEngine.Core
             var systemManager = new SystemManager();
             foreach (var system in _registeredSystems)
             {
-                var signature = system.SignNegotiation(worldContract);
-                systemManager.AddSystem(system, signature);
+                var signature = system.Value.SignNegotiation(worldContract);
+                systemManager.GetType()
+                    .GetMethod("AddSystem", BindingFlags.Instance | BindingFlags.Public)!
+                    .MakeGenericMethod(system.Key)
+                    .Invoke(systemManager, [system.Value]);
+                systemManager.GetType()
+                    .GetMethod("SetSignature", BindingFlags.Instance | BindingFlags.Public)!
+                    .MakeGenericMethod(system.Key)
+                    .Invoke(systemManager, [signature]);
             }
 
             return new World(

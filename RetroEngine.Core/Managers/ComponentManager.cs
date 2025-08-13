@@ -19,6 +19,7 @@ namespace RetroEngine.Core.Managers
             where T : struct
         {
             _mappers.Add(typeof(T), new ComponentMapper<T>());
+            _signatureIndices.Add(typeof(T), _signatureIndices.Count);
         }
 
         /// <summary>

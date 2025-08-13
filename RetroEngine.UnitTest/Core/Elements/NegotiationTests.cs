@@ -1,8 +1,8 @@
-﻿using RetroEngine.Core.Signing;
+﻿using RetroEngine.Core.Elements;
 using RetroEngine.UnitTest.TestData.Components;
 using System.Collections.Specialized;
 
-namespace RetroEngine.UnitTest.Core.Signing
+namespace RetroEngine.UnitTest.Core.Elements
 {
     /// <summary>
     /// Defines unit test cases for Negotiation class.

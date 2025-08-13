@@ -1,6 +1,5 @@
 ﻿using RetroEngine.Core.Elements;
 using RetroEngine.Core.Exceptions;
-using RetroEngine.Core.Signing;
 
 namespace RetroEngine.Core.Managers
 {
@@ -41,20 +40,6 @@ namespace RetroEngine.Core.Managers
             }
 
             _signatures.Add(typeof(T), default);
-        }
-
-        /// <summary>
-        /// Adds a system and its signature to be processed by this manager.
-        /// </summary>
-        /// <typeparam name="T">Type of system to add.</typeparam>
-        /// <param name="system">System to add.</param>
-        /// <param name="signature">Signature of this system.</param>
-        /// <exception cref="RegisterException">Thrown if the system type is not extended from UpdateSystem or RenderSystem.</exception>
-        public void AddSystem<T>(T system, Signature signature)
-            where T : BaseSystem
-        {
-            this.AddSystem<T>(system);
-            this.SetSignature<T>(signature);
         }
 
         /// <summary>
@@ -127,22 +112,22 @@ namespace RetroEngine.Core.Managers
         /// Calls all update systems to be processed.
         /// </summary>
         /// <param name="world">World containing all entities and components to be processed.</param>
-        /// <param name="deltaTime">Time passed in seconds since the last rendering.</param>
-        public void PerformUpdate(World world, float deltaTime)
+        /// <param name="time">Info about the gametime.</param>
+        public void PerformUpdate(World world, GameTime time)
         {
             foreach (var updater in _updateSystems)
-                updater.Update(world, deltaTime);
+                updater.Update(world, time);
         }
 
         /// <summary>
         /// Calls all render systems to be processed.
         /// </summary>
         /// <param name="world">World containing all entities and components to be processed.</param>
-        /// <param name="deltaTime">Time passed in seconds since the last rendering.</param>
-        public void PerformRender(World world, float deltaTime)
+        /// <param name="time">Info about the gametime.</param>
+        public void PerformRender(World world, GameTime time)
         {
             foreach(var system in _renderSystems)
-                system.Render(world, deltaTime);
+                system.Render(world, time);
         }
     }
 }

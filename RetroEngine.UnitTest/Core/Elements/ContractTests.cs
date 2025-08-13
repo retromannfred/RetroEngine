@@ -1,7 +1,7 @@
-﻿using RetroEngine.Core.Signing;
+﻿using RetroEngine.Core.Elements;
 using RetroEngine.UnitTest.TestData.Components;
 
-namespace RetroEngine.UnitTest.Core.Signing
+namespace RetroEngine.UnitTest.Core.Elements
 {
     /// <summary>
     /// Defines unit test cases for Contract struct.
@@ -61,9 +61,9 @@ namespace RetroEngine.UnitTest.Core.Signing
             var contract = new Contract();
 
             // Act
-            contract.Extend(typeof(TagComponent));
-            contract.Extend(typeof(FlagsComponent));
-            contract.Extend(typeof(CountComponent));
+            contract.Extend<TagComponent>();
+            contract.Extend<FlagsComponent>();
+            contract.Extend<CountComponent>();
 
             var clauses = contract.GetClauses().ToList();
 
@@ -101,15 +101,15 @@ namespace RetroEngine.UnitTest.Core.Signing
             var contract = new Contract();
 
             // Act
-            contract.Extend(typeof(TagComponent));
-            contract.Extend(typeof(TagComponent));
-            contract.Extend(typeof(FlagsComponent));
-            contract.Extend(typeof(FlagsComponent));
-            contract.Extend(typeof(FlagsComponent));
-            contract.Extend(typeof(CountComponent));
-            contract.Extend(typeof(CountComponent));
-            contract.Extend(typeof(CountComponent));
-            contract.Extend(typeof(CountComponent));
+            contract.Extend<TagComponent>();
+            contract.Extend<TagComponent>();
+            contract.Extend<FlagsComponent>();
+            contract.Extend<FlagsComponent>();
+            contract.Extend<FlagsComponent>();
+            contract.Extend<CountComponent>();
+            contract.Extend<CountComponent>();
+            contract.Extend<CountComponent>();
+            contract.Extend<CountComponent>();
 
             var clauses = contract.GetClauses().ToList();
 
@@ -150,9 +150,9 @@ namespace RetroEngine.UnitTest.Core.Signing
             var other = new Contract();
 
             // Act
-            contract.Extend(typeof(TagComponent));
-            other.Extend(typeof(FlagsComponent));
-            other.Extend(typeof(CountComponent));
+            contract.Extend<TagComponent>();
+            other.Extend<FlagsComponent>();
+            other.Extend<CountComponent>();
             contract.Extend(other);
 
             var clauses = contract.GetClauses().ToList();

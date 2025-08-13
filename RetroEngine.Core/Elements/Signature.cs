@@ -1,4 +1,4 @@
-﻿namespace RetroEngine.Core.Signing
+﻿namespace RetroEngine.Core.Elements
 {
     /// <summary>
     /// Defines how an ECS element is signed for a group of components.

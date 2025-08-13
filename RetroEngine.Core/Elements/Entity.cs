@@ -11,20 +11,20 @@ namespace RetroEngine.Core.Elements
     public class Entity
     {
         private readonly int _id;
-        private readonly ComponentManager _componentManager;
+        private readonly World _world;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Entity"/> class.
         /// </summary>
         /// <param name="id">New entity ID created.</param>
-        /// <param name="componentManager">Component manager used to edit components after.</param>
-        internal Entity(int id, ComponentManager componentManager)
+        /// <param name="world">World where the entity is created.</param>
+        internal Entity(int id, World world)
         {
             if (id < 1)
                 throw new EntityException("Entity ID must be greater than zero.");
 
             _id = id;
-            _componentManager = componentManager;
+            _world = world;
         }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace RetroEngine.Core.Elements
         public Entity Attach<T>(T component)
             where T : struct
         {
-            _componentManager.AddComponent(_id, component);
+            _world.AttachComponent(_id, component);
             return this;
         }
 
@@ -53,7 +53,7 @@ namespace RetroEngine.Core.Elements
         public Entity Deattach<T>()
             where T : struct
         {
-            _componentManager.RemoveComponent<T>(_id);
+            _world.DeattachComponent<T>(_id);
             return this;
         }
     }

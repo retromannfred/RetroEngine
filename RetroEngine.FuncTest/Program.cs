@@ -1,4 +1,5 @@
 ﻿using RetroEngine.Core;
+using RetroEngine.FuncTest.Games;
 
 namespace RetroEngine.FuncTest
 {
@@ -6,7 +7,7 @@ namespace RetroEngine.FuncTest
     {
         static void Main(string[] args)
         {
-            
+            new TestGraphicsGame().Run();
         }
     }
 }
