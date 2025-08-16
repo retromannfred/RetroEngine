@@ -16,7 +16,7 @@ namespace RetroEngine.Core
     internal class RetroEngineWindow(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
         : GameWindow(gameWindowSettings, nativeWindowSettings)
     {
-        private GameLoopMode _gameLoopMode = GameLoopMode.FreeUpdateFixedRender;
+        private GameLoopMode _gameLoopMode = GameLoopMode.RestrictedUpdate;
 
         private const double FIXED_UPDATE_RATE = 1.0 / 60.0; // 60 UPS
         private const double FIXED_RENDER_RATE = 1.0 / 60.0; // 60 FPS
@@ -35,19 +35,19 @@ namespace RetroEngine.Core
         {
             switch (_gameLoopMode)
             {
-                case GameLoopMode.FixedUpdateFixedRender:
-                    FixedUpdate(e);
+                case GameLoopMode.AllRestricted:
+                    RestrictedUpdate(e);
                     FixedRender(e);
                     break;
-                case GameLoopMode.FixedUpdateFreeRender:
-                    FixedUpdate(e);
+                case GameLoopMode.RestrictedUpdate:
+                    RestrictedUpdate(e);
                     FreeRender(e);
                     break;
-                case GameLoopMode.FreeUpdateFixedRender:
+                case GameLoopMode.RestrictedRender:
                     FreeUpdate(e);
                     FixedRender(e);
                     break;
-                case GameLoopMode.FreeUpdateFreeRender:
+                case GameLoopMode.AllFree:
                     FreeUpdate(e);
                     FreeRender(e);
                     break;
@@ -64,11 +64,11 @@ namespace RetroEngine.Core
                 updatesThisSecond = 0;
                 framesThisSecond = 0;
                 counterTimer = 0.0;
-                Console.Write($"\rUPS: {UPS}, FPS: {FPS}");
+                Console.Write($"\rUPS: {UPS}, FPS: {FPS}                          ");
             }
         }
 
-        private void FixedUpdate(FrameEventArgs e)
+        private void RestrictedUpdate(FrameEventArgs e)
         {
             updateAccumulator += e.Time;
 
@@ -82,7 +82,7 @@ namespace RetroEngine.Core
 
         private void FreeUpdate(FrameEventArgs e)
         {
-            RetroUpdateFrame?.Invoke(new FrameEventArgs(FIXED_UPDATE_RATE));
+            RetroUpdateFrame?.Invoke(new FrameEventArgs(e.Time));
             updatesThisSecond++;
         }
 
@@ -99,7 +99,7 @@ namespace RetroEngine.Core
 
         private void FreeRender(FrameEventArgs e)
         {
-            RetroRenderFrame?.Invoke(new FrameEventArgs(timeSinceLastRender));
+            RetroRenderFrame?.Invoke(new FrameEventArgs(e.Time));
             framesThisSecond++;
         }
 

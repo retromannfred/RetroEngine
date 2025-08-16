@@ -11,21 +11,21 @@ namespace RetroEngine.Core
         /// <summary>
         /// Game will call its update and render process at a fixed rate.
         /// </summary>
-        FixedUpdateFixedRender,
+        AllRestricted,
 
         /// <summary>
         /// Game will call its update process at a fixed rate and will let GPU render as much as it can.
         /// </summary>
-        FixedUpdateFreeRender,
+        RestrictedUpdate,
 
         /// <summary>
         /// Game will call its render process at a fixed rate and will let CPU update logic as much as it can.
         /// </summary>
-        FreeUpdateFixedRender,
+        RestrictedRender,
 
         /// <summary>
         /// Game will let CPU and GPU manage update and render process as much as they can.
         /// </summary>
-        FreeUpdateFreeRender,
+        AllFree,
     }
 }

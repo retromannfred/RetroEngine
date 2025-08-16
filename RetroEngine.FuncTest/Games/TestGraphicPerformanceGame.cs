@@ -14,12 +14,10 @@ namespace RetroEngine.FuncTest.Games
 {
     internal class TestGraphicPerformanceGame : Game
     {
-        private const int NUMBER_OF_CUBES = 18000;
-        private const float CAMERA_SPEED = 8.0f;
-        private const float CAMERA_SENSITIVITY = .001f;
+        private const int NUMBER_OF_CUBES = 10000;
+        private const float CAMERA_SPEED = 10f;
+        private const float CAMERA_SENSITIVITY = .5f;
 
-        private float _lastUpdateDelta = 0f;
-        private float _lastFrameDelta = 0f;
         private readonly int _cameraId;
         private readonly World _world;
 
@@ -49,7 +47,7 @@ namespace RetroEngine.FuncTest.Games
             var texture = TextureFactory.CreateRectangle(1, 1, Color4.White);
             var rand = new Random();
 
-            CreateCube(texture, Vector3.Zero);
+            CreateAxis(texture);
 
             for (int i = 0; i < NUMBER_OF_CUBES; i++)
             {
@@ -80,22 +78,53 @@ namespace RetroEngine.FuncTest.Games
             if (KeyboardState!.IsKeyDown(Keys.LeftShift))
                 transform = camera.MoveDown(transform, CAMERA_SPEED * time.Delta);
 
-            if (MouseState!.IsButtonDown(MouseButton.Left))
-            {
-                transform = camera.LookUp(transform, (MouseState!.Delta.Y) * CAMERA_SENSITIVITY * time.Delta / _lastFrameDelta);
-                transform = camera.LookRight(transform, (MouseState!.Delta.X) * CAMERA_SENSITIVITY * time.Delta / _lastFrameDelta);
-            }
-
             _world.Update(time);
-            _lastUpdateDelta = time.Delta;
         }
 
         protected override void Render(GameTime time)
         {
+            ref var transform = ref _world.GetComponent<Transform>(_cameraId);
+            ref var camera = ref _world.GetComponent<Camera>(_cameraId);
+
+            if (MouseState!.IsButtonDown(MouseButton.Left))
+            {
+                var delta = MouseState.Delta;
+                transform = camera.LookUp(transform, MouseState.Delta.Y * CAMERA_SENSITIVITY * time.Delta);
+                transform = camera.LookRight(transform, MouseState.Delta.X * CAMERA_SENSITIVITY * time.Delta);
+            }
+
             ClearScreen(Color4.CornflowerBlue);
             _world.Render(time);
+        }
 
-            _lastFrameDelta = time.Delta;
+        private void CreateAxis(Texture2D texture)
+        {
+            _world.CreateEntity() // Y-Plane
+                .Attach(new Transform()
+                {
+                    Rotation = Vector3.UnitX * MathHelper.PiOver2
+                })
+                .Attach(new SpriteRenderer(texture)
+                {
+                    Color = Color4.Yellow,
+                });
+
+            _world.CreateEntity() // Z-Plane
+                .Attach(new Transform())
+                .Attach(new SpriteRenderer(texture)
+                {
+                    Color = Color4.Red,
+                });
+
+            _world.CreateEntity() // X-Plane
+                .Attach(new Transform()
+                {
+                    Rotation = Vector3.UnitY * MathHelper.PiOver2
+                })
+                .Attach(new SpriteRenderer(texture)
+                {
+                    Color = Color4.Blue,
+                });
         }
 
         private void CreateCube(Texture2D texture, Vector3 position)
