@@ -104,7 +104,8 @@ namespace RetroEngine.UnitTest.Core.Managers
             signature[6] = true;
 
             // Act
-            manager.AddSystem(new FlagSystem(), signature);
+            manager.AddSystem(new FlagSystem());
+            manager.SetSignature<FlagSystem>(signature);
             var result = manager.GetSignature<FlagSystem>();
 
             // Assert
@@ -196,13 +197,15 @@ namespace RetroEngine.UnitTest.Core.Managers
             flagSignature[0] = true;
             flagSignature[1] = true;
             var flagSystem = new FlagSystem();
-            manager.AddSystem(flagSystem, flagSignature);
+            manager.AddSystem(flagSystem);
+            manager.SetSignature<FlagSystem>(flagSignature);
 
             var countSignature = new Signature(3);
             countSignature[0] = true;
             countSignature[2] = true;
             var countSystem = new CountSystem();
-            manager.AddSystem(countSystem, countSignature);
+            manager.AddSystem(countSystem);
+            manager.SetSignature<CountSystem>(countSignature);
 
             // Act
             manager.NotifyChangedEntitySignature(10, countSignature);
@@ -222,13 +225,15 @@ namespace RetroEngine.UnitTest.Core.Managers
             flagSignature[0] = true;
             flagSignature[1] = true;
             var flagSystem = new FlagSystem();
-            manager.AddSystem(flagSystem, flagSignature);
+            manager.AddSystem(flagSystem);
+            manager.SetSignature<FlagSystem>(flagSignature);
 
             var countSignature = new Signature(3);
             countSignature[0] = true;
             countSignature[2] = true;
             var countSystem = new CountSystem();
-            manager.AddSystem(countSystem, countSignature);
+            manager.AddSystem(countSystem);
+            manager.SetSignature<CountSystem>(countSignature);
 
             flagSystem.AddEntity(10);
             countSystem.AddEntity(10);

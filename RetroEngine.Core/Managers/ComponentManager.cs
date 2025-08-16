@@ -8,8 +8,8 @@ namespace RetroEngine.Core.Managers
     /// </summary>
     public class ComponentManager()
     {
-        private readonly IDictionary<Type, IComponentMapper> _mappers = new Dictionary<Type, IComponentMapper>();
-        private readonly IDictionary<Type, int> _signatureIndices = new Dictionary<Type, int>();
+        private readonly Dictionary<Type, IComponentMapper> _mappers = [];
+        private readonly Dictionary<Type, int> _signatureIndices = [];
 
         /// <summary>
         /// Registers a new type of component, adding its mapper to the manager.

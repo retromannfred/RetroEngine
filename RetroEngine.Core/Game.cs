@@ -29,6 +29,11 @@ namespace RetroEngine.Core
         public KeyboardState? KeyboardState { get; private set; }
 
         /// <summary>
+        /// Gets the mouse state of the game.
+        /// </summary>
+        public MouseState? MouseState { get; private set; }
+
+        /// <summary>
         /// Runs the game logic.
         /// </summary>
         public void Run()
@@ -36,21 +41,23 @@ namespace RetroEngine.Core
             var nativeWindowSettings = NativeWindowSettings.Default;
             nativeWindowSettings.ClientSize = new Vector2i(GraphicSettings.Width, GraphicSettings.Height);
 
-            using var gameWindow = new GameWindow(GameWindowSettings.Default, NativeWindowSettings.Default);
+            using var gameWindow = new RetroEngineWindow(GameWindowSettings.Default, NativeWindowSettings.Default);
+            gameWindow.Title = Title;
             GameTime gameTime = new();
+
             KeyboardState = gameWindow.KeyboardState;
+            MouseState = gameWindow.MouseState;
 
             GL.Enable(EnableCap.DepthTest);
 
             gameWindow.Load += LoadContent;
-            gameWindow.UpdateFrame += eventArgs =>
+            gameWindow.RetroUpdateFrame += eventArgs =>
             {
-                gameWindow.Title = Title;
                 gameTime.ElapsedGameTime = TimeSpan.FromSeconds(eventArgs.Time);
                 gameTime.TotalGameTime += TimeSpan.FromSeconds(eventArgs.Time);
                 Update(gameTime);
             };
-            gameWindow.RenderFrame += eventArgs =>
+            gameWindow.RetroRenderFrame += eventArgs =>
             {
                 Render(gameTime);
                 gameWindow.SwapBuffers();

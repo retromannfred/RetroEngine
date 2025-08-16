@@ -66,7 +66,7 @@ namespace RetroEngine.Graphics.Components
         /// <param name="transform">Transform component of the camera.</param>
         /// <param name="module">Units to move.</param>
         /// <returns>New transform component with the translation applied.</returns>
-        public Transform MoveForward(Transform transform, float module)
+        public readonly Transform MoveForward(Transform transform, float module)
         {
             transform.Translate(Front * module);
             return transform;
@@ -78,7 +78,7 @@ namespace RetroEngine.Graphics.Components
         /// <param name="transform">Transform component of the camera.</param>
         /// <param name="module">Units to move.</param>
         /// <returns>New transform component with the translation applied.</returns>
-        public Transform MoveBackwards(Transform transform, float module)
+        public readonly Transform MoveBackwards(Transform transform, float module)
         {
             transform.Translate(Front * -module);
             return transform;
@@ -90,7 +90,7 @@ namespace RetroEngine.Graphics.Components
         /// <param name="transform">Transform component of the camera.</param>
         /// <param name="module">Units to move.</param>
         /// <returns>New transform component with the translation applied.</returns>
-        public static Transform MoveUp(Transform transform, float module)
+        public readonly Transform MoveUp(Transform transform, float module)
         {
             transform.Translate(Vector3.UnitY * module);
             return transform;
@@ -102,7 +102,7 @@ namespace RetroEngine.Graphics.Components
         /// <param name="transform">Transform component of the camera.</param>
         /// <param name="module">Units to move.</param>
         /// <returns>New transform component with the translation applied.</returns>
-        public static Transform MoveDown(Transform transform, float module)
+        public readonly Transform MoveDown(Transform transform, float module)
         {
             transform.Translate(Vector3.UnitY * -module);
             return transform;
@@ -114,7 +114,7 @@ namespace RetroEngine.Graphics.Components
         /// <param name="transform">Transform component of the camera.</param>
         /// <param name="module">Units to move.</param>
         /// <returns>New transform component with the translation applied.</returns>
-        public Transform MoveLeft(Transform transform, float module)
+        public readonly Transform MoveLeft(Transform transform, float module)
         {
             transform.Translate(Right * -module);
             return transform;
@@ -126,7 +126,7 @@ namespace RetroEngine.Graphics.Components
         /// <param name="transform">Transform component of the camera.</param>
         /// <param name="module">Units to move.</param>
         /// <returns>New transform component with the translation applied.</returns>
-        public Transform MoveRight(Transform transform, float module)
+        public readonly Transform MoveRight(Transform transform, float module)
         {
             transform.Translate(Right * module);
             return transform;
@@ -138,7 +138,7 @@ namespace RetroEngine.Graphics.Components
         /// <param name="transform">Transform component of the camera.</param>
         /// <param name="module">Units to rotate.</param>
         /// <returns>New transform component with the rotation applied.</returns>
-        public Transform LookUp(Transform transform, float module)
+        public readonly Transform LookUp(Transform transform, float module)
         {
             transform.Rotate(Vector3.UnitX * module);
             return transform;
@@ -150,7 +150,7 @@ namespace RetroEngine.Graphics.Components
         /// <param name="transform">Transform component of the camera.</param>
         /// <param name="module">Units to rotate.</param>
         /// <returns>New transform component with the rotation applied.</returns>
-        public Transform LookDown(Transform transform, float module)
+        public readonly Transform LookDown(Transform transform, float module)
         {
             transform.Rotate(Vector3.UnitX * -module);
             return transform;
@@ -162,7 +162,7 @@ namespace RetroEngine.Graphics.Components
         /// <param name="transform">Transform component of the camera.</param>
         /// <param name="module">Units to rotate.</param>
         /// <returns>New transform component with the rotation applied.</returns>
-        public Transform LookLeft(Transform transform, float module)
+        public readonly Transform LookLeft(Transform transform, float module)
         {
             transform.Rotate(Vector3.UnitY * -module);
             return transform;
@@ -174,7 +174,7 @@ namespace RetroEngine.Graphics.Components
         /// <param name="transform">Transform component of the camera.</param>
         /// <param name="module">Units to rotate.</param>
         /// <returns>New transform component with the rotation applied.</returns>
-        public Transform LookRight(Transform transform, float module)
+        public readonly Transform LookRight(Transform transform, float module)
         {
             transform.Rotate(Vector3.UnitY * module);
             return transform;

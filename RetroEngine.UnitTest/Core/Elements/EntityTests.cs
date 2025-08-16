@@ -4,6 +4,7 @@ using RetroEngine.Core.Elements;
 using RetroEngine.Core.Exceptions;
 using RetroEngine.Core.Managers;
 using RetroEngine.UnitTest.TestData.Components;
+using RetroEngine.UnitTest.TestData.Systems;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,16 +22,16 @@ namespace RetroEngine.UnitTest.Core.Elements
         public void Entity_CreateZeroOrNegativeEntity_ThrowsEntityException()
         {
             // Arrange
-            var manager = new ComponentManager();
+            var world = new WorldBuilder().Build();
 
             // Act
             void actionZero()
             {
-                var entity = new Entity(0, manager);
+                var entity = new Entity(0, world);
             }
             void actionNegative()
             {
-                var entity = new Entity(-1, manager);
+                var entity = new Entity(-1, world);
             }
 
             // Assert
@@ -39,33 +40,28 @@ namespace RetroEngine.UnitTest.Core.Elements
         }
 
         [Fact]
-        public void Entity_AttachComponent_CallsManagerAddComponent()
+        public void Entity_AttachComponent_CallsWorldAddComponent()
         {
             // Arrange
-            var entityId = 10;
             var tag = new TagComponent("test");
-            var manager = new ComponentManager();
-            manager.Register<TagComponent>();
-            var entity = new Entity(entityId, manager);
+            var world = new WorldBuilder().RegisterSystem(new FlagSystem()).Build();
+            var entity = world.CreateEntity();
 
             // Act
             entity.Attach(tag);
 
             // Assert
-            Assert.Equal("test", manager.GetComponent<TagComponent>(10).Tag);
+            Assert.Equal("test", world.GetComponent<TagComponent>(entity.Id).Tag);
         }
 
         [Fact]
-        public void Entity_DeattachComponent_CallsManagerRemoveComponent()
+        public void Entity_DeattachComponent_CallsWorldRemoveComponent()
         {
             // Arrange
-            var entityId = 10;
             var tag = new TagComponent("test");
             var flags = new FlagsComponent();
-            var manager = new ComponentManager();
-            manager.Register<TagComponent>();
-            manager.Register<FlagsComponent>();
-            var entity = new Entity(entityId, manager);
+            var world = new WorldBuilder().RegisterSystem(new FlagSystem()).Build();
+            var entity = world.CreateEntity();
 
             // Act
             entity.Attach(tag);
@@ -73,8 +69,8 @@ namespace RetroEngine.UnitTest.Core.Elements
             entity.Deattach<FlagsComponent>();
 
             // Assert
-            Assert.Equal("test", manager.GetComponent<TagComponent>(entityId).Tag);
-            Assert.Throws<ComponentException>(() => manager.GetComponent<FlagsComponent>(entityId));
+            Assert.Equal("test", world.GetComponent<TagComponent>(entity.Id).Tag);
+            Assert.Throws<ComponentException>(() => world.GetComponent<FlagsComponent>(entity.Id));
         }
     }
 }

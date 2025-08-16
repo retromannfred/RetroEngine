@@ -29,7 +29,7 @@ namespace RetroEngine.Graphics.Batching
         }
 
         /// <summary>
-        /// Creates a new rectangle texture.
+        /// Creates a new solid rectangle texture.
         /// </summary>
         /// <param name="width">Width of the rectangle.</param>
         /// <param name="height">Height of the rectangle.</param>
@@ -38,15 +38,12 @@ namespace RetroEngine.Graphics.Batching
         public static Texture2D CreateRectangle(int width, int height, Color4 color)
         {
             var data = new byte[width * height * 4];
-            for (int i = 0; i < data.Length; i++)
+            for (int i = 0; i < data.Length; i+=4)
             {
-                switch (i % 4)
-                {
-                    case 0: data[i] = (byte)(color.R * 255); break;
-                    case 1: data[i] = (byte)(color.G * 255); break;
-                    case 2: data[i] = (byte)(color.B * 255); break;
-                    case 3: data[i] = (byte)(color.A * 255); break;
-                }
+                data[i]   = (byte)(color.R * 255);
+                data[i+1] = (byte)(color.G * 255);
+                data[i+2] = (byte)(color.B * 255);
+                data[i+3] = (byte)(color.A * 255);
             }
 
             return new Texture2D(width, height, data);

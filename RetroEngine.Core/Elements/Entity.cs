@@ -46,6 +46,17 @@ namespace RetroEngine.Core.Elements
         }
 
         /// <summary>
+        /// Gets a component of a specified type attached to this entity.
+        /// </summary>
+        /// <typeparam name="T">Type of the component to get.</typeparam>
+        /// <returns>Reference to the component in the component mapper for this entity.</returns>
+        public ref T GetComponent<T>()
+            where T : struct
+        {
+            return ref _world.GetComponent<T>(_id);
+        }
+
+        /// <summary>
         /// Deattaches the component of specified type from this entity.
         /// </summary>
         /// <typeparam name="T">Type of component to deattach.</typeparam>
