@@ -7,7 +7,8 @@ namespace RetroEngine.Graphics.Batching
     /// <summary>
     /// Abstracts the vertex buffer object functionallity from OpenGL.
     /// </summary>
-    internal class VertexBuffer<T> where T : struct
+    internal class VertexBuffer<T>
+        where T : struct
     {
         /// <summary>
         /// Gets the OpenGL ID of this object.
@@ -20,22 +21,40 @@ namespace RetroEngine.Graphics.Batching
         public int Count { get; private set; }
 
         /// <summary>
+        /// Specifies the expected usage pattern of the data store.
+        /// </summary>
+        public BufferUsageHint UsageHint { get; private set; }
+
+        /// <summary>
         /// Creates a new vertex buffer object.
         /// </summary>
-        public VertexBuffer()
+        /// <param name="bufferUsage">Specifies the expected usage pattern of the data store.</param>
+        public VertexBuffer(BufferUsageHint bufferUsage)
         {
             Id = GL.GenBuffer();
+            UsageHint = bufferUsage;
         }
 
         /// <summary>
-        /// Updates all data of this vertex buffer.
+        /// Creates and initializes a buffer object's data store
         /// </summary>
         /// <param name="data">New data of this buffer.</param>
-        public void UpdateData(T[] data)
+        public void CreateData(T[] data)
         {
             Bind();
-            GL.BufferData(BufferTarget.ArrayBuffer, data.Length * Unsafe.SizeOf<T>(), data, BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, data.Length * Unsafe.SizeOf<T>(), data, UsageHint);
             Count = data.Length;
+        }
+
+        /// <summary>
+        /// Creates and initializes a buffer object's data store
+        /// </summary>
+        /// <param name="size">Number of floats used to represent each element.</param>
+        public void CreateData(int size)
+        {
+            Bind();
+            GL.BufferData(BufferTarget.ArrayBuffer, size * Unsafe.SizeOf<T>(), IntPtr.Zero, UsageHint);
+            Count = size;
         }
 
         /// <summary>

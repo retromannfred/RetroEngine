@@ -30,7 +30,7 @@ namespace RetroEngine.Core
             get { return (float)Width / Height; }
         }
 
-        public List<Matrix4> ClipSpaces { get; internal set; }
+        public List<ClipSpace> ClipSpaces { get; internal set; }
 
         /// <summary>
         /// Creates a new
@@ -41,7 +41,7 @@ namespace RetroEngine.Core
         {
             Width = width;
             Height = height;
-            ClipSpaces = new List<Matrix4>();
+            ClipSpaces = new();
         }
     }
 }

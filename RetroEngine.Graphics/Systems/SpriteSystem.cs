@@ -23,12 +23,12 @@ namespace RetroEngine.Ecs.Systems
             : base(Contract.Include<Transform>().Include<SpriteRenderer>())
         {
             _graphicSettings = graphicSettings;
-            _batches = new Dictionary<string, SpriteBatch>();
+            _batches = [];
         }
 
         public override void Process(World world, GameTime time)
         {
-            foreach (var transformMatrix in _graphicSettings.ClipSpaces)
+            foreach (var clipSpace in _graphicSettings.ClipSpaces)
             {
                 SpriteBatch? lastBatch = null;
 
@@ -47,28 +47,18 @@ namespace RetroEngine.Ecs.Systems
                         }
                         else
                         {
-                            lastBatch = new SpriteBatch(_graphicSettings, renderer.Texture);
+                            lastBatch = new SpriteBatch(renderer.Texture);
                             _batches.Add(batchKey, lastBatch);
                         }
-
-                        lastBatch.Begin(transformMatrix);
                     }
 
-                    lastBatch.Draw(
-                        transform.Position,
-                        Vector2.Zero,
-                        new Vector2(renderer.Texture.Width, renderer.Texture.Height),
-                        renderer.Color,
-                        transform.Rotation,
-                        transform.Scale,
-                        (renderer.Flip | Flip.X) == Flip.X,
-                        (renderer.Flip | Flip.Y) == Flip.Y
-                    );
+                    lastBatch.UpdateSpriteData(transform, renderer);
                 }
 
                 foreach (var batch in _batches.Values)
                 {
-                    batch.Begin(transformMatrix);
+                    batch.Begin(clipSpace.View, clipSpace.Projection);
+                    batch.DrawBatch();
                     batch.End();
                 }
             }

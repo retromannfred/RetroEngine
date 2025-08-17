@@ -9,10 +9,10 @@ namespace RetroEngine.FuncTest
         static void Main()
         {
             // OPTION 1: Choose your game to test
-            // ChooseGame();
+            ChooseGame();
 
             // OPTION 2: Call directly your game to test
-            new TestGraphicPerformanceGame().Run();
+            //new TestGraphicPerformanceGame().Run();
         }
 
         static void ChooseGame()
@@ -23,7 +23,9 @@ namespace RetroEngine.FuncTest
             Console.WriteLine("      ****************************");
             Console.WriteLine();
 
-            Console.WriteLine("[ 1 ]: Test graphics game");
+            Console.WriteLine("[ 1 ]: Test graphics engine along with ECS");
+            Console.WriteLine("[ 2 ]: Test graphics engine performance");
+            Console.WriteLine("[ 3 ]: Test sprite batcher without ECS");
 
             Console.WriteLine();
             Console.WriteLine("[ 0 ]: Exit");
@@ -39,6 +41,7 @@ namespace RetroEngine.FuncTest
                 case 0: return;
                 case 1: new TestGraphicEngineGame().Run(); break;
                 case 2: new TestGraphicPerformanceGame().Run(); break;
+                case 3: new TestSpriteBatchWithoutECS().Run(); break;
                 default: return;
             }
         }

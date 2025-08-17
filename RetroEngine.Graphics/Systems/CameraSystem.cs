@@ -57,7 +57,7 @@ namespace RetroEngine.Graphics.Systems
                         camera.ClippingNear,
                         camera.ClippingFar);
 
-                _graphicSettings.ClipSpaces.Add(view * projection);
+                _graphicSettings.ClipSpaces.Add(new() { View = view, Projection = projection });
             }
         }
 

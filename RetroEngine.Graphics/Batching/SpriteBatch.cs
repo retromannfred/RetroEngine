@@ -1,210 +1,144 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
-using RetroEngine.Core;
+using RetroEngine.Core.Components;
+using RetroEngine.Graphics.Components;
 using RetroEngine.Graphics.Shaders;
 
 namespace RetroEngine.Graphics.Batching
 {
     /// <summary>
-    /// Defines how draw sprites in a batch to optimize GPU and GRAM.
+    /// Defines a sprite painter that buffers data to send it to the GPU.
     /// </summary>
     public class SpriteBatch
     {
-        private const int FIXED_CAPACITY = 2048;
+        private const int FIXED_CAPACITY = 65536;
 
-        private Texture2D _texture;
-        private GraphicSettings _graphicSettings;
+        private readonly Texture2D _texture;
 
-        private ShaderProgram _program;
-        private VertexArray _vao;
-        private ElementBuffer _indices;
+        private readonly VertexArray _vao;
+        private readonly ElementBuffer _ebo;
+        private readonly ShaderProgram _program;
 
-        private VertexBuffer<Vector3> _positions;
-        private VertexBuffer<Vector2> _texCoords;
-        private VertexBuffer<Vector4> _colors;
+        private readonly VertexBuffer<float> _vboPositions;
+        private readonly VertexBuffer<Matrix4> _vboMatrices;
+        private readonly VertexBuffer<Vector4> _vboColors;
+        private readonly VertexBuffer<Vector4> _vboTexCoords;
 
-        private List<VertexInfo> _items;
+        private int _instanceCount;
+
+        private readonly Matrix4[] _matrices;
+        private readonly Vector4[] _colors;
+        private readonly Vector4[] _texCoords;
+
+        public string BatchKey => GetBatchKey(_texture);
 
         /// <summary>
-        /// Creates a new SpriteBatch.
+        /// 
         /// </summary>
-        /// <param name="graphicSettings">Graphic settings of the game.</param>
-        /// <param name="texture">Texture to get the sprites from.</param>
-        public SpriteBatch(GraphicSettings graphicSettings, Texture2D texture)
+        /// <param name="texture"></param>
+        public SpriteBatch(Texture2D texture)
         {
-            _items = new();
+            var layoutIndex = 0;
+
+            _vao = new VertexArray();
+            _ebo = new ElementBuffer();
+            _texture = texture;
+
+            _vboPositions = new VertexBuffer<float>(BufferUsageHint.StaticDraw);
+            _vboPositions.CreateData(FixedBufferData.PositionAndTextureCoords);
+            _ebo.UpdateData(FixedBufferData.ElementBufferIndices);
+
+            _vao.Link(layoutIndex++, _vboPositions, 3, 5, 0);
+            _vao.Link(layoutIndex++, _vboPositions, 2, 5, 3);
+
+            _instanceCount = 0;
+            _matrices = new Matrix4[FIXED_CAPACITY];
+            _colors = new Vector4[FIXED_CAPACITY];
+            _texCoords = new Vector4[FIXED_CAPACITY];
+
+            _vboMatrices = new VertexBuffer<Matrix4>(BufferUsageHint.DynamicDraw);
+            _vboMatrices.CreateData(_matrices);
+
+            _vao.LinkDivided(layoutIndex++, _vboMatrices, 4, 16, 0, 1);
+            _vao.LinkDivided(layoutIndex++, _vboMatrices, 4, 16, 4, 1);
+            _vao.LinkDivided(layoutIndex++, _vboMatrices, 4, 16, 8, 1);
+            _vao.LinkDivided(layoutIndex++, _vboMatrices, 4, 16, 12, 1);
+
+            _vboColors = new VertexBuffer<Vector4>(BufferUsageHint.DynamicDraw);
+            _vboColors.CreateData(_colors);
+
+            _vao.LinkDivided(layoutIndex++, _vboColors, 4, 4, 0, 1);
+
+            _vboTexCoords = new VertexBuffer<Vector4>(BufferUsageHint.DynamicDraw);
+            _vboTexCoords.CreateData(_texCoords);
+
+            _vao.LinkDivided(layoutIndex++, _vboTexCoords, 4, 4, 0, 1);
+
+            _vao.Unbind();
 
             _program = new();
-            _program.AddShader(new Shader(ShaderDefaults.DEFAULT_VERTEX_SHADER, ShaderType.VertexShader));
+            _program.AddShader(new Shader(ShaderDefaults.NEW_DEFAULT_VERTEX_SHADER, ShaderType.VertexShader));
             _program.AddShader(new Shader(ShaderDefaults.DEFAULT_FRAGMENT_SHADER, ShaderType.FragmentShader));
             _program.Link();
-
-            _graphicSettings = graphicSettings;
-            _texture = texture;
-            _vao = new();
-
-            _positions = new();
-            _positions.UpdateData(new Vector3[FIXED_CAPACITY * 4]);
-            _texCoords = new();
-            _texCoords.UpdateData(new Vector2[FIXED_CAPACITY * 4]);
-            _colors = new();
-            _colors.UpdateData(new Vector4[FIXED_CAPACITY * 4]);
-
-            _indices = new();
-            List<uint> itemIndices = new();
-            for (uint i = 0; i < FIXED_CAPACITY * 4; i += 4) itemIndices.AddRange(new List<uint>() { i, i + 1, i + 2, i + 2, i + 3, i });
-            _indices.UpdateData(itemIndices.ToArray());
-
-            _vao.Link(0, _positions);
-            _vao.Link(1, _texCoords);
-            _vao.Link(2, _colors);
         }
 
-        /// <summary>
-        /// Gets the key for this batch.
-        /// </summary>
-        public string BatchKey
-        {
-            get { return GetBatchKey(_texture); }
-        }
-
-        /// <summary>
-        /// Gets the batch key generated by given paramenters.
-        /// </summary>
-        /// <param name="texture">Texture for the key.</param>
-        /// <returns>A key generated used the given parameters.</returns>
-        public static string GetBatchKey(Texture2D texture)
+        internal static string GetBatchKey(Texture2D texture)
         {
             return $"T={texture.Id}";
         }
 
-        /// <summary>
-        /// Sets the batch to start drawing sprites, setting all buffers.
-        /// </summary>
-        /// <param name="transform">Transform matrix representing model * view * perspective.</param>
-        public void Begin(Matrix4 transform)
+        public void Begin(Matrix4 view, Matrix4 projection)
         {
             _vao.Bind();
-            _indices.Bind();
+            _ebo.Bind();
             _texture.Bind();
             _program.Bind();
 
-            int modelViewProjection = GL.GetUniformLocation(1, "mvp");
-            GL.UniformMatrix4(modelViewProjection, true, ref transform);
+            GL.UniformMatrix4(GL.GetUniformLocation(_program.Id, "projection"), false, ref projection);
+            GL.UniformMatrix4(GL.GetUniformLocation(_program.Id, "view"), false, ref view);
         }
 
-        /// <summary>
-        /// Draws sprite on the screen.
-        /// </summary>
-        /// <param name="position"></param>
-        /// <param name="sourceOffset"></param>
-        /// <param name="sourceSize"></param>
-        /// <param name="color"></param>
-        /// <param name="rotation"></param>
-        /// <param name="scale"></param>
-        /// <param name="flipX"></param>
-        /// <param name="flipY"></param>
-        /// <param name="layerDepth"></param>
-        public void Draw(Vector3 position,
-            Vector2 sourceOffset,
-            Vector2 sourceSize,
-            Color4 color,
-            Vector3 rotation,
-            Vector3 scale,
-            bool flipX,
-            bool flipY)
+        public void UpdateSpriteData(Transform transform, SpriteRenderer renderer)
         {
-            var TL = new VertexInfo()
-            {
-                Position = new Vector3(position.X - sourceSize.X * scale.X / 2, position.Y + sourceSize.Y * scale.Y / 2, position.Z),
-                TextureCoord = new Vector2(sourceOffset.X / _texture.Width, (_texture.Height - sourceOffset.Y) / _texture.Height),
-                Color = (Vector4)color
-            };
-            var TR = new VertexInfo()
-            {
-                Position = new Vector3(position.X + sourceSize.X * scale.X / 2, position.Y + sourceSize.Y * scale.Y / 2, position.Z),
-                TextureCoord = new Vector2((sourceOffset.X + sourceSize.X) / _texture.Width, (_texture.Height - sourceOffset.Y) / _texture.Height),
-                Color = (Vector4)color
-            };
-            var BR = new VertexInfo()
-            {
-                Position = new Vector3(position.X + sourceSize.X * scale.X / 2, position.Y - sourceSize.Y * scale.Y / 2, position.Z),
-                TextureCoord = new Vector2((sourceOffset.X + sourceSize.X) / _texture.Width, (_texture.Height - sourceOffset.Y - sourceSize.Y) / _texture.Height),
-                Color = (Vector4)color
-            };
-            var BL = new VertexInfo()
-            {
-                Position = new Vector3(position.X - sourceSize.X * scale.X / 2, position.Y - sourceSize.Y * scale.Y / 2, position.Z),
-                TextureCoord = new Vector2(sourceOffset.X / _texture.Width, (_texture.Height - sourceOffset.Y - sourceSize.Y) / _texture.Height),
-                Color = (Vector4)color
-            };
+            _matrices[_instanceCount] =
+                Matrix4.CreateScale(transform.Scale)
+                *
+                Matrix4.CreateFromQuaternion(new Quaternion(transform.Rotation))
+                *
+                Matrix4.CreateTranslation(transform.Position);
 
-            if( flipX )
-            {
-                var aux = TL.TextureCoord;
-                TL.TextureCoord = TR.TextureCoord;
-                TR.TextureCoord = aux;
-                aux = BL.TextureCoord;
-                BL.TextureCoord = BR.TextureCoord;
-                BR.TextureCoord = aux;
-            }
-            if( flipY )
-            {
-                var aux = TL.TextureCoord;
-                TL.TextureCoord = BL.TextureCoord;
-                BL.TextureCoord = aux;
-                aux = TR.TextureCoord;
-                TR.TextureCoord = BR.TextureCoord;
-                BR.TextureCoord = aux;
-            }
+            _colors[_instanceCount] = (Vector4)renderer.Color;
 
-            if (rotation != Vector3.Zero)
-            {
-                var matrixRotate = Matrix3.CreateRotationX(rotation.X) * Matrix3.CreateRotationY(rotation.Y) * Matrix3.CreateRotationZ(rotation.Z);
+            _texCoords[_instanceCount] = new Vector4(0, 0, 1, 1);
 
-                TL.Position = (TL.Position - position) * matrixRotate + position;
-                TR.Position = (TR.Position - position) * matrixRotate + position;
-                BR.Position = (BR.Position - position) * matrixRotate + position;
-                BL.Position = (BL.Position - position) * matrixRotate + position;
-            }
+            ++_instanceCount;
 
-            _items.Add(TL);
-            _items.Add(TR);
-            _items.Add(BR);
-            _items.Add(BL);
-
-            if (_items.Count >= FIXED_CAPACITY)
+            if (_instanceCount >= FIXED_CAPACITY)
             {
                 DrawBatch();
             }
         }
 
-        /// <summary>
-        /// Draws all sprites in the buffers.
-        /// </summary>
-        private void DrawBatch()
+        public void DrawBatch()
         {
-            if (_items.Count > 0)
-            {
-                _positions.UpdateData(0, _items.Select(v => v.Position).ToArray());
-                _texCoords.UpdateData(0, _items.Select(v => v.TextureCoord).ToArray());
-                _colors.UpdateData(0, _items.Select(v => v.Color).ToArray());
+            _vboMatrices.UpdateData(0, _matrices);
+            _vboColors.UpdateData(0, _colors);
+            _vboTexCoords.UpdateData(0, _texCoords);
 
-                GL.DrawElements(PrimitiveType.Triangles, _items.Count / 4 * 6, DrawElementsType.UnsignedInt, 0);
+            GL.DrawElementsInstanced(PrimitiveType.Triangles, 6, DrawElementsType.UnsignedInt, 0, _instanceCount);
 
-                _items.Clear();
-            }
+            _instanceCount = 0;
         }
 
-        /// <summary>
-        /// Draws remaining sprites on the buffer, and unbinds buffers.
-        /// </summary>
         public void End()
         {
-            DrawBatch();
+            if (_instanceCount > 0)
+            {
+                DrawBatch();
+            }
 
             _vao.Unbind();
-            _indices.Unbind();
+            _ebo.Unbind();
             _texture.Unbind();
             _program.Unbind();
         }
