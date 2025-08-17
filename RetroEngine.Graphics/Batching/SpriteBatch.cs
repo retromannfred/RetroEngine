@@ -77,8 +77,8 @@ namespace RetroEngine.Graphics.Batching
             _vao.Unbind();
 
             _program = new();
-            _program.AddShader(new Shader(ShaderDefaults.NEW_DEFAULT_VERTEX_SHADER, ShaderType.VertexShader));
-            _program.AddShader(new Shader(ShaderDefaults.DEFAULT_FRAGMENT_SHADER, ShaderType.FragmentShader));
+            _program.AddShader(new Shader(Shader.LoadShaderSource("RetroEngine.Graphics.Shaders.Defaults.vertex.glsl"), ShaderType.VertexShader));
+            _program.AddShader(new Shader(Shader.LoadShaderSource("RetroEngine.Graphics.Shaders.Defaults.fragment.glsl"), ShaderType.FragmentShader));
             _program.Link();
         }
 

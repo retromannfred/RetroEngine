@@ -7,6 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Shaders\Defaults\fragment.glsl" />
+    <None Remove="Shaders\Defaults\vertex.glsl" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Shaders\Defaults\fragment.glsl" />
+    <EmbeddedResource Include="Shaders\Defaults\vertex.glsl" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="OpenTK" Version="4.9.4" />
     <PackageReference Include="StbImageSharp" Version="2.27.13" />
   </ItemGroup>
