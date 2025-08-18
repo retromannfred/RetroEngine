@@ -10,7 +10,7 @@ namespace RetroEngine.Graphics.Shaders
     /// <summary>
     /// Defines a program to execute on the GPU.
     /// </summary>
-    internal class ShaderProgram
+    public class ShaderProgram
     {
         /// <summary>
         /// Gets this program ID.

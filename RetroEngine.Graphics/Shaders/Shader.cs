@@ -11,7 +11,7 @@ namespace RetroEngine.Graphics.Shaders
     /// <summary>
     /// Defines a piece of code executed on the GPU.
     /// </summary>
-    internal class Shader
+    public class Shader
     {
         /// <summary>
         /// Gets the ID of this shader.
@@ -55,14 +55,25 @@ namespace RetroEngine.Graphics.Shaders
             GL.DeleteShader(Id);
         }
 
-        public static string LoadShaderSource(string resourceName)
+        /// <summary>
+        /// Loads a shader from a file compiled as a resource in an assembly.
+        /// </summary>
+        /// <param name="resourceName">Resource name inside the assembly.</param>
+        /// <returns>String with the shader code read from the resource file.</returns>
+        public static string LoadShaderSource(Assembly assembly, string resourceName)
         {
-            var assembly = Assembly.GetExecutingAssembly();
-            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
-            using (var reader = new StreamReader(stream))
+            using (Stream? stream = assembly.GetManifestResourceStream(resourceName))
             {
-                return reader.ReadToEnd();
+                if (stream != null)
+                {
+                    using (var reader = new StreamReader(stream))
+                    {
+                        return reader.ReadToEnd();
+                    }
+                }
             }
+
+            return string.Empty;
         }
     }
 }

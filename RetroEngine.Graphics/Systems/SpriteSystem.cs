@@ -5,7 +5,7 @@ using RetroEngine.Core.Elements;
 using RetroEngine.Graphics.Batching;
 using RetroEngine.Graphics.Components;
 
-namespace RetroEngine.Ecs.Systems
+namespace RetroEngine.Graphics.Systems
 {
     /// <summary>
     /// Renders sprites into the game screen.

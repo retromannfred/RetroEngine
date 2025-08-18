@@ -44,7 +44,7 @@ namespace RetroEngine.Graphics.Systems
                     new Vector3(transform.Position) + camera.Front,
                     camera.Up);
 
-                var projection = camera.Projection == Projections.Perspective ?
+                var projection = camera.Projection == Projections.Ortographic ?
                     Matrix4.CreateOrthographic(
                         _graphicSettings.Width / 50, 
                         _graphicSettings.Height / 50, 

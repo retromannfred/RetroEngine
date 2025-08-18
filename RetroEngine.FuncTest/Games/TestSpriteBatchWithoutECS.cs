@@ -26,7 +26,7 @@ namespace RetroEngine.FuncTest.Games
             Console.WriteLine();
             Console.WriteLine("Su should be seeing 3 planes on {X=0,Y=0,Z=0} and " + NUMBER_OF_SQUARES + " squares in an arbitrary area.");
             Console.WriteLine("There's no camera movement. Need to check just drawing performance of the batch.");
-            Console.WriteLine("Check performance of CPU and GPU here:");
+            Console.WriteLine();
         }
 
         protected override void LoadContent()

@@ -1,16 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="OpenTK" Version="4.9.4" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\RetroEngine.Core\RetroEngine.Core.csproj" />
-    <ProjectReference Include="..\RetroEngine.DebugPhysics\RetroEngine.Buddies.csproj" />
-    <ProjectReference Include="..\RetroEngine.Graphics\RetroEngine.Graphics.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Systems\" />
   </ItemGroup>
 
 </Project>

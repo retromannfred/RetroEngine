@@ -6,7 +6,7 @@ namespace RetroEngine.Graphics.Batching
     /// <summary>
     /// Abstracts the element buffer object functionallity from OpenGL.
     /// </summary>
-    internal class ElementBuffer
+    public class ElementBuffer
     {
         /// <summary>
         /// Gets the OpenGL ID of this object.

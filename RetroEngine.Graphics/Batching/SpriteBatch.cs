@@ -3,6 +3,7 @@ using OpenTK.Mathematics;
 using RetroEngine.Core.Components;
 using RetroEngine.Graphics.Components;
 using RetroEngine.Graphics.Shaders;
+using System.Reflection;
 
 namespace RetroEngine.Graphics.Batching
 {
@@ -77,8 +78,8 @@ namespace RetroEngine.Graphics.Batching
             _vao.Unbind();
 
             _program = new();
-            _program.AddShader(new Shader(Shader.LoadShaderSource("RetroEngine.Graphics.Shaders.Defaults.vertex.glsl"), ShaderType.VertexShader));
-            _program.AddShader(new Shader(Shader.LoadShaderSource("RetroEngine.Graphics.Shaders.Defaults.fragment.glsl"), ShaderType.FragmentShader));
+            _program.AddShader(new Shader(Shader.LoadShaderSource(Assembly.GetExecutingAssembly(), "RetroEngine.Graphics.Shaders.Defaults.vertex.glsl"), ShaderType.VertexShader));
+            _program.AddShader(new Shader(Shader.LoadShaderSource(Assembly.GetExecutingAssembly(), "RetroEngine.Graphics.Shaders.Defaults.fragment.glsl"), ShaderType.FragmentShader));
             _program.Link();
         }
 
@@ -121,9 +122,9 @@ namespace RetroEngine.Graphics.Batching
 
         public void DrawBatch()
         {
-            _vboMatrices.UpdateData(0, _matrices);
-            _vboColors.UpdateData(0, _colors);
-            _vboTexCoords.UpdateData(0, _texCoords);
+            _vboMatrices.UpdateData(0, _instanceCount, _matrices);
+            _vboColors.UpdateData(0, _instanceCount, _colors);
+            _vboTexCoords.UpdateData(0, _instanceCount, _texCoords);
 
             GL.DrawElementsInstanced(PrimitiveType.Triangles, 6, DrawElementsType.UnsignedInt, 0, _instanceCount);
 

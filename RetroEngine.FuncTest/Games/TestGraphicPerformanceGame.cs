@@ -2,13 +2,10 @@
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using RetroEngine.Core;
 using RetroEngine.Core.Components;
-using RetroEngine.Core.Elements;
-using RetroEngine.Ecs.Systems;
 using RetroEngine.Graphics.Batching;
 using RetroEngine.Graphics.Components;
 using RetroEngine.Graphics.Enums;
 using RetroEngine.Graphics.Systems;
-using System;
 
 namespace RetroEngine.FuncTest.Games
 {
@@ -30,7 +27,7 @@ namespace RetroEngine.FuncTest.Games
             Console.WriteLine();
             Console.WriteLine("Su should be seeing 3 planes on {X=0,Y=0,Z=0} and " + NUMBER_OF_CUBES + " cubes in an arbitrary area.");
             Console.WriteLine("Use WASD keys to translate the camera, and left mouse button to point it.");
-            Console.WriteLine("Check performance of CPU and GPU here:");
+            Console.WriteLine();
 
             _world = new WorldBuilder()
                 .RegisterSystem(new SpriteSystem(GraphicSettings))
@@ -51,7 +48,7 @@ namespace RetroEngine.FuncTest.Games
                 })
                 .Attach(new Camera()
                 {
-                    Projection = Projections.Ortographic
+                    Projection = Projections.Perspective
                 })
             .Id;
 

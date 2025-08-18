@@ -9,10 +9,10 @@ namespace RetroEngine.FuncTest
         static void Main()
         {
             // OPTION 1: Choose your game to test
-            ChooseGame();
+            //ChooseGame();
 
             // OPTION 2: Call directly your game to test
-            //new TestGraphicPerformanceGame().Run();
+            new TestCollisionsGame().Run();
         }
 
         static void ChooseGame()

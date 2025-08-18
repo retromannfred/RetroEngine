@@ -7,7 +7,7 @@ namespace RetroEngine.Graphics.Batching
     /// <summary>
     /// Abstracts the vertex buffer object functionallity from OpenGL.
     /// </summary>
-    internal class VertexBuffer<T>
+    public class VertexBuffer<T>
         where T : struct
     {
         /// <summary>
@@ -62,10 +62,12 @@ namespace RetroEngine.Graphics.Batching
         /// </summary>
         /// <param name="offset">Index of first element of data.</param>
         /// <param name="data">New data of this buffer.</param>
-        public void UpdateData(int offset, T[] data)
+        public void UpdateData(int offset, int size, T[] data)
         {
+            var minSize = Math.Min(offset + size, data.Length);
+
             Bind();
-            GL.BufferSubData(BufferTarget.ArrayBuffer, new nint(nint.Zero.ToInt64() + offset * Unsafe.SizeOf<T>()), data.Length * Unsafe.SizeOf<T>(), data);
+            GL.BufferSubData(BufferTarget.ArrayBuffer, new nint(nint.Zero.ToInt64() + offset * Unsafe.SizeOf<T>()), minSize * Unsafe.SizeOf<T>(), data);
         }
 
         /// <summary>

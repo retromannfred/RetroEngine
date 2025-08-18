@@ -7,7 +7,7 @@ namespace RetroEngine.Graphics.Batching
     /// <summary>
     /// Abstracts the vertex array object functionallity from OpenGL.
     /// </summary>
-    internal class VertexArray
+    public class VertexArray
     {
         /// <summary>
         /// Gets the OpenGL ID of this object.
