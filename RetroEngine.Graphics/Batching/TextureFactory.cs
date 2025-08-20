@@ -48,5 +48,51 @@ namespace RetroEngine.Graphics.Batching
 
             return new Texture2D(width, height, data);
         }
+
+        /// <summary>
+        /// Creates a new solid circle texture.
+        /// </summary>
+        /// <param name="radius">Radius of the circle in pixels.</param>
+        /// <param name="color">Fill color of the circle.</param>
+        /// <returns>A new texture struct representing the circle.</returns>
+        public static Texture2D CreateCircle(int radius, Color4 color)
+        {
+            int diameter = radius * 2;
+            var data = new byte[diameter * diameter * 4];
+
+            int centerX = radius;
+            int centerY = radius;
+            float rSquared = radius * radius;
+
+            for (int y = 0; y < diameter; y++)
+            {
+                for (int x = 0; x < diameter; x++)
+                {
+                    int index = (y * diameter + x) * 4;
+
+                    int dx = x - centerX;
+                    int dy = y - centerY;
+                    float distanceSquared = dx * dx + dy * dy;
+
+                    if (distanceSquared <= rSquared)
+                    {
+                        data[index] = (byte)(color.R * 255);
+                        data[index + 1] = (byte)(color.G * 255);
+                        data[index + 2] = (byte)(color.B * 255);
+                        data[index + 3] = (byte)(color.A * 255);
+                    }
+                    else
+                    {
+                        data[index] = 0;
+                        data[index + 1] = 0;
+                        data[index + 2] = 0;
+                        data[index + 3] = 0;
+                    }
+                }
+            }
+
+            return new Texture2D(diameter, diameter, data);
+        }
+
     }
 }

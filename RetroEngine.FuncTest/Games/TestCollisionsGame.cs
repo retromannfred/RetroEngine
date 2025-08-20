@@ -16,6 +16,7 @@ namespace RetroEngine.FuncTest.Games
     {
         private const float PLAYER_WALK_SPEED = 3f;
         private const float PLAYER_RUN_SPEED = 10f;
+        private const float CAMERA_SENSITIVITY = .6f;
 
         private readonly World _world;
 
@@ -39,7 +40,7 @@ namespace RetroEngine.FuncTest.Games
 
         protected override void LoadContent()
         {
-            var texture = TextureFactory.CreateRectangle(1, 1, Color4.Black);
+            var texture = TextureFactory.CreateCircle(100, Color4.White);
             var rand = new Random();
 
             _cameraId = _world.CreateEntity()
@@ -55,22 +56,22 @@ namespace RetroEngine.FuncTest.Games
 
             _playerId = _world.CreateEntity()
                 .Attach(new Transform())
-                .Attach(new SpriteRenderer(texture))
-                .Attach(new Collider2D(Shapes2D.Rectangle))
+                .Attach(new SpriteRenderer(texture) { Color = Color4.Blue })
+                .Attach(new Collider2D(Shapes2D.Circle))
                 .Id;
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 3; i++)
             {
                 _world.CreateEntity()
                 .Attach(new Transform()
                 {
-                    Position = new Vector3(rand.Next(-9, 9), rand.Next(-9, 9), 0f)
+                    Position = new Vector3(rand.Next(-10, 10), rand.Next(-10, 10), 0f)
                 })
                 .Attach(new SpriteRenderer(texture)
                 {
                     Color = Color4.White
                 })
-                .Attach(new Collider2D(Shapes2D.Rectangle));
+                .Attach(new Collider2D(Shapes2D.Circle));
             }
         }
 
@@ -107,8 +108,17 @@ namespace RetroEngine.FuncTest.Games
 
         protected override void Render(GameTime time)
         {
-            ref var transform = ref _world.GetComponent<Transform>(_playerId);
-            transform.Rotate(Vector3.UnitZ * PLAYER_RUN_SPEED * MouseState.ScrollDelta.Y * time.Delta);
+            ref var playerTransform = ref _world.GetComponent<Transform>(_playerId);
+            playerTransform.Rotate(Vector3.UnitZ * PLAYER_RUN_SPEED * MouseState!.ScrollDelta.Y * time.Delta);
+
+            ref var cameraTransform = ref _world.GetComponent<Transform>(_cameraId);
+            ref var camera = ref _world.GetComponent<Camera>(_cameraId);
+
+            if (MouseState!.IsButtonDown(MouseButton.Left))
+            {
+                cameraTransform = camera.LookUp(cameraTransform, (MouseState!.Delta.Y) * CAMERA_SENSITIVITY * time.Delta);
+                cameraTransform = camera.LookRight(cameraTransform, (MouseState!.Delta.X) * CAMERA_SENSITIVITY * time.Delta);
+            }
 
             ClearScreen(Color4.CornflowerBlue);
             _world.Render(time);

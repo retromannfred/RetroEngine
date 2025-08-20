@@ -23,6 +23,7 @@ namespace RetroEngine.Physics.Components
 
         public Collider2D(Shapes2D shape)
         {
+            Shape = shape;
             Offset = Vector2.Zero;
             Restitution = 0f;
             Friction = 0f;
@@ -36,9 +37,9 @@ namespace RetroEngine.Physics.Components
                     Height = 1f;
                     break;
                 case Shapes2D.Circle:
-                    Radius = 1f;
-                    Width = 0f;
-                    Height = 0f;
+                    Radius = 0.5f;
+                    Width = 1f;
+                    Height = 1f;
                     break;
                 case Shapes2D.Polygon:
                     Radius = 0f;

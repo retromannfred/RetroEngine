@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Shaders\fragmentColliders.glsl" />
-    <EmbeddedResource Include="Shaders\vertexColliders.glsl" />
+    <EmbeddedResource Include="Shaders\pass_color.frag" />
+    <EmbeddedResource Include="Shaders\rectangle_render.vert" />
   </ItemGroup>
 
   <ItemGroup>

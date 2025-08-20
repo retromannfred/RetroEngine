@@ -7,13 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Shaders\Defaults\fragment.glsl" />
-    <None Remove="Shaders\Defaults\vertex.glsl" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Shaders\Defaults\fragment.glsl" />
-    <EmbeddedResource Include="Shaders\Defaults\vertex.glsl" />
+    <EmbeddedResource Include="Shaders\Defaults\sprite_batch.frag" />
+    <EmbeddedResource Include="Shaders\Defaults\sprite_batch.vert" />
   </ItemGroup>
 
   <ItemGroup>

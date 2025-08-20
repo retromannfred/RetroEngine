@@ -64,7 +64,7 @@ namespace RetroEngine.Graphics.Shaders
         /// </summary>
         public void Delete()
         {
-            GL.DeleteProgram(0);
+            GL.DeleteProgram(Id);
         }
     }
 }

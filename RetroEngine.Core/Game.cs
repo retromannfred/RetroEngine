@@ -50,6 +50,8 @@ namespace RetroEngine.Core
             MouseState = _gameWindow.MouseState;
 
             GL.Enable(EnableCap.DepthTest);
+            GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
             _gameWindow.Load += LoadContent;
             _gameWindow.RetroUpdateFrame += eventArgs =>

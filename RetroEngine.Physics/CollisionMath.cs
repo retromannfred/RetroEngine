@@ -1,4 +1,6 @@
 ﻿using OpenTK.Mathematics;
+using RetroEngine.Core.Components;
+using RetroEngine.Physics.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +11,45 @@ namespace RetroEngine.Physics
 {
     public static class CollisionMath
     {
+        public static Vector2[] GetRectangleVertices(Transform transform, Collider2D collider)
+        {
+            // Dimensiones con escala aplicada
+            float halfW = collider.Width * transform.Scale.X * 0.5f;
+            float halfH = collider.Height * transform.Scale.Y * 0.5f;
+
+            // Vértices locales del collider (antes de rotación/traslación)
+            Vector2[] localVertices = new Vector2[]
+            {
+                new Vector2(-halfW, -halfH), // BL
+                new Vector2( halfW, -halfH), // BR
+                new Vector2( halfW,  halfH), // TR
+                new Vector2(-halfW,  halfH)  // TL
+            };
+
+            // Rotación Z (2D)
+            float cos = MathF.Cos(transform.Rotation.Z);
+            float sin = MathF.Sin(transform.Rotation.Z);
+
+            Vector2[] worldVertices = new Vector2[4];
+            for (int i = 0; i < 4; i++)
+            {
+                // Aplico offset
+                Vector2 v = localVertices[i] + collider.Offset;
+
+                // Rotación alrededor del origen
+                float x = v.X * cos - v.Y * sin;
+                float y = v.X * sin + v.Y * cos;
+
+                // Traslación (posición del transform)
+                worldVertices[i] = new Vector2(
+                    x + transform.Position.X,
+                    y + transform.Position.Y
+                );
+            }
+
+            return worldVertices;
+        }
+
         public static bool IntersectCircles(Vector2 centerA, float radiusA, Vector2 centerB, float radiusB, out Vector2 direction, out float depth)
         {
             direction = Vector2.Zero;
@@ -63,10 +104,10 @@ namespace RetroEngine.Physics
                 var edge = vj - vi;
                 var axis = new Vector2(-edge.Y, edge.X);
 
-                ProjectVertices(verticesA, axis, out float minA, out float maxA);
                 ProjectVertices(verticesB, axis, out float minB, out float maxB);
+                ProjectVertices(verticesA, axis, out float minA, out float maxA);
 
-                if (minB >= maxA || minA >= maxB)
+                if (minA >= maxB || minB >= maxA)
                     return false;
 
                 float axisDepth = MathF.Min(maxA - minB, maxB - minA);
@@ -81,7 +122,7 @@ namespace RetroEngine.Physics
             // Vector2.Length does a sqrt(x^2 + y^2), and normalize use that length to scale down the its components.
             // So we precalculate Length first to use it to adjust depth, and later to scale down the direction, so we normalize it.
 
-            var dirLength =  direction.Length;
+            var dirLength = direction.Length;
             depth /= dirLength;
             direction = new Vector2(direction.X / dirLength, direction.Y / dirLength);
 

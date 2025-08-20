@@ -21,13 +21,13 @@ namespace RetroEngine.Graphics.Batching
         private readonly ShaderProgram _program;
 
         private readonly VertexBuffer<float> _vboPositions;
-        private readonly VertexBuffer<Matrix4> _vboMatrices;
+        private readonly VertexBuffer<Matrix4> _vboModels;
         private readonly VertexBuffer<Vector4> _vboColors;
         private readonly VertexBuffer<Vector4> _vboTexCoords;
 
         private int _instanceCount;
 
-        private readonly Matrix4[] _matrices;
+        private readonly Matrix4[] _models;
         private readonly Vector4[] _colors;
         private readonly Vector4[] _texCoords;
 
@@ -53,17 +53,17 @@ namespace RetroEngine.Graphics.Batching
             _vao.Link(layoutIndex++, _vboPositions, 2, 5, 3);
 
             _instanceCount = 0;
-            _matrices = new Matrix4[FIXED_CAPACITY];
+            _models = new Matrix4[FIXED_CAPACITY];
             _colors = new Vector4[FIXED_CAPACITY];
             _texCoords = new Vector4[FIXED_CAPACITY];
 
-            _vboMatrices = new VertexBuffer<Matrix4>(BufferUsageHint.DynamicDraw);
-            _vboMatrices.CreateData(_matrices);
+            _vboModels = new VertexBuffer<Matrix4>(BufferUsageHint.DynamicDraw);
+            _vboModels.CreateData(_models);
 
-            _vao.LinkDivided(layoutIndex++, _vboMatrices, 4, 16, 0, 1);
-            _vao.LinkDivided(layoutIndex++, _vboMatrices, 4, 16, 4, 1);
-            _vao.LinkDivided(layoutIndex++, _vboMatrices, 4, 16, 8, 1);
-            _vao.LinkDivided(layoutIndex++, _vboMatrices, 4, 16, 12, 1);
+            _vao.LinkDivided(layoutIndex++, _vboModels, 4, 16, 0, 1);
+            _vao.LinkDivided(layoutIndex++, _vboModels, 4, 16, 4, 1);
+            _vao.LinkDivided(layoutIndex++, _vboModels, 4, 16, 8, 1);
+            _vao.LinkDivided(layoutIndex++, _vboModels, 4, 16, 12, 1);
 
             _vboColors = new VertexBuffer<Vector4>(BufferUsageHint.DynamicDraw);
             _vboColors.CreateData(_colors);
@@ -78,8 +78,8 @@ namespace RetroEngine.Graphics.Batching
             _vao.Unbind();
 
             _program = new();
-            _program.AddShader(new Shader(Shader.LoadShaderSource(Assembly.GetExecutingAssembly(), "RetroEngine.Graphics.Shaders.Defaults.vertex.glsl"), ShaderType.VertexShader));
-            _program.AddShader(new Shader(Shader.LoadShaderSource(Assembly.GetExecutingAssembly(), "RetroEngine.Graphics.Shaders.Defaults.fragment.glsl"), ShaderType.FragmentShader));
+            _program.AddShader(new Shader(Shader.LoadShaderSource(Assembly.GetExecutingAssembly(), "RetroEngine.Graphics.Shaders.Defaults.sprite_batch.vert"), ShaderType.VertexShader));
+            _program.AddShader(new Shader(Shader.LoadShaderSource(Assembly.GetExecutingAssembly(), "RetroEngine.Graphics.Shaders.Defaults.sprite_batch.frag"), ShaderType.FragmentShader));
             _program.Link();
         }
 
@@ -95,13 +95,13 @@ namespace RetroEngine.Graphics.Batching
             _texture.Bind();
             _program.Bind();
 
-            GL.UniformMatrix4(GL.GetUniformLocation(_program.Id, "projection"), false, ref projection);
-            GL.UniformMatrix4(GL.GetUniformLocation(_program.Id, "view"), false, ref view);
+            GL.UniformMatrix4(GL.GetUniformLocation(_program.Id, "u_projection"), false, ref projection);
+            GL.UniformMatrix4(GL.GetUniformLocation(_program.Id, "u_view"), false, ref view);
         }
 
         public void UpdateSpriteData(Transform transform, SpriteRenderer renderer)
         {
-            _matrices[_instanceCount] =
+            _models[_instanceCount] =
                 Matrix4.CreateScale(transform.Scale)
                 *
                 Matrix4.CreateFromQuaternion(new Quaternion(transform.Rotation))
@@ -122,7 +122,7 @@ namespace RetroEngine.Graphics.Batching
 
         public void DrawBatch()
         {
-            _vboMatrices.UpdateData(0, _instanceCount, _matrices);
+            _vboModels.UpdateData(0, _instanceCount, _models);
             _vboColors.UpdateData(0, _instanceCount, _colors);
             _vboTexCoords.UpdateData(0, _instanceCount, _texCoords);
 
