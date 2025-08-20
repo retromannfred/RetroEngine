@@ -25,7 +25,7 @@ namespace RetroEngine.FuncTest.Games
             : base("Test graphic performance", 800, 600)
         {
             Console.WriteLine();
-            Console.WriteLine("Su should be seeing 3 planes on {X=0,Y=0,Z=0} and " + NUMBER_OF_CUBES + " cubes in an arbitrary area.");
+            Console.WriteLine("You should be seeing 3 planes on {X=0,Y=0,Z=0} and " + NUMBER_OF_CUBES + " cubes in an arbitrary area.");
             Console.WriteLine("Use WASD keys to translate the camera, and left mouse button to point it.");
             Console.WriteLine();
 

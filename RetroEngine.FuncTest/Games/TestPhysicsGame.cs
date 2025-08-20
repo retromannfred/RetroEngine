@@ -25,6 +25,10 @@ namespace RetroEngine.FuncTest.Games
             : base("Test collisions", 800, 600)
         {
             Console.WriteLine();
+            Console.WriteLine("You should be seeing two circles, one green, one yellow.");
+            Console.WriteLine("Use WASD keys to apply force to green circle.");
+            Console.WriteLine("Use up-left-down-right arrow keys to apply force to yellow circle.");
+            Console.WriteLine();
 
             _world = new WorldBuilder()
                 .RegisterSystem(new BuddyCollider2DSystem(GraphicSettings))
