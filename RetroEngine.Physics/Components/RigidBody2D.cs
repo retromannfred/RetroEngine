@@ -37,6 +37,11 @@ namespace RetroEngine.Physics.Components
             FreezePosition = new FreezePosition();
             FreezeRotation = false;
         }
+
+        public void ApplyForce(Vector2 force)
+        {
+            LinearVelocity += force / Mass;
+        }
     }
 
     public struct FreezePosition

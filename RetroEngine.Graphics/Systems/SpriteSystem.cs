@@ -10,21 +10,14 @@ namespace RetroEngine.Graphics.Systems
     /// <summary>
     /// Renders sprites into the game screen.
     /// </summary>
-    public class SpriteSystem : RenderSystem
+    /// <param name="graphicSettings">Graphic settings of the game.</param>
+    public class SpriteSystem(GraphicSettings graphicSettings)
+        : RenderSystem(Contract
+            .Include<Transform>()
+            .Include<SpriteRenderer>())
     {
-        private GraphicSettings _graphicSettings;
-        private Dictionary<string, SpriteBatch> _batches;
-
-        /// <summary>
-        /// Creates a new sprite renderer system.
-        /// </summary>
-        /// <param name="graphicSettings">Graphic settings of the game.</param>
-        public SpriteSystem(GraphicSettings graphicSettings)
-            : base(Contract.Include<Transform>().Include<SpriteRenderer>())
-        {
-            _graphicSettings = graphicSettings;
-            _batches = [];
-        }
+        private readonly GraphicSettings _graphicSettings = graphicSettings;
+        private readonly Dictionary<string, SpriteBatch> _batches = [];
 
         public override void Process(World world, GameTime time)
         {
@@ -41,11 +34,7 @@ namespace RetroEngine.Graphics.Systems
 
                     if (lastBatch == null || lastBatch.BatchKey != batchKey)
                     {
-                        if (_batches.ContainsKey(batchKey))
-                        {
-                            lastBatch = _batches[batchKey];
-                        }
-                        else
+                        if (_batches.TryGetValue(batchKey, out lastBatch) == false)
                         {
                             lastBatch = new SpriteBatch(renderer.Texture);
                             _batches.Add(batchKey, lastBatch);

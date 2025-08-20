@@ -11,21 +11,19 @@ using RetroEngine.Physics.Enums;
 
 namespace RetroEngine.Buddies.System
 {
-    public class BuddyCollider2DSystem : RenderSystem
-    {
-        private GraphicSettings _graphicSettings;
-
-        private RectangleCollisionRenderer _rectangleRenderer;
-
-        public BuddyCollider2DSystem(GraphicSettings graphicSettings)
-            : base(Contract
+    /// <summary>
+    /// Creates a render system that helps you to visualize collisions masks and their interactions.
+    /// </summary>
+    /// <param name="graphicSettings">Graphic settings of the game.</param>
+    public class BuddyCollider2DSystem(GraphicSettings graphicSettings)
+        : RenderSystem(Contract
             .Include<Transform>()
             .Include<Collider2D>())
-        {
-            _graphicSettings = graphicSettings;
-            _rectangleRenderer = new RectangleCollisionRenderer();
-        }
+    {
+        private readonly GraphicSettings _graphicSettings = graphicSettings;
+        private readonly RectangleCollisionRenderer _rectangleRenderer = new();
 
+        /// <inheritdoc/>
         public override void Process(World world, GameTime time)
         {
             foreach (var clipSpace in _graphicSettings.ClipSpaces)
@@ -43,10 +41,10 @@ namespace RetroEngine.Buddies.System
                         ref var transformB = ref world.GetComponent<Transform>(entityB);
                         ref var colliderB = ref world.GetComponent<Collider2D>(entityB);
 
-                        if (Intersects(
+                        if (CollisionMath.Intersects(
                             transformA, colliderA,
                             transformB, colliderB,
-                            out Vector2 direction, out float depth))
+                            out _, out _))
                         {
                             _rectangleRenderer.Draw(transformA, colliderA, clipSpace.View, clipSpace.Projection, (Vector4)Color4.Red);
                             break;
@@ -54,32 +52,6 @@ namespace RetroEngine.Buddies.System
                     }
                 }
             }
-        }
-
-        private bool Intersects(
-            Transform transformA, Collider2D colliderA,
-            Transform transformB, Collider2D colliderB,
-            out Vector2 direction, out float depth)
-        {
-            direction = Vector2.Zero;
-            depth = 0;
-
-            if (colliderA.Shape == Shapes2D.Circle && colliderB.Shape == Shapes2D.Circle)
-            {
-                return CollisionMath.IntersectCircles(
-                    transformA.Position.Xy + colliderA.Offset, colliderA.Radius,
-                    transformB.Position.Xy + colliderB.Offset, colliderB.Radius,
-                    out direction, out depth);
-            }
-            else if (colliderA.Shape == Shapes2D.Rectangle && colliderB.Shape == Shapes2D.Rectangle)
-            {
-                var verticesA = CollisionMath.GetRectangleVertices(transformA, colliderA);
-                var verticesB = CollisionMath.GetRectangleVertices(transformB, colliderB);
-
-                return CollisionMath.IntersectPolygons(verticesA, verticesB, out direction, out depth);
-            }
-            
-            return false;
         }
     }
 }

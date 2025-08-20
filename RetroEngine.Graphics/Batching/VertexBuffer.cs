@@ -7,13 +7,17 @@ namespace RetroEngine.Graphics.Batching
     /// <summary>
     /// Abstracts the vertex buffer object functionallity from OpenGL.
     /// </summary>
-    public class VertexBuffer<T>
+    /// <remarks>
+    /// Creates a new vertex buffer object.
+    /// </remarks>
+    /// <param name="bufferUsage">Specifies the expected usage pattern of the data store.</param>
+    public class VertexBuffer<T>(BufferUsageHint bufferUsage)
         where T : struct
     {
         /// <summary>
         /// Gets the OpenGL ID of this object.
         /// </summary>
-        public int Id { get; private set; }
+        public int Id { get; private set; } = GL.GenBuffer();
 
         /// <summary>
         /// Gets the number of items in this buffer.
@@ -23,17 +27,7 @@ namespace RetroEngine.Graphics.Batching
         /// <summary>
         /// Specifies the expected usage pattern of the data store.
         /// </summary>
-        public BufferUsageHint UsageHint { get; private set; }
-
-        /// <summary>
-        /// Creates a new vertex buffer object.
-        /// </summary>
-        /// <param name="bufferUsage">Specifies the expected usage pattern of the data store.</param>
-        public VertexBuffer(BufferUsageHint bufferUsage)
-        {
-            Id = GL.GenBuffer();
-            UsageHint = bufferUsage;
-        }
+        public BufferUsageHint UsageHint { get; private set; } = bufferUsage;
 
         /// <summary>
         /// Creates and initializes a buffer object's data store

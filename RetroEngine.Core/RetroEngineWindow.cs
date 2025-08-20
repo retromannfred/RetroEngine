@@ -16,7 +16,7 @@ namespace RetroEngine.Core
     internal class RetroEngineWindow(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
         : GameWindow(gameWindowSettings, nativeWindowSettings)
     {
-        private GameLoopMode _gameLoopMode = GameLoopMode.RestrictedUpdate;
+        private readonly GameLoopMode _gameLoopMode = GameLoopMode.RestrictedUpdate;
 
         private const double FIXED_UPDATE_RATE = 1.0 / 60.0; // 60 UPS
         private const double FIXED_RENDER_RATE = 1.0 / 60.0; // 60 FPS

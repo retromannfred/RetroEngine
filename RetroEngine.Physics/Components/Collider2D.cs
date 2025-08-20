@@ -25,7 +25,7 @@ namespace RetroEngine.Physics.Components
         {
             Shape = shape;
             Offset = Vector2.Zero;
-            Restitution = 0f;
+            Restitution = 1f;
             Friction = 0f;
             Density = 1f;
 

@@ -59,7 +59,7 @@ namespace RetroEngine.Graphics.Batching
         /// <summary>
         /// Unbinds this OpenGL buffer.
         /// </summary>
-        public void Unbind()
+        public static void Unbind()
         {
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
         }

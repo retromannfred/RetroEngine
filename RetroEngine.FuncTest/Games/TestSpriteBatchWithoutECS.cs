@@ -18,7 +18,7 @@ namespace RetroEngine.FuncTest.Games
     {
         private const int NUMBER_OF_SQUARES = 100000;
         private Texture2D _texture;
-        private SpriteBatch _batch;
+        private SpriteBatch? _batch;
 
         public TestSpriteBatchWithoutECS()
             : base("Test sprite batch", 800, 600)
@@ -42,7 +42,7 @@ namespace RetroEngine.FuncTest.Games
             var view = Matrix4.CreateTranslation(Vector3.UnitZ * -10f);
             var projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.PiOver4, 800f / 600f, .3f, 1000f);
 
-            _batch.Begin(view, projection);
+            _batch!.Begin(view, projection);
 
             var rand = new Random(100);
 

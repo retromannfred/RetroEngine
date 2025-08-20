@@ -38,21 +38,20 @@ namespace RetroEngine.Buddies.Helpers
             _vbo = new VertexBuffer<Vector2>(BufferUsageHint.DynamicDraw);
             _ebo = new ElementBuffer();
 
-            // Vértices del rectángulo en el origen (serán transformados después)
             Vector2[] vertices =
-            {
-            new(-0.5f, -0.5f),
-            new( 0.5f, -0.5f),
-            new( 0.5f,  0.5f),
-            new(-0.5f,  0.5f)
-        };
+            [
+                new(-0.5f, -0.5f),
+                new( 0.5f, -0.5f),
+                new( 0.5f,  0.5f),
+                new(-0.5f,  0.5f)
+            ];
 
             _vbo.CreateData(vertices);
 
-            uint[] indices = { 0, 1, 2, 3 }; // Se dibuja en modo LineLoop
+            uint[] indices = [0, 1, 2, 3];
             _ebo.UpdateData(indices);
 
-            _vao.Link(0, _vbo, 2); // cada vértice tiene 2 floats (x,y)
+            _vao.Link(0, _vbo, 2);
         }
 
         public void Draw(Transform transform, Collider2D collider, Matrix4 view, Matrix4 projection, Vector4 color)
@@ -61,7 +60,6 @@ namespace RetroEngine.Buddies.Helpers
             _vao.Bind();
             _ebo.Bind();
 
-            // Construcción de la matriz de modelo
             var model =
                 Matrix4.CreateScale(collider.Width * transform.Scale.X, collider.Height * transform.Scale.Y, 1.0f) *
                 Matrix4.CreateRotationX(transform.Rotation.X) *
@@ -69,7 +67,6 @@ namespace RetroEngine.Buddies.Helpers
                 Matrix4.CreateRotationZ(transform.Rotation.Z) *
                 Matrix4.CreateTranslation(transform.Position);
 
-            // Pasamos uniforms
             int locModel = GL.GetUniformLocation(_shader.Id, "u_model");
             int locView = GL.GetUniformLocation(_shader.Id, "u_view");
             int locProj = GL.GetUniformLocation(_shader.Id, "u_projection");
@@ -80,12 +77,7 @@ namespace RetroEngine.Buddies.Helpers
             GL.UniformMatrix4(locProj, false, ref projection);
             GL.Uniform4(locColor, color);
 
-            // Dibujar perímetro
             GL.DrawElements(PrimitiveType.LineLoop, _ebo.Count, DrawElementsType.UnsignedInt, 0);
-
-            _ebo.Unbind();
-            _vao.Unbind();
-            _shader.Unbind();
         }
 
         public void Delete()

@@ -1,6 +1,7 @@
 ﻿using OpenTK.Mathematics;
 using RetroEngine.Core.Components;
 using RetroEngine.Physics.Components;
+using RetroEngine.Physics.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,43 +12,30 @@ namespace RetroEngine.Physics
 {
     public static class CollisionMath
     {
-        public static Vector2[] GetRectangleVertices(Transform transform, Collider2D collider)
+        public static bool Intersects(
+            Transform transformA, Collider2D colliderA,
+            Transform transformB, Collider2D colliderB,
+            out Vector2 direction, out float depth)
         {
-            // Dimensiones con escala aplicada
-            float halfW = collider.Width * transform.Scale.X * 0.5f;
-            float halfH = collider.Height * transform.Scale.Y * 0.5f;
+            direction = Vector2.Zero;
+            depth = 0;
 
-            // Vértices locales del collider (antes de rotación/traslación)
-            Vector2[] localVertices = new Vector2[]
+            if (colliderA.Shape == Shapes2D.Circle && colliderB.Shape == Shapes2D.Circle)
             {
-                new Vector2(-halfW, -halfH), // BL
-                new Vector2( halfW, -halfH), // BR
-                new Vector2( halfW,  halfH), // TR
-                new Vector2(-halfW,  halfH)  // TL
-            };
-
-            // Rotación Z (2D)
-            float cos = MathF.Cos(transform.Rotation.Z);
-            float sin = MathF.Sin(transform.Rotation.Z);
-
-            Vector2[] worldVertices = new Vector2[4];
-            for (int i = 0; i < 4; i++)
+                return CollisionMath.IntersectCircles(
+                    transformA.Position.Xy + colliderA.Offset, colliderA.Radius,
+                    transformB.Position.Xy + colliderB.Offset, colliderB.Radius,
+                    out direction, out depth);
+            }
+            else if (colliderA.Shape == Shapes2D.Rectangle && colliderB.Shape == Shapes2D.Rectangle)
             {
-                // Aplico offset
-                Vector2 v = localVertices[i] + collider.Offset;
+                var verticesA = CollisionMath.GetRectangleVertices(transformA, colliderA);
+                var verticesB = CollisionMath.GetRectangleVertices(transformB, colliderB);
 
-                // Rotación alrededor del origen
-                float x = v.X * cos - v.Y * sin;
-                float y = v.X * sin + v.Y * cos;
-
-                // Traslación (posición del transform)
-                worldVertices[i] = new Vector2(
-                    x + transform.Position.X,
-                    y + transform.Position.Y
-                );
+                return CollisionMath.IntersectPolygons(verticesA, verticesB, out direction, out depth);
             }
 
-            return worldVertices;
+            return false;
         }
 
         public static bool IntersectCircles(Vector2 centerA, float radiusA, Vector2 centerB, float radiusB, out Vector2 direction, out float depth)
@@ -56,12 +44,14 @@ namespace RetroEngine.Physics
             depth = float.MaxValue;
 
             var radiusSum = radiusA + radiusB;
-            var centerDistance = Vector2.Distance(centerA, centerB);
+            var centerDistanceSquared = Vector2.DistanceSquared(centerA, centerB);
 
-            if (centerDistance < radiusSum)
+            if (centerDistanceSquared < radiusSum * radiusSum)
             {
-                direction = Vector2.Normalize(centerB - centerA);
+                var centerDistance = (float)MathHelper.Sqrt(centerDistanceSquared);
                 depth = radiusSum - centerDistance;
+
+                direction = Vector2.Normalize(centerB - centerA);
 
                 return true;
             }
@@ -124,7 +114,7 @@ namespace RetroEngine.Physics
 
             var dirLength = direction.Length;
             depth /= dirLength;
-            direction = new Vector2(direction.X / dirLength, direction.Y / dirLength);
+            direction /= dirLength;
 
             return true;
         }
@@ -144,6 +134,45 @@ namespace RetroEngine.Physics
                 if (projection > max)
                     max = projection;
             }
+        }
+
+        public static Vector2[] GetRectangleVertices(Transform transform, Collider2D collider)
+        {
+            // Dimensiones con escala aplicada
+            float halfW = collider.Width * transform.Scale.X * 0.5f;
+            float halfH = collider.Height * transform.Scale.Y * 0.5f;
+
+            // Vértices locales del collider (antes de rotación/traslación)
+            Vector2[] localVertices =
+            [
+                new Vector2(-halfW, -halfH), // BL
+                new Vector2( halfW, -halfH), // BR
+                new Vector2( halfW,  halfH), // TR
+                new Vector2(-halfW,  halfH)  // TL
+            ];
+
+            // Rotación Z (2D)
+            float cos = MathF.Cos(transform.Rotation.Z);
+            float sin = MathF.Sin(transform.Rotation.Z);
+
+            Vector2[] worldVertices = new Vector2[4];
+            for (int i = 0; i < 4; i++)
+            {
+                // Aplico offset
+                Vector2 v = localVertices[i] + collider.Offset;
+
+                // Rotación alrededor del origen
+                float x = v.X * cos - v.Y * sin;
+                float y = v.X * sin + v.Y * cos;
+
+                // Traslación (posición del transform)
+                worldVertices[i] = new Vector2(
+                    x + transform.Position.X,
+                    y + transform.Position.Y
+                );
+            }
+
+            return worldVertices;
         }
     }
 }

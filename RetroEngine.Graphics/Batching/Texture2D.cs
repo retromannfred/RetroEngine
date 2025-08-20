@@ -55,7 +55,7 @@ namespace RetroEngine.Graphics.Batching
         /// <summary>
         /// Binds this OpenGL texture.
         /// </summary>
-        public void Bind()
+        public readonly void Bind()
         {
             GL.ActiveTexture(TextureUnit.Texture0);
             GL.BindTexture(TextureTarget.Texture2D, Id);
@@ -64,7 +64,7 @@ namespace RetroEngine.Graphics.Batching
         /// <summary>
         /// Unbinds this OpenGL texture.
         /// </summary>
-        public void Unbind()
+        public static void Unbind()
         {
             GL.BindTexture(TextureTarget.Texture2D, 0);
         }
@@ -72,7 +72,7 @@ namespace RetroEngine.Graphics.Batching
         /// <summary>
         /// Deletes this OpenGL texture.
         /// </summary>
-        public void Delete()
+        public readonly void Delete()
         {
             GL.DeleteTexture(Id);
         }

@@ -18,7 +18,7 @@
         /// <summary>
         /// Gets se total seconds elapsed since the last update call.
         /// </summary>
-        public float Delta => (float) ElapsedGameTime.TotalSeconds;
+        public readonly float Delta => (float) ElapsedGameTime.TotalSeconds;
 
         /// <summary>
         /// Creates an empty game time element.

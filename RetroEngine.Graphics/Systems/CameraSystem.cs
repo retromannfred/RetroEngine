@@ -10,19 +10,12 @@ namespace RetroEngine.Graphics.Systems
     /// <summary>
     /// Renders clip spaces of each camera.
     /// </summary>
-    public class CameraSystem : RenderSystem
+    /// <param name="graphicSettings">Graphic settings of the game.</param>
+    public class CameraSystem(GraphicSettings graphicSettings) : RenderSystem(Contract
+                  .Include<Transform>()
+                  .Include<Camera>())
     {
-        private GraphicSettings _graphicSettings;
-
-        /// <summary>
-        /// Creates a new CameraSystem.
-        /// </summary>
-        /// <param name="graphicSettings">Graphic settings of the game.</param>
-        public CameraSystem(GraphicSettings graphicSettings)
-            : base(Contract.Include<Transform>().Include<Camera>())
-        {
-            _graphicSettings = graphicSettings;
-        }
+        private readonly GraphicSettings _graphicSettings = graphicSettings;
 
         /// <summary>
         /// Renders entities filtered in this system.

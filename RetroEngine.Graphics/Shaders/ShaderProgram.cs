@@ -54,7 +54,7 @@ namespace RetroEngine.Graphics.Shaders
         /// <summary>
         /// Stops this program to be use for rendering.
         /// </summary>
-        public void Unbind()
+        public static void Unbind()
         {
             GL.UseProgram(0);
         }

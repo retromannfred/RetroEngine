@@ -60,12 +60,12 @@ namespace RetroEngine.FuncTest.Games
                 .Attach(new Collider2D(Shapes2D.Circle))
                 .Id;
 
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 10; i++)
             {
                 _world.CreateEntity()
                 .Attach(new Transform()
                 {
-                    Position = new Vector3(rand.Next(-10, 10), rand.Next(-10, 10), 0f)
+                    Position = new Vector3(rand.Next(-8, 8), rand.Next(-8, 8), 0f)
                 })
                 .Attach(new SpriteRenderer(texture)
                 {

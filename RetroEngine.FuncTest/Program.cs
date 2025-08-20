@@ -12,7 +12,7 @@ namespace RetroEngine.FuncTest
             ChooseGame();
 
             // OPTION 2: Call directly your game to test
-            // new TestCollisionsGame().Run();
+            // new TestPhysicsGame().Run();
         }
 
         static void ChooseGame()

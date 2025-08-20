@@ -13,7 +13,7 @@ namespace RetroEngine.Core
     /// <param name="initialWindowHeight">Initial height of the window.</param>
     public abstract class Game
     {
-        private RetroEngineWindow _gameWindow;
+        private readonly RetroEngineWindow _gameWindow;
         /// <summary>
         /// Gets or sets the title of the window.
         /// </summary>
@@ -34,6 +34,8 @@ namespace RetroEngine.Core
         /// </summary>
         public MouseState? MouseState { get; private set; }
 
+        public IReadOnlyList<JoystickState> JoystickStates { get; }
+
         public Game(string title, int initialWindowWidth, int initialWindowHeight)
         {
             Title = title;
@@ -42,12 +44,15 @@ namespace RetroEngine.Core
             var nativeWindowSettings = NativeWindowSettings.Default;
             nativeWindowSettings.ClientSize = new Vector2i(GraphicSettings.Width, GraphicSettings.Height);
 
-            _gameWindow = new (GameWindowSettings.Default, NativeWindowSettings.Default);
-            _gameWindow.Title = Title;
+            _gameWindow = new(GameWindowSettings.Default, NativeWindowSettings.Default)
+            {
+                Title = Title
+            };
             GameTime gameTime = new();
 
             KeyboardState = _gameWindow.KeyboardState;
             MouseState = _gameWindow.MouseState;
+            JoystickStates = _gameWindow.JoystickStates;
 
             GL.Enable(EnableCap.DepthTest);
             GL.Enable(EnableCap.Blend);

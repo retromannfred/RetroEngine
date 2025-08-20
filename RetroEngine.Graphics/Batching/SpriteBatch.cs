@@ -75,7 +75,7 @@ namespace RetroEngine.Graphics.Batching
 
             _vao.LinkDivided(layoutIndex++, _vboTexCoords, 4, 4, 0, 1);
 
-            _vao.Unbind();
+            VertexArray.Unbind();
 
             _program = new();
             _program.AddShader(new Shader(Shader.LoadShaderSource(Assembly.GetExecutingAssembly(), "RetroEngine.Graphics.Shaders.Defaults.sprite_batch.vert"), ShaderType.VertexShader));
@@ -138,10 +138,10 @@ namespace RetroEngine.Graphics.Batching
                 DrawBatch();
             }
 
-            _vao.Unbind();
-            _ebo.Unbind();
-            _texture.Unbind();
-            _program.Unbind();
+            VertexArray.Unbind();
+            ElementBuffer.Unbind();
+            Texture2D.Unbind();
+            ShaderProgram.Unbind();
         }
     }
 }

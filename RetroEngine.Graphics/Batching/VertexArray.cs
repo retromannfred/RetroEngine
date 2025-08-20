@@ -93,7 +93,7 @@ namespace RetroEngine.Graphics.Batching
         /// <summary>
         /// Unbinds this OpenGL array.
         /// </summary>
-        public void Unbind()
+        public static void Unbind()
         {
             GL.BindVertexArray(0);
         }
