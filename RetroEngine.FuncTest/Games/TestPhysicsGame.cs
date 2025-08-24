@@ -13,6 +13,9 @@ using RetroEngine.Physics.Systems;
 
 namespace RetroEngine.FuncTest.Games
 {
+    /// <summary>
+    /// Game to test how the physics system works.
+    /// </summary>
     internal class TestPhysicsGame : Game
     {
         private const float PLAYER_ACCELERATION = 6f;
@@ -49,20 +52,20 @@ namespace RetroEngine.FuncTest.Games
                     Position = Vector3.UnitZ * 20f,
                     Rotation = Vector3.UnitY * MathHelper.Pi
                 })
-                .Attach(new Camera() { Projection = Projections.Perspective });
+                .Attach(new Camera() { Projection = Projection.Perspective });
 
             _playerOneId = _world.CreateEntity()
                 .Attach(new Transform() { Position = Vector3.UnitX * -3 })
                 .Attach(new SpriteRenderer(texture) { Color = Color4.Green })
                 .Attach(new RigidBody2D() { Mass = 1f, GravityScale = 0f })
-                .Attach(new Collider2D(Shapes2D.Circle) { Restitution = 1f })
+                .Attach(new Collider2D(Shape2D.Circle) { Restitution = 1f })
                 .Id;
 
             _playerTwoId = _world.CreateEntity()
                 .Attach(new Transform() { Position = Vector3.UnitX * 3 })
                 .Attach(new SpriteRenderer(texture) { Color = Color4.Yellow })
                 .Attach(new RigidBody2D() { Mass = 1f, GravityScale = 0f })
-                .Attach(new Collider2D(Shapes2D.Circle) { Restitution = .5f })
+                .Attach(new Collider2D(Shape2D.Circle) { Restitution = 1f })
                 .Id;
         }
 

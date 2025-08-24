@@ -48,7 +48,7 @@ namespace RetroEngine.FuncTest.Games
                 })
                 .Attach(new Camera()
                 {
-                    Projection = Projections.Perspective
+                    Projection = Projection.Perspective
                 })
             .Id;
 

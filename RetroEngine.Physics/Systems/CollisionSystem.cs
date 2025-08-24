@@ -13,12 +13,16 @@ using System.Transactions;
 
 namespace RetroEngine.Physics.Systems
 {
+    /// <summary>
+    /// Updates entities with bodies that collides with another body.
+    /// </summary>
     public class CollisionSystem()
         : UpdateSystem(Contract
             .Include<Transform>()
             .Include<RigidBody2D>()
             .Include<Collider2D>())
     {
+        /// <inheritdoc/>
         public override void Process(World world, GameTime time)
         {
             foreach (var entityA in GetEntities())
@@ -36,7 +40,7 @@ namespace RetroEngine.Physics.Systems
                     ref var bodyB = ref world.GetComponent<RigidBody2D>(entityB);
                     ref var colliderB = ref world.GetComponent<Collider2D>(entityB);
 
-                    if (CollisionMath.Intersects(
+                    if (Collider2D.Intersects(
                         transformA, colliderA,
                         transformB, colliderB,
                         out Vector2 direction, out float depth))

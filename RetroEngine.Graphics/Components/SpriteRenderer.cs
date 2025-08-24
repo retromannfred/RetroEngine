@@ -4,7 +4,7 @@ using RetroEngine.Graphics.Batching;
 namespace RetroEngine.Graphics.Components
 {
     /// <summary>
-    /// Defines parameters needed for a sprite to be rendered.
+    /// Defines how a sprite of an entity is rendered in the screen.
     /// </summary>
     /// <param name="texture">Texture to render.</param>
     public struct SpriteRenderer(Texture2D texture)

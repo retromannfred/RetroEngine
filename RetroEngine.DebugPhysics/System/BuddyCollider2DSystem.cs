@@ -1,12 +1,10 @@
-﻿using OpenTK.Graphics.OpenGL;
-using OpenTK.Mathematics;
+﻿using OpenTK.Mathematics;
 using RetroEngine.Buddies.Helpers;
 using RetroEngine.Core;
 using RetroEngine.Core.Components;
 using RetroEngine.Core.Elements;
 using RetroEngine.Physics;
 using RetroEngine.Physics.Components;
-using RetroEngine.Physics.Enums;
 
 
 namespace RetroEngine.Buddies.System
@@ -21,7 +19,7 @@ namespace RetroEngine.Buddies.System
             .Include<Collider2D>())
     {
         private readonly GraphicSettings _graphicSettings = graphicSettings;
-        private readonly RectangleCollisionRenderer _rectangleRenderer = new();
+        private readonly RectangleColliderRenderer _rectangleRenderer = new();
 
         /// <inheritdoc/>
         public override void Process(World world, GameTime time)
@@ -30,6 +28,8 @@ namespace RetroEngine.Buddies.System
             {
                 foreach (var entityA in GetEntities())
                 {
+                    bool collided = false;
+
                     ref var transformA = ref world.GetComponent<Transform>(entityA);
                     ref var colliderA = ref world.GetComponent<Collider2D>(entityA);
 
@@ -41,7 +41,7 @@ namespace RetroEngine.Buddies.System
                         ref var transformB = ref world.GetComponent<Transform>(entityB);
                         ref var colliderB = ref world.GetComponent<Collider2D>(entityB);
 
-                        if (CollisionMath.Intersects(
+                        if (Collider2D.Intersects(
                             transformA, colliderA,
                             transformB, colliderB,
                             out _, out _))
@@ -50,6 +50,9 @@ namespace RetroEngine.Buddies.System
                             break;
                         }
                     }
+
+                    if (collided == false)
+                        _rectangleRenderer.Draw(transformA, colliderA, clipSpace.View, clipSpace.Projection, new Vector4(0f, 1f, 0f, 1f));
                 }
             }
         }

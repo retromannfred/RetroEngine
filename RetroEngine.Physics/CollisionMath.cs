@@ -10,34 +10,21 @@ using System.Threading.Tasks;
 
 namespace RetroEngine.Physics
 {
+    /// <summary>
+    /// Defines math methods that helps to calculate and resolve collisions.
+    /// </summary>
     public static class CollisionMath
     {
-        public static bool Intersects(
-            Transform transformA, Collider2D colliderA,
-            Transform transformB, Collider2D colliderB,
-            out Vector2 direction, out float depth)
-        {
-            direction = Vector2.Zero;
-            depth = 0;
-
-            if (colliderA.Shape == Shapes2D.Circle && colliderB.Shape == Shapes2D.Circle)
-            {
-                return CollisionMath.IntersectCircles(
-                    transformA.Position.Xy + colliderA.Offset, colliderA.Radius,
-                    transformB.Position.Xy + colliderB.Offset, colliderB.Radius,
-                    out direction, out depth);
-            }
-            else if (colliderA.Shape == Shapes2D.Rectangle && colliderB.Shape == Shapes2D.Rectangle)
-            {
-                var verticesA = CollisionMath.GetRectangleVertices(transformA, colliderA);
-                var verticesB = CollisionMath.GetRectangleVertices(transformB, colliderB);
-
-                return CollisionMath.IntersectPolygons(verticesA, verticesB, out direction, out depth);
-            }
-
-            return false;
-        }
-
+        /// <summary>
+        /// Checks if two circles are intersecting.
+        /// </summary>
+        /// <param name="centerA">Center of the first circle.</param>
+        /// <param name="radiusA">Radius of the first circle.</param>
+        /// <param name="centerB">Center of the second circle.</param>
+        /// <param name="radiusB">Radius of the second circle.</param>
+        /// <param name="direction">If both circles are intersected, returns normal vector indicating in which direction the first circle has intersected the second one.</param>
+        /// <param name="depth">If both circles are intersected, returns the depth of the intersection between the two circles.</param>
+        /// <returns>True if both circles are intersected, and false otherwise.</returns>
         public static bool IntersectCircles(Vector2 centerA, float radiusA, Vector2 centerB, float radiusB, out Vector2 direction, out float depth)
         {
             direction = Vector2.Zero;
@@ -46,19 +33,27 @@ namespace RetroEngine.Physics
             var radiusSum = radiusA + radiusB;
             var centerDistanceSquared = Vector2.DistanceSquared(centerA, centerB);
 
-            if (centerDistanceSquared < radiusSum * radiusSum)
+            if (centerDistanceSquared >= radiusSum * radiusSum)
             {
-                var centerDistance = (float)MathHelper.Sqrt(centerDistanceSquared);
-                depth = radiusSum - centerDistance;
-
-                direction = Vector2.Normalize(centerB - centerA);
-
-                return true;
+                return false;
             }
 
-            return false;
+            var centerDistance = (float)MathHelper.Sqrt(centerDistanceSquared);
+            depth = radiusSum - centerDistance;
+
+            direction = Vector2.Normalize(centerB - centerA);
+
+            return true;
         }
 
+        /// <summary>
+        /// Checks if two polygons are intersecting.
+        /// </summary>
+        /// <param name="verticesA">Vertices locations of the first polygon.</param>
+        /// <param name="verticesB">Vertices locations of the second polygon.</param>
+        /// <param name="direction">If both polygons are intersected, returns normal vector indicating in which direction the first polygon has intersected the second one.</param>
+        /// <param name="depth">If both polygons are intersected, returns the depth of the intersection between the two polygons.</param>
+        /// <returns>True if both polygons are intersected, and false otherwise.</returns>
         public static bool IntersectPolygons(Vector2[] verticesA, Vector2[] verticesB, out Vector2 direction, out float depth)
         {
             direction = Vector2.Zero;
@@ -134,45 +129,6 @@ namespace RetroEngine.Physics
                 if (projection > max)
                     max = projection;
             }
-        }
-
-        public static Vector2[] GetRectangleVertices(Transform transform, Collider2D collider)
-        {
-            // Dimensiones con escala aplicada
-            float halfW = collider.Width * transform.Scale.X * 0.5f;
-            float halfH = collider.Height * transform.Scale.Y * 0.5f;
-
-            // Vértices locales del collider (antes de rotación/traslación)
-            Vector2[] localVertices =
-            [
-                new Vector2(-halfW, -halfH), // BL
-                new Vector2( halfW, -halfH), // BR
-                new Vector2( halfW,  halfH), // TR
-                new Vector2(-halfW,  halfH)  // TL
-            ];
-
-            // Rotación Z (2D)
-            float cos = MathF.Cos(transform.Rotation.Z);
-            float sin = MathF.Sin(transform.Rotation.Z);
-
-            Vector2[] worldVertices = new Vector2[4];
-            for (int i = 0; i < 4; i++)
-            {
-                // Aplico offset
-                Vector2 v = localVertices[i] + collider.Offset;
-
-                // Rotación alrededor del origen
-                float x = v.X * cos - v.Y * sin;
-                float y = v.X * sin + v.Y * cos;
-
-                // Traslación (posición del transform)
-                worldVertices[i] = new Vector2(
-                    x + transform.Position.X,
-                    y + transform.Position.Y
-                );
-            }
-
-            return worldVertices;
         }
     }
 }

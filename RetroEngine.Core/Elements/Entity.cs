@@ -1,5 +1,4 @@
 ﻿using RetroEngine.Core.Exceptions;
-using RetroEngine.Core.Managers;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("RetroEngine.UnitTest")]

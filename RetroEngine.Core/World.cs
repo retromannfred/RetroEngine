@@ -1,6 +1,5 @@
 ﻿using RetroEngine.Core.Elements;
 using RetroEngine.Core.Managers;
-using System.Security.Cryptography;
 
 namespace RetroEngine.Core
 {

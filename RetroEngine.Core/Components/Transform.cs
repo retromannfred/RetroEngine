@@ -3,7 +3,7 @@
 namespace RetroEngine.Core.Components
 {
     /// <summary>
-    /// Defines a transformation of an entity in the world space.
+    /// Defines the transformation of an entity in the world space.
     /// </summary>
     public struct Transform()
     {

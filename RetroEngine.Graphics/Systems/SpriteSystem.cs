@@ -1,5 +1,4 @@
-﻿using OpenTK.Mathematics;
-using RetroEngine.Core;
+﻿using RetroEngine.Core;
 using RetroEngine.Core.Components;
 using RetroEngine.Core.Elements;
 using RetroEngine.Graphics.Batching;

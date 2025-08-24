@@ -12,6 +12,9 @@ using RetroEngine.Physics.Enums;
 
 namespace RetroEngine.FuncTest.Games
 {
+    /// <summary>
+    /// Game to test how collision system works.
+    /// </summary>
     internal class TestCollisionsGame : Game
     {
         private const float PLAYER_WALK_SPEED = 3f;
@@ -27,8 +30,9 @@ namespace RetroEngine.FuncTest.Games
             : base("Test collisions", 800, 600)
         {
             Console.WriteLine();
-            Console.WriteLine("Move the rotation square with WASD keys.");
-            Console.WriteLine("When two object are colliding, they will turn red.");
+            Console.WriteLine("Move the cirecle with WASD keys.");
+            Console.WriteLine("You will see colliders as green lines.");
+            Console.WriteLine("When two object are colliding, collider lines will turn red.");
             Console.WriteLine();
 
             _world = new WorldBuilder()
@@ -57,7 +61,7 @@ namespace RetroEngine.FuncTest.Games
             _playerId = _world.CreateEntity()
                 .Attach(new Transform())
                 .Attach(new SpriteRenderer(texture) { Color = Color4.Blue })
-                .Attach(new Collider2D(Shapes2D.Circle))
+                .Attach(new Collider2D(Shape2D.Circle))
                 .Id;
 
             for (int i = 0; i < 10; i++)
@@ -71,7 +75,7 @@ namespace RetroEngine.FuncTest.Games
                 {
                     Color = Color4.White
                 })
-                .Attach(new Collider2D(Shapes2D.Circle));
+                .Attach(new Collider2D(Shape2D.Circle));
             }
         }
 

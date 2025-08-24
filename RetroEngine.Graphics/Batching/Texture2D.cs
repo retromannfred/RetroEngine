@@ -1,6 +1,4 @@
 ﻿using OpenTK.Graphics.OpenGL4;
-using OpenTK.Windowing.Desktop;
-using StbImageSharp;
 
 namespace RetroEngine.Graphics.Batching
 {

@@ -1,10 +1,5 @@
 ﻿using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RetroEngine.Core
 {
@@ -18,8 +13,8 @@ namespace RetroEngine.Core
     {
         private readonly GameLoopMode _gameLoopMode = GameLoopMode.RestrictedUpdate;
 
-        private const double FIXED_UPDATE_RATE = 1.0 / 60.0; // 60 UPS
-        private const double FIXED_RENDER_RATE = 1.0 / 60.0; // 60 FPS
+        private const double FIXED_UPDATE_RATE = 1.0 / 60.0;
+        private const double FIXED_RENDER_RATE = 1.0 / 60.0;
 
         private double updateAccumulator = 0.0;
         private double timeSinceLastRender = 0.0;
@@ -30,6 +25,16 @@ namespace RetroEngine.Core
         private double counterTimer = 0.0;
         private int UPS = 0;
         private int FPS = 0;
+
+        /// <summary>
+        /// Occurs when it is time to update a frame.
+        /// </summary>
+        public event Action<FrameEventArgs>? RetroUpdateFrame;
+
+        /// <summary>
+        /// Occurs when it is time to render a frame.
+        /// </summary>
+        public event Action<FrameEventArgs>? RetroRenderFrame;
 
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
@@ -55,7 +60,6 @@ namespace RetroEngine.Core
                     break;
             }
 
-            // Contador de UPS/FPS
             counterTimer += e.Time;
             if (counterTimer >= 1.0)
             {
@@ -102,15 +106,5 @@ namespace RetroEngine.Core
             RetroRenderFrame?.Invoke(new FrameEventArgs(e.Time));
             framesThisSecond++;
         }
-
-        /// <summary>
-        /// Occurs when it is time to update a frame.
-        /// </summary>
-        public event Action<FrameEventArgs>? RetroUpdateFrame;
-
-        /// <summary>
-        /// Occurs when it is time to render a frame.
-        /// </summary>
-        public event Action<FrameEventArgs>? RetroRenderFrame;
     }
 }

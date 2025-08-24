@@ -34,6 +34,9 @@ namespace RetroEngine.Core
         /// </summary>
         public MouseState? MouseState { get; private set; }
 
+        /// <summary>
+        /// Gets the game controllers state of the game.
+        /// </summary>
         public IReadOnlyList<JoystickState> JoystickStates { get; }
 
         public Game(string title, int initialWindowWidth, int initialWindowHeight)

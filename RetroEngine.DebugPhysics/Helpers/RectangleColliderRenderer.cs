@@ -4,23 +4,24 @@ using RetroEngine.Core.Components;
 using RetroEngine.Graphics.Batching;
 using RetroEngine.Graphics.Shaders;
 using RetroEngine.Physics.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RetroEngine.Buddies.Helpers
 {
-    public class RectangleCollisionRenderer
+    /// <summary>
+    /// Defines a render to draw colliders in rectangle form.
+    /// </summary>
+    public class RectangleColliderRenderer
     {
         private readonly VertexArray _vao;
         private readonly VertexBuffer<Vector2> _vbo;
         private readonly ElementBuffer _ebo;
         private readonly ShaderProgram _shader;
 
-        public RectangleCollisionRenderer()
+        /// <summary>
+        /// Creates a new <see cref="RectangleColliderRenderer"/>.
+        /// </summary>
+        public RectangleColliderRenderer()
         {
             var assembly = Assembly.GetExecutingAssembly();
             var vertexShader = new Shader(Shader.LoadShaderSource(assembly, assembly.GetName().Name + ".Shaders.rectangle_render.vert"), ShaderType.VertexShader);
@@ -54,6 +55,14 @@ namespace RetroEngine.Buddies.Helpers
             _vao.Link(0, _vbo, 2);
         }
 
+        /// <summary>
+        /// Draws a rectangle collider.
+        /// </summary>
+        /// <param name="transform">Transform component associated to the collider.</param>
+        /// <param name="collider">Collider component to draw.</param>
+        /// <param name="view">Camera's view matrix.</param>
+        /// <param name="projection">Camera's projection matrix.</param>
+        /// <param name="color">Color of the collider lines.</param>
         public void Draw(Transform transform, Collider2D collider, Matrix4 view, Matrix4 projection, Vector4 color)
         {
             _shader.Bind();
@@ -78,14 +87,6 @@ namespace RetroEngine.Buddies.Helpers
             GL.Uniform4(locColor, color);
 
             GL.DrawElements(PrimitiveType.LineLoop, _ebo.Count, DrawElementsType.UnsignedInt, 0);
-        }
-
-        public void Delete()
-        {
-            _ebo.Delete();
-            _vbo.Delete();
-            _vao.Delete();
-            _shader.Delete();
         }
     }
 }

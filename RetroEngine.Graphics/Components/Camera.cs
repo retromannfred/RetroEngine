@@ -38,7 +38,7 @@ namespace RetroEngine.Graphics.Components
         /// <summary>
         /// Gets or sets the projection of the camera.
         /// </summary>
-        public Projections Projection { get; set; } = Projections.Ortographic;
+        public Projection Projection { get; set; } = Projection.Ortographic;
 
         /// <summary>
         /// Gets or sets the field of view for the perspective view.
