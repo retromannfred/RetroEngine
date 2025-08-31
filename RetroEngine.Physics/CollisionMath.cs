@@ -1,12 +1,4 @@
 ﻿using OpenTK.Mathematics;
-using RetroEngine.Core.Components;
-using RetroEngine.Physics.Components;
-using RetroEngine.Physics.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RetroEngine.Physics
 {

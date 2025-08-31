@@ -1,4 +1,4 @@
-﻿namespace RetroEngine.Core.Elements
+﻿namespace RetroEngine.Core
 {
     /// <summary>
     /// Defines a builder to create signatures.

@@ -1,7 +1,7 @@
 ﻿using OpenTK.Mathematics;
 using StbImageSharp;
 
-namespace RetroEngine.Graphics.Batching
+namespace RetroEngine.Graphics
 {
     /// <summary>
     /// Defines functionallity to create textures.

@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RetroEngine.Core\RetroEngine.Core.csproj" />
+    <ProjectReference Include="..\RetroEngine.Graphics\RetroEngine.Graphics.csproj" />
     <ProjectReference Include="..\RetroEngine.Physics\RetroEngine.Physics.csproj" />
   </ItemGroup>
 

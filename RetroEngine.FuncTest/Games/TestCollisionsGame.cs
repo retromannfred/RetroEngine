@@ -2,13 +2,8 @@
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using RetroEngine.Buddies.System;
 using RetroEngine.Core;
-using RetroEngine.Core.Components;
-using RetroEngine.Graphics.Batching;
-using RetroEngine.Graphics.Components;
-using RetroEngine.Graphics.Enums;
-using RetroEngine.Graphics.Systems;
-using RetroEngine.Physics.Components;
-using RetroEngine.Physics.Enums;
+using RetroEngine.Graphics;
+using RetroEngine.Physics;
 
 namespace RetroEngine.FuncTest.Games
 {
@@ -50,11 +45,11 @@ namespace RetroEngine.FuncTest.Games
             _cameraId = _world.CreateEntity()
                 .Attach(new Transform()
                 {
-                    Position = Vector3.UnitZ * 20f,
-                    Rotation = Vector3.UnitY * MathHelper.Pi
+                    Position = Vector3.UnitZ * 20f
                 })
                 .Attach(new Camera()
                 {
+                    Projection = ProjectionType.Perspective
                 })
             .Id;
 

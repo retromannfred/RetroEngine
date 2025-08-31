@@ -5,11 +5,12 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Performance", "CA1822:Marcar miembros como static", Justification = "<pendiente>", Scope = "member", Target = "~M:RetroEngine.Graphics.Components.Camera.MoveUp(RetroEngine.Core.Components.Transform,System.Single)~RetroEngine.Core.Components.Transform")]
-[assembly: SuppressMessage("Performance", "CA1822:Marcar miembros como static", Justification = "<pendiente>", Scope = "member", Target = "~M:RetroEngine.Graphics.Components.Camera.MoveDown(RetroEngine.Core.Components.Transform,System.Single)~RetroEngine.Core.Components.Transform")]
-[assembly: SuppressMessage("Performance", "CA1822:Marcar miembros como static", Justification = "<pendiente>", Scope = "member", Target = "~M:RetroEngine.Graphics.Components.Camera.LookUp(RetroEngine.Core.Components.Transform,System.Single)~RetroEngine.Core.Components.Transform")]
-[assembly: SuppressMessage("Performance", "CA1822:Marcar miembros como static", Justification = "<pendiente>", Scope = "member", Target = "~M:RetroEngine.Graphics.Components.Camera.LookRight(RetroEngine.Core.Components.Transform,System.Single)~RetroEngine.Core.Components.Transform")]
-[assembly: SuppressMessage("Performance", "CA1822:Marcar miembros como static", Justification = "<pendiente>", Scope = "member", Target = "~M:RetroEngine.Graphics.Components.Camera.LookLeft(RetroEngine.Core.Components.Transform,System.Single)~RetroEngine.Core.Components.Transform")]
-[assembly: SuppressMessage("Performance", "CA1822:Marcar miembros como static", Justification = "<pendiente>", Scope = "member", Target = "~M:RetroEngine.Graphics.Components.Camera.LookDown(RetroEngine.Core.Components.Transform,System.Single)~RetroEngine.Core.Components.Transform")]
-[assembly: SuppressMessage("Style", "IDE0300:Simplificar la inicialización de la recopilación", Justification = "<pendiente>", Scope = "member", Target = "~F:RetroEngine.Graphics.FixedBufferData.PositionAndTextureCoords")]
-[assembly: SuppressMessage("Style", "IDE0300:Simplificar la inicialización de la recopilación", Justification = "<pendiente>", Scope = "member", Target = "~F:RetroEngine.Graphics.FixedBufferData.ElementBufferIndices")]
+[assembly: SuppressMessage("Performance", "CA1822", Scope = "member", Target = "~M:RetroEngine.Graphics.Camera.MoveUp(RetroEngine.Core.Transform,System.Single)~RetroEngine.Core.Transform")]
+[assembly: SuppressMessage("Performance", "CA1822", Scope = "member", Target = "~M:RetroEngine.Graphics.Camera.MoveDown(RetroEngine.Core.Transform,System.Single)~RetroEngine.Core.Transform")]
+[assembly: SuppressMessage("Performance", "CA1822", Scope = "member", Target = "~M:RetroEngine.Graphics.Camera.LookUp(RetroEngine.Core.Transform,System.Single)~RetroEngine.Core.Transform")]
+[assembly: SuppressMessage("Performance", "CA1822", Scope = "member", Target = "~M:RetroEngine.Graphics.Camera.LookRight(RetroEngine.Core.Transform,System.Single)~RetroEngine.Core.Transform")]
+[assembly: SuppressMessage("Performance", "CA1822", Scope = "member", Target = "~M:RetroEngine.Graphics.Camera.LookLeft(RetroEngine.Core.Transform,System.Single)~RetroEngine.Core.Transform")]
+[assembly: SuppressMessage("Performance", "CA1822", Scope = "member", Target = "~M:RetroEngine.Graphics.Camera.LookDown(RetroEngine.Core.Transform,System.Single)~RetroEngine.Core.Transform")]
+[assembly: SuppressMessage("Style", "IDE0300", Scope = "member", Target = "~F:RetroEngine.Graphics.Batching.FixedSpriteBatchBufferData.PositionAndTextureCoords")]
+[assembly: SuppressMessage("Style", "IDE0300", Scope = "member", Target = "~F:RetroEngine.Graphics.Batching.FixedSpriteBatchBufferData.ElementBufferIndices")]
+[assembly: SuppressMessage("Style", "IDE0130", Scope = "namespace", Target = "~N:RetroEngine.Graphics")]

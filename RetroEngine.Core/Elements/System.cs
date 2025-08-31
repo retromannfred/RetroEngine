@@ -1,6 +1,6 @@
 ﻿using RetroEngine.Core.Exceptions;
 
-namespace RetroEngine.Core.Elements
+namespace RetroEngine.Core
 {
     /// <summary>
     /// Defines basic functionallity of a system in a ECS engine.

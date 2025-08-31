@@ -1,8 +1,7 @@
-﻿using RetroEngine.Core.Elements;
-using RetroEngine.Core.Exceptions;
+﻿using RetroEngine.Core.Exceptions;
 using RetroEngine.Core.Utils;
 
-namespace RetroEngine.Core.Managers
+namespace RetroEngine.Core
 {
     /// <summary>
     /// Manages a pool of game entities.

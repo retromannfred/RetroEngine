@@ -1,6 +1,8 @@
 ﻿using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
+using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("RetroEngine.UnitTest")]
 namespace RetroEngine.Core
 {
     /// <summary>
@@ -13,18 +15,21 @@ namespace RetroEngine.Core
     {
         private readonly GameLoopMode _gameLoopMode = GameLoopMode.RestrictedUpdate;
 
-        private const double FIXED_UPDATE_RATE = 1.0 / 60.0;
-        private const double FIXED_RENDER_RATE = 1.0 / 60.0;
+        private float _updateRate = 1f / 60f;
+        private float _renderRate = 1f / 60f;
 
         private double updateAccumulator = 0.0;
         private double timeSinceLastRender = 0.0;
 
-        // Contadores para medir UPS/FPS
-        private int updatesThisSecond = 0;
-        private int framesThisSecond = 0;
-        private double counterTimer = 0.0;
-        private int UPS = 0;
-        private int FPS = 0;
+        /// <summary>
+        /// Gets or sets maximum of updates the CPU will be doing if there is a restricted update.
+        /// </summary>
+        public float TargetUPS { get => 1f / _updateRate; set => _updateRate = 1f / value; }
+
+        /// <summary>
+        /// Gets or sets maximum of frames the GPU will be rendering if there is a restricted render.
+        /// </summary>
+        public float TargetFPS { get => 1f / _renderRate; set => _renderRate = 1f / value; }
 
         /// <summary>
         /// Occurs when it is time to update a frame.
@@ -59,52 +64,37 @@ namespace RetroEngine.Core
                 default:
                     break;
             }
-
-            counterTimer += e.Time;
-            if (counterTimer >= 1.0)
-            {
-                UPS = updatesThisSecond;
-                FPS = framesThisSecond;
-                updatesThisSecond = 0;
-                framesThisSecond = 0;
-                counterTimer = 0.0;
-                Console.Write($"\rUPS: {UPS}, FPS: {FPS}                          ");
-            }
         }
 
         private void RestrictedUpdate(FrameEventArgs e)
         {
             updateAccumulator += e.Time;
 
-            while (updateAccumulator >= FIXED_UPDATE_RATE)
+            while (updateAccumulator >= _updateRate)
             {
-                RetroUpdateFrame?.Invoke(new FrameEventArgs(FIXED_UPDATE_RATE));
-                updateAccumulator -= FIXED_UPDATE_RATE;
-                updatesThisSecond++;
+                RetroUpdateFrame?.Invoke(new FrameEventArgs(_updateRate));
+                updateAccumulator -= _updateRate;
             }
         }
 
         private void FreeUpdate(FrameEventArgs e)
         {
             RetroUpdateFrame?.Invoke(new FrameEventArgs(e.Time));
-            updatesThisSecond++;
         }
 
         private void FixedRender(FrameEventArgs e)
         {
             timeSinceLastRender += e.Time;
-            if (timeSinceLastRender >= FIXED_RENDER_RATE)
+            if (timeSinceLastRender >= _renderRate)
             {
                 RetroRenderFrame?.Invoke(new FrameEventArgs(timeSinceLastRender));
                 timeSinceLastRender = 0.0;
-                framesThisSecond++;
             }
         }
 
         private void FreeRender(FrameEventArgs e)
         {
             RetroRenderFrame?.Invoke(new FrameEventArgs(e.Time));
-            framesThisSecond++;
         }
     }
 }

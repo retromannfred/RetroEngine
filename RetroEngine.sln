@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RetroEngine.Graphics", "Ret
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RetroEngine.Physics", "RetroEngine.Physics\RetroEngine.Physics.csproj", "{35EDB9B7-35A0-464B-8A6B-3878EAD75925}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RetroEngine.Buddies", "RetroEngine.DebugPhysics\RetroEngine.Buddies.csproj", "{5BFAEDFC-0F4A-4840-98A9-87F408F4B7C8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RetroEngine.Buddies", "RetroEngine.Buddies\RetroEngine.Buddies.csproj", "{5BFAEDFC-0F4A-4840-98A9-87F408F4B7C8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

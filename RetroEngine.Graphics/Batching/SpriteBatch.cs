@@ -1,7 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
-using RetroEngine.Core.Components;
-using RetroEngine.Graphics.Components;
+using RetroEngine.Core;
 using RetroEngine.Graphics.Shaders;
 using System.Reflection;
 
@@ -46,8 +45,8 @@ namespace RetroEngine.Graphics.Batching
             _texture = texture;
 
             _vboPositions = new VertexBuffer<float>(BufferUsageHint.StaticDraw);
-            _vboPositions.CreateData(FixedBufferData.PositionAndTextureCoords);
-            _ebo.UpdateData(FixedBufferData.ElementBufferIndices);
+            _vboPositions.CreateData(FixedSpriteBatchBufferData.PositionAndTextureCoords);
+            _ebo.UpdateData(FixedSpriteBatchBufferData.ElementBufferIndices);
 
             _vao.Link(layoutIndex++, _vboPositions, 3, 5, 0);
             _vao.Link(layoutIndex++, _vboPositions, 2, 5, 3);

@@ -1,6 +1,6 @@
 ﻿using OpenTK.Mathematics;
 
-namespace RetroEngine.Core.Components
+namespace RetroEngine.Core
 {
     /// <summary>
     /// Defines the transformation of an entity in the world space.

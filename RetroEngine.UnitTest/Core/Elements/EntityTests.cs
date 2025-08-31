@@ -1,15 +1,7 @@
-﻿using Moq;
-using RetroEngine.Core;
-using RetroEngine.Core.Elements;
+﻿using RetroEngine.Core;
 using RetroEngine.Core.Exceptions;
-using RetroEngine.Core.Managers;
 using RetroEngine.UnitTest.TestData.Components;
 using RetroEngine.UnitTest.TestData.Systems;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RetroEngine.UnitTest.Core.Elements
 {

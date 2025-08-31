@@ -1,7 +1,6 @@
 ﻿using OpenTK.Mathematics;
-using RetroEngine.Physics.Enums;
 
-namespace RetroEngine.Physics.Components
+namespace RetroEngine.Physics
 {
     /// <summary>
     /// Defines the physics behaviour of an entity.

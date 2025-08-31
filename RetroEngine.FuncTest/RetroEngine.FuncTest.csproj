@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\RetroEngine.Buddies\RetroEngine.Buddies.csproj" />
     <ProjectReference Include="..\RetroEngine.Core\RetroEngine.Core.csproj" />
-    <ProjectReference Include="..\RetroEngine.DebugPhysics\RetroEngine.Buddies.csproj" />
     <ProjectReference Include="..\RetroEngine.Graphics\RetroEngine.Graphics.csproj" />
   </ItemGroup>
 

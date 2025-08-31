@@ -1,6 +1,5 @@
-﻿using RetroEngine.Core.Elements;
+﻿using RetroEngine.Core;
 using RetroEngine.Core.Exceptions;
-using RetroEngine.Core.Managers;
 
 namespace RetroEngine.UnitTest.Core.Managers
 {

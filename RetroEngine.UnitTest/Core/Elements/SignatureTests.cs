@@ -1,4 +1,4 @@
-﻿using RetroEngine.Core.Elements;
+﻿using RetroEngine.Core;
 
 namespace RetroEngine.UnitTest.Core.Elements
 {

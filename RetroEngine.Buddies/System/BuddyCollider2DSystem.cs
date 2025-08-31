@@ -1,10 +1,7 @@
 ﻿using OpenTK.Mathematics;
 using RetroEngine.Buddies.Helpers;
 using RetroEngine.Core;
-using RetroEngine.Core.Components;
-using RetroEngine.Core.Elements;
 using RetroEngine.Physics;
-using RetroEngine.Physics.Components;
 
 
 namespace RetroEngine.Buddies.System

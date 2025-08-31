@@ -1,16 +1,7 @@
 ﻿using OpenTK.Mathematics;
 using RetroEngine.Core;
-using RetroEngine.Core.Components;
-using RetroEngine.Core.Elements;
-using RetroEngine.Physics.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Transactions;
 
-namespace RetroEngine.Physics.Systems
+namespace RetroEngine.Physics
 {
     /// <summary>
     /// Defines a system that updates the transform component of an entity that applies physics with a body.

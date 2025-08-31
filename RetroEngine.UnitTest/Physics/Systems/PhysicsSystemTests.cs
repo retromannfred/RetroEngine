@@ -1,13 +1,6 @@
 ﻿using OpenTK.Mathematics;
 using RetroEngine.Core;
-using RetroEngine.Core.Components;
-using RetroEngine.Physics.Components;
-using RetroEngine.Physics.Systems;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using RetroEngine.Physics;
 
 namespace RetroEngine.UnitTest.Physics.Systems
 {

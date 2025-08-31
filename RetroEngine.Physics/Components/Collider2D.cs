@@ -1,8 +1,7 @@
 ﻿using OpenTK.Mathematics;
-using RetroEngine.Core.Components;
-using RetroEngine.Physics.Enums;
+using RetroEngine.Core;
 
-namespace RetroEngine.Physics.Components
+namespace RetroEngine.Physics
 {
     /// <summary>
     /// Defines how an entity behaves when collides with another entity.

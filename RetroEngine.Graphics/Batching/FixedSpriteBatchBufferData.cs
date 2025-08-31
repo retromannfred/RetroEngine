@@ -1,9 +1,9 @@
-﻿namespace RetroEngine.Graphics
+﻿namespace RetroEngine.Graphics.Batching
 {
     /// <summary>
     /// Defines constant buffer data information about vertices.
     /// </summary>
-    internal static class FixedBufferData
+    internal static class FixedSpriteBatchBufferData
     {
         public static float[] PositionAndTextureCoords = {
             //  [---Positions---] [Texcoords]

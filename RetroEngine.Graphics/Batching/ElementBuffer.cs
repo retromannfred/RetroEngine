@@ -5,25 +5,17 @@ namespace RetroEngine.Graphics.Batching
     /// <summary>
     /// Abstracts the element buffer object functionallity from OpenGL.
     /// </summary>
-    public class ElementBuffer
+    public class ElementBuffer()
     {
         /// <summary>
         /// Gets the OpenGL ID of this object.
         /// </summary>
-        public int Id { get; private set; }
+        public int Id { get; private set; } = GL.GenBuffer();
 
         /// <summary>
         /// Gets the number of items in this buffer.
         /// </summary>
-        public int Count { get; private set; }
-
-        /// <summary>
-        /// Creates a new element buffer object.
-        /// </summary>
-        public ElementBuffer()
-        {
-            Id = GL.GenBuffer();
-        }
+        public int Count { get; private set; } = 0;
 
         /// <summary>
         /// Updates all data of this element buffer.

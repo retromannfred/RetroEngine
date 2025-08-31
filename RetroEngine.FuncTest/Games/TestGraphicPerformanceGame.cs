@@ -1,11 +1,7 @@
 ﻿using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using RetroEngine.Core;
-using RetroEngine.Core.Components;
-using RetroEngine.Graphics.Batching;
-using RetroEngine.Graphics.Components;
-using RetroEngine.Graphics.Enums;
-using RetroEngine.Graphics.Systems;
+using RetroEngine.Graphics;
 
 namespace RetroEngine.FuncTest.Games
 {
@@ -43,12 +39,11 @@ namespace RetroEngine.FuncTest.Games
             _cameraId = _world.CreateEntity()
                 .Attach(new Transform()
                 {
-                    Position = Vector3.UnitZ * 10f,
-                    Rotation = Vector3.UnitY * MathHelper.Pi
+                    Position = Vector3.UnitZ * 10f
                 })
                 .Attach(new Camera()
                 {
-                    Projection = Projection.Perspective
+                    Projection = ProjectionType.Perspective
                 })
             .Id;
 

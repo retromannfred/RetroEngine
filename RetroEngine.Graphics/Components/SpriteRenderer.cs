@@ -1,7 +1,7 @@
 ﻿using OpenTK.Mathematics;
-using RetroEngine.Graphics.Batching;
+using RetroEngine.Graphics;
 
-namespace RetroEngine.Graphics.Components
+namespace RetroEngine.Graphics
 {
     /// <summary>
     /// Defines how a sprite of an entity is rendered in the screen.

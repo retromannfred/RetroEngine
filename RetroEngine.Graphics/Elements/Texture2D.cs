@@ -1,6 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 
-namespace RetroEngine.Graphics.Batching
+namespace RetroEngine.Graphics
 {
     /// <summary>
     /// Abstracts the texture functionallity from OpenGL.

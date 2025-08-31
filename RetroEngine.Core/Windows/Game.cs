@@ -14,10 +14,11 @@ namespace RetroEngine.Core
     public abstract class Game
     {
         private readonly RetroEngineWindow _gameWindow;
+
         /// <summary>
         /// Gets or sets the title of the window.
         /// </summary>
-        public string Title { get; set; }
+        public string Title { get => _gameWindow.Title; set => _gameWindow.Title = value; }
 
         /// <summary>
         /// Gets the graphic settings of this
@@ -27,21 +28,36 @@ namespace RetroEngine.Core
         /// <summary>
         /// Gets the keyboard state of the game.
         /// </summary>
-        public KeyboardState? KeyboardState { get; private set; }
+        public KeyboardState KeyboardState { get => _gameWindow.KeyboardState; }
 
         /// <summary>
         /// Gets the mouse state of the game.
         /// </summary>
-        public MouseState? MouseState { get; private set; }
+        public MouseState MouseState { get => _gameWindow.MouseState; }
 
         /// <summary>
         /// Gets the game controllers state of the game.
         /// </summary>
-        public IReadOnlyList<JoystickState> JoystickStates { get; }
+        public IReadOnlyList<JoystickState> JoystickStates { get => _gameWindow.JoystickStates; }
 
+        /// <summary>
+        /// Gets or sets maximum of updates the CPU will be doing if there is a restricted update.
+        /// </summary>
+        public float TargetUPS { get => _gameWindow.TargetUPS; set => _gameWindow.TargetUPS = value; }
+
+        /// <summary>
+        /// Gets or sets maximum of frames the GPU will be rendering if there is a restricted render.
+        /// </summary>
+        public float TargetFPS { get => _gameWindow.TargetFPS; set => _gameWindow.TargetFPS = value; }
+
+        /// <summary>
+        /// Creates a new game window.
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="initialWindowWidth"></param>
+        /// <param name="initialWindowHeight"></param>
         public Game(string title, int initialWindowWidth, int initialWindowHeight)
         {
-            Title = title;
             GraphicSettings = new GraphicSettings(initialWindowWidth, initialWindowHeight);
 
             var nativeWindowSettings = NativeWindowSettings.Default;
@@ -49,16 +65,12 @@ namespace RetroEngine.Core
 
             _gameWindow = new(GameWindowSettings.Default, NativeWindowSettings.Default)
             {
-                Title = Title
+                Title = title
             };
+
             GameTime gameTime = new();
 
-            KeyboardState = _gameWindow.KeyboardState;
-            MouseState = _gameWindow.MouseState;
-            JoystickStates = _gameWindow.JoystickStates;
-
             GL.Enable(EnableCap.DepthTest);
-            GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
             _gameWindow.Load += LoadContent;
@@ -68,11 +80,13 @@ namespace RetroEngine.Core
                 gameTime.TotalGameTime += TimeSpan.FromSeconds(eventArgs.Time);
                 Update(gameTime);
             };
+
             _gameWindow.RetroRenderFrame += eventArgs =>
             {
                 Render(gameTime);
                 _gameWindow.SwapBuffers();
             };
+
             _gameWindow.Resize += eventArgs =>
             {
                 GL.Viewport(0, 0, eventArgs.Width, eventArgs.Height);
@@ -88,7 +102,15 @@ namespace RetroEngine.Core
         {
             _gameWindow.Run();
         }
-        
+
+        /// <summary>
+        /// Finalizes the window process.
+        /// </summary>
+        public void Close()
+        {
+            _gameWindow.Close();
+        }
+
         /// <summary>
         /// Loads the content needed for the game loop.
         /// </summary>

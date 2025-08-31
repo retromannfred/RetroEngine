@@ -1,9 +1,9 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
-using RetroEngine.Core.Components;
+using RetroEngine.Core;
 using RetroEngine.Graphics.Batching;
 using RetroEngine.Graphics.Shaders;
-using RetroEngine.Physics.Components;
+using RetroEngine.Physics;
 using System.Reflection;
 
 namespace RetroEngine.Buddies.Helpers

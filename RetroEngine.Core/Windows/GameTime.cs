@@ -32,8 +32,8 @@
         /// <param name="elapsedGameTime"></param>
         public GameTime(TimeSpan totalGameTime, TimeSpan elapsedGameTime)
         {
-            this.TotalGameTime = totalGameTime;
-            this.ElapsedGameTime = elapsedGameTime;
+            TotalGameTime = totalGameTime;
+            ElapsedGameTime = elapsedGameTime;
         }
     }
 }

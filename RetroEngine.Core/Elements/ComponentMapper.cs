@@ -2,7 +2,7 @@
 using RetroEngine.Core.Utils;
 using System.Collections;
 
-namespace RetroEngine.Core.Elements
+namespace RetroEngine.Core
 {
     /// <summary>
     /// Defines methods a ComponentMapper must have.
