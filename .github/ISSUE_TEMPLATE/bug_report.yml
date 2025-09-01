@@ -35,10 +35,10 @@ body:
       label: Affected scopes
       description: Select the libraries affected by this bug.
       options:
-        - ⚙️ RetroEngine.Core
-        - 🎨 RetroEngine.Graphics
-        - 🔊 RetroEngine.Audio
-        - 🎳 RetroEngine.Physics
-        - 👥 RetroEngine.Buddies
+        - RetroEngine.Core
+        - RetroEngine.Graphics
+        - RetroEngine.Audio
+        - RetroEngine.Physics
+        - RetroEngine.Buddies
     validations:
       required: true
