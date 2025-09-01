@@ -1,0 +1,43 @@
+﻿name: Auto Label Issues
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Apply labels based on issue content
+        uses: actions-ecosystem/action-add-labels@v1
+        if: contains(github.event.issue.body, 'RetroEngine.Core')
+        with:
+          github_token: ${{ secrets.WORKFLOW_TOKEN }}
+          labels: "🧩 scope: core"
+
+      - name: Apply labels based on issue content
+        uses: actions-ecosystem/action-add-labels@v1
+        if: contains(github.event.issue.body, 'RetroEngine.Graphics')
+        with:
+          github_token: ${{ secrets.WORKFLOW_TOKEN }}
+          labels: "🧩 scope: graphics"
+
+      - name: Apply labels based on issue content
+        uses: actions-ecosystem/action-add-labels@v1
+        if: contains(github.event.issue.body, 'RetroEngine.Audio')
+        with:
+          github_token: ${{ secrets.WORKFLOW_TOKEN }}
+          labels: "🧩 scope: audio"
+
+      - name: Apply labels based on issue content
+        uses: actions-ecosystem/action-add-labels@v1
+        if: contains(github.event.issue.body, 'RetroEngine.Physics')
+        with:
+          github_token: ${{ secrets.WORKFLOW_TOKEN }}
+          labels: "🧩 scope: physics"
+
+      - name: Apply labels based on issue content
+        uses: actions-ecosystem/action-add-labels@v1
+        if: contains(github.event.issue.body, 'RetroEngine.Buddies')
+        with:
+          github_token: ${{ secrets.WORKFLOW_TOKEN }}
+          labels: "🧩 scope: buddies"
