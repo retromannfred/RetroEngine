@@ -6,7 +6,6 @@ assignees:
   - retromannfred
 body:
   - type: textarea
-    id: what-happened
     attributes:
       label: What happened?
       description: Describe what is happening or what is the current behaviour of the engine.
@@ -14,7 +13,6 @@ body:
     validations:
       required: true
   - type: textarea
-    id: how-should-work
     attributes:
       label: How it should work?
       description: Describe how actually should work or how the current behaviour of the engine should be.
@@ -22,23 +20,26 @@ body:
     validations:
       required: true
   - type: textarea
-    id: how-to-reproduce
     attributes:
       label: How it can be reproduced?
       description: Explain how the bug can be reproducen in a run.
       placeholder: The steps are...
     validations:
       required: true
-  - type: checkbox
-    id: select-scope
+  - type: markdown
     attributes:
-      label: Affected scopes
-      description: Select the libraries affected by this bug.
-      options:
-        - RetroEngine.Core
-        - RetroEngine.Graphics
-        - RetroEngine.Audio
-        - RetroEngine.Physics
-        - RetroEngine.Buddies
-    validations:
-      required: true
+      value: |
+        ### Select the affected libraries
+        Use the checkboxes below to indicate which parts of the engine are or may be affected by this bug.
+  - type: boolean
+    attributes:
+      label: RetroEngine.Core
+  - type: boolean
+    attributes:
+      label: RetroEngine.Graphics
+  - type: boolean
+    attributes:
+      label: RetroEngine.Audio
+  - type: boolean
+    attributes:
+      label: RetroEngine.Physics
