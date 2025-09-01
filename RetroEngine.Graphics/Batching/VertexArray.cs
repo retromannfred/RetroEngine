@@ -1,5 +1,4 @@
 ﻿using OpenTK.Graphics.OpenGL4;
-using System.Drawing;
 using System.Runtime.CompilerServices;
 
 namespace RetroEngine.Graphics.Batching
@@ -7,7 +6,7 @@ namespace RetroEngine.Graphics.Batching
     /// <summary>
     /// Abstracts the vertex array object functionallity from OpenGL.
     /// </summary>
-    internal class VertexArray
+    public class VertexArray
     {
         /// <summary>
         /// Gets the OpenGL ID of this object.
@@ -93,7 +92,7 @@ namespace RetroEngine.Graphics.Batching
         /// <summary>
         /// Unbinds this OpenGL array.
         /// </summary>
-        public void Unbind()
+        public static void Unbind()
         {
             GL.BindVertexArray(0);
         }

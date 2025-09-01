@@ -1,5 +1,4 @@
 ﻿using OpenTK.Graphics.OpenGL4;
-using OpenTK.Mathematics;
 using System.Runtime.CompilerServices;
 
 namespace RetroEngine.Graphics.Batching
@@ -7,13 +6,17 @@ namespace RetroEngine.Graphics.Batching
     /// <summary>
     /// Abstracts the vertex buffer object functionallity from OpenGL.
     /// </summary>
-    internal class VertexBuffer<T>
+    /// <remarks>
+    /// Creates a new vertex buffer object.
+    /// </remarks>
+    /// <param name="bufferUsage">Specifies the expected usage pattern of the data store.</param>
+    public class VertexBuffer<T>(BufferUsageHint bufferUsage)
         where T : struct
     {
         /// <summary>
         /// Gets the OpenGL ID of this object.
         /// </summary>
-        public int Id { get; private set; }
+        public int Id { get; private set; } = GL.GenBuffer();
 
         /// <summary>
         /// Gets the number of items in this buffer.
@@ -23,17 +26,7 @@ namespace RetroEngine.Graphics.Batching
         /// <summary>
         /// Specifies the expected usage pattern of the data store.
         /// </summary>
-        public BufferUsageHint UsageHint { get; private set; }
-
-        /// <summary>
-        /// Creates a new vertex buffer object.
-        /// </summary>
-        /// <param name="bufferUsage">Specifies the expected usage pattern of the data store.</param>
-        public VertexBuffer(BufferUsageHint bufferUsage)
-        {
-            Id = GL.GenBuffer();
-            UsageHint = bufferUsage;
-        }
+        public BufferUsageHint UsageHint { get; private set; } = bufferUsage;
 
         /// <summary>
         /// Creates and initializes a buffer object's data store
@@ -62,10 +55,12 @@ namespace RetroEngine.Graphics.Batching
         /// </summary>
         /// <param name="offset">Index of first element of data.</param>
         /// <param name="data">New data of this buffer.</param>
-        public void UpdateData(int offset, T[] data)
+        public void UpdateData(int offset, int size, T[] data)
         {
+            var minSize = Math.Min(offset + size, data.Length);
+
             Bind();
-            GL.BufferSubData(BufferTarget.ArrayBuffer, new nint(nint.Zero.ToInt64() + offset * Unsafe.SizeOf<T>()), data.Length * Unsafe.SizeOf<T>(), data);
+            GL.BufferSubData(BufferTarget.ArrayBuffer, new nint(nint.Zero.ToInt64() + offset * Unsafe.SizeOf<T>()), minSize * Unsafe.SizeOf<T>(), data);
         }
 
         /// <summary>

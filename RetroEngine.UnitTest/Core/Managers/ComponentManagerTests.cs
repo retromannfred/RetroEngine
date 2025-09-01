@@ -1,5 +1,5 @@
 ﻿using RetroEngine.Core.Exceptions;
-using RetroEngine.Core.Managers;
+using RetroEngine.Core;
 using RetroEngine.UnitTest.TestData.Components;
 
 namespace RetroEngine.UnitTest.Core.Managers

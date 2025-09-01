@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Shaders\pass_color.frag" />
+    <EmbeddedResource Include="Shaders\rectangle_render.vert" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RetroEngine.Core\RetroEngine.Core.csproj" />
+    <ProjectReference Include="..\RetroEngine.Graphics\RetroEngine.Graphics.csproj" />
+    <ProjectReference Include="..\RetroEngine.Physics\RetroEngine.Physics.csproj" />
+  </ItemGroup>
+
+</Project>

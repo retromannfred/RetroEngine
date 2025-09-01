@@ -1,8 +1,6 @@
 ﻿using Moq;
 using RetroEngine.Core;
-using RetroEngine.Core.Elements;
 using RetroEngine.Core.Exceptions;
-using RetroEngine.Core.Managers;
 using RetroEngine.UnitTest.TestData.Systems;
 
 namespace RetroEngine.UnitTest.Core.Managers

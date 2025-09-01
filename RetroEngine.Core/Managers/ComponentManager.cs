@@ -1,7 +1,6 @@
-﻿using RetroEngine.Core.Elements;
-using RetroEngine.Core.Exceptions;
+﻿using RetroEngine.Core.Exceptions;
 
-namespace RetroEngine.Core.Managers
+namespace RetroEngine.Core
 {
     /// <summary>
     /// Manages collection of component mappers.

@@ -1,6 +1,7 @@
-﻿using RetroEngine.Core.Elements;
+﻿using RetroEngine.Core;
 using RetroEngine.Core.Exceptions;
 using RetroEngine.UnitTest.TestData.Components;
+using System.Collections;
 
 namespace RetroEngine.UnitTest.Core.Elements
 {
@@ -292,6 +293,32 @@ namespace RetroEngine.UnitTest.Core.Elements
 
             // Assert
             Assert.Equal("modified", mapper.Get(1).Tag);
+        }
+
+        [Fact]
+        public void ComponentMapper_CallingBaseGetEnumerator_CallsImplementedEnumerator()
+        {
+            // Arrange
+            var mapper = new ComponentMapper<TagComponent>();
+            mapper.Insert(2, new TagComponent("A"));
+            mapper.Insert(5, new TagComponent("B"));
+            mapper.Insert(3, new TagComponent("C"));
+            mapper.Insert(4, new TagComponent("D"));
+            mapper.Insert(1, new TagComponent("E"));
+            var result = new List<TagComponent>();
+
+            // Act
+            foreach (var item in ((IEnumerable)mapper))
+            {
+                result.Add((TagComponent)item);
+            }
+
+            // Assert
+            Assert.Equal("A", result[0].Tag);
+            Assert.Equal("B", result[1].Tag);
+            Assert.Equal("C", result[2].Tag);
+            Assert.Equal("D", result[3].Tag);
+            Assert.Equal("E", result[4].Tag);
         }
     }
 }

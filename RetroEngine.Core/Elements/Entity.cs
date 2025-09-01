@@ -1,9 +1,8 @@
 ﻿using RetroEngine.Core.Exceptions;
-using RetroEngine.Core.Managers;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("RetroEngine.UnitTest")]
-namespace RetroEngine.Core.Elements
+namespace RetroEngine.Core
 {
     /// <summary>
     /// Defines a wrapper for both entity and component manager to create entities and attach components to it.

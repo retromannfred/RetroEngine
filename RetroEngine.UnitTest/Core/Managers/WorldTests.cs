@@ -1,12 +1,11 @@
 using RetroEngine.Core;
-using RetroEngine.Core.Elements;
 using RetroEngine.Core.Exceptions;
 using RetroEngine.UnitTest.TestData.Components;
 using RetroEngine.UnitTest.TestData.Systems;
 using System.Collections.Specialized;
 using System.Reflection;
 
-namespace RetroEngine.UnitTest.Core
+namespace RetroEngine.UnitTest.Core.Managers
 {
     /// <summary>
     /// Tests functionality of classes World and WorldBuilder.

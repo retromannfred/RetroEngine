@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RetroEngine.Graphics
+﻿namespace RetroEngine.Graphics.Batching
 {
     /// <summary>
     /// Defines constant buffer data information about vertices.
     /// </summary>
-    internal static class FixedBufferData
+    internal static class FixedSpriteBatchBufferData
     {
         public static float[] PositionAndTextureCoords = {
             //  [---Positions---] [Texcoords]
@@ -17,7 +11,7 @@ namespace RetroEngine.Graphics
                  0.5f,  0.5f, 0f, 1f, 1f,
                  0.5f, -0.5f, 0f, 1f, 0f,
                 -0.5f, -0.5f, 0f, 0f, 0f,
-            };
+        };
 
         public static uint[] ElementBufferIndices = {
             0,1,2, // Triangle one
