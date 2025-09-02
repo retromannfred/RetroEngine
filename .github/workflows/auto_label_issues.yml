@@ -9,35 +9,35 @@ jobs:
     steps:
       - name: Apply labels based on issue content
         uses: actions-ecosystem/action-add-labels@v1
-        if: contains(github.event.issue.body, 'scope-core: true')
+        if: contains(github.event.issue.body, 'select-scope: RetroEngine.Core')
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           labels: "🧩 scope: core"
 
       - name: Apply labels based on issue content
         uses: actions-ecosystem/action-add-labels@v1
-        if: contains(github.event.issue.body, 'scope-graphics: true')
+        if: contains(github.event.issue.body, 'select-scope: RetroEngine.Graphics')
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           labels: "🧩 scope: graphics"
 
       - name: Apply labels based on issue content
         uses: actions-ecosystem/action-add-labels@v1
-        if: contains(github.event.issue.body, 'scope-audio: true')
+        if: contains(github.event.issue.body, 'select-scope: RetroEngine.Audio')
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           labels: "🧩 scope: audio"
 
       - name: Apply labels based on issue content
         uses: actions-ecosystem/action-add-labels@v1
-        if: contains(github.event.issue.body, 'scope-physics: true')
+        if: contains(github.event.issue.body, 'select-scope: RetroEngine.Physics')
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           labels: "🧩 scope: physics"
 
       - name: Apply labels based on issue content
         uses: actions-ecosystem/action-add-labels@v1
-        if: contains(github.event.issue.body, 'scope-buddies: true')
+        if: contains(github.event.issue.body, 'select-scope: RetroEngine.Buddies')
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           labels: "🧩 scope: buddies"
