@@ -11,33 +11,33 @@ jobs:
         uses: actions-ecosystem/action-add-labels@v1
         if: contains(github.event.issue.body, 'scope-core: true')
         with:
-          github_token: ${{ secrets.WORKFLOW_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           labels: "🧩 scope: core"
 
       - name: Apply labels based on issue content
         uses: actions-ecosystem/action-add-labels@v1
         if: contains(github.event.issue.body, 'scope-graphics: true')
         with:
-          github_token: ${{ secrets.WORKFLOW_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           labels: "🧩 scope: graphics"
 
       - name: Apply labels based on issue content
         uses: actions-ecosystem/action-add-labels@v1
         if: contains(github.event.issue.body, 'scope-audio: true')
         with:
-          github_token: ${{ secrets.WORKFLOW_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           labels: "🧩 scope: audio"
 
       - name: Apply labels based on issue content
         uses: actions-ecosystem/action-add-labels@v1
         if: contains(github.event.issue.body, 'scope-physics: true')
         with:
-          github_token: ${{ secrets.WORKFLOW_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           labels: "🧩 scope: physics"
 
       - name: Apply labels based on issue content
         uses: actions-ecosystem/action-add-labels@v1
         if: contains(github.event.issue.body, 'scope-buddies: true')
         with:
-          github_token: ${{ secrets.WORKFLOW_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           labels: "🧩 scope: buddies"
