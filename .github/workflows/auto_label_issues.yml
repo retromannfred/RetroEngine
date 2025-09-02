@@ -4,40 +4,48 @@ on:
     types: [opened, edited]
 
 jobs:
-  label:
+  sync-scope-labels:
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
     steps:
-      - name: Apply labels based on issue content
-        uses: actions-ecosystem/action-add-labels@v1
-        if: contains(github.event.issue.body, 'select-scope: RetroEngine.Core')
+      - name: Sync scope labels from checkboxes
+        uses: actions/github-script@v7
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          labels: "🧩 scope: core"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const body = context.payload.issue.body || "";
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const issue_number = context.issue.number;
 
-      - name: Apply labels based on issue content
-        uses: actions-ecosystem/action-add-labels@v1
-        if: contains(github.event.issue.body, 'select-scope: RetroEngine.Graphics')
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          labels: "🧩 scope: graphics"
+            // Texto exacto de las opciones del form
+            const scopes = [
+              { text: 'RetroEngine.Core',    label: '🧩 scope: core' },
+              { text: 'RetroEngine.Graphics',label: '🧩 scope: graphics' },
+              { text: 'RetroEngine.Audio',   label: '🧩 scope: audio' },
+              { text: 'RetroEngine.Physics', label: '🧩 scope: physics' },
+              { text: 'RetroEngine.Buddies', label: '🧩 scope: buddies' },
+            ];
 
-      - name: Apply labels based on issue content
-        uses: actions-ecosystem/action-add-labels@v1
-        if: contains(github.event.issue.body, 'select-scope: RetroEngine.Audio')
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          labels: "🧩 scope: audio"
+            // Detecta marcados: líneas tipo "- [x] RetroEngine.Core" (o [X])
+            const isChecked = (t) => new RegExp(`[\\-*]\\s*\\[[xX]\\]\\s*${t}\\b`).test(body);
+            const desired = scopes.filter(s => isChecked(s.text)).map(s => s.label);
 
-      - name: Apply labels based on issue content
-        uses: actions-ecosystem/action-add-labels@v1
-        if: contains(github.event.issue.body, 'select-scope: RetroEngine.Physics')
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          labels: "🧩 scope: physics"
+            // Lee labels actuales
+            const { data: current } = await github.rest.issues.listLabelsOnIssue({ owner, repo, issue_number });
+            const currentScope = current.map(l => l.name).filter(n => n.startsWith('🧩 scope: '));
 
-      - name: Apply labels based on issue content
-        uses: actions-ecosystem/action-add-labels@v1
-        if: contains(github.event.issue.body, 'select-scope: RetroEngine.Buddies')
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          labels: "🧩 scope: buddies"
+            // Calcula diferencias
+            const toAdd = desired.filter(n => !currentScope.includes(n));
+            const toRemove = currentScope.filter(n => !desired.includes(n));
+
+            // Quita los que sobran
+            for (const name of toRemove) {
+              await github.rest.issues.removeLabel({ owner, repo, issue_number, name }).catch(() => {});
+            }
+
+            // Añade los que faltan
+            if (toAdd.length) {
+              await github.rest.issues.addLabels({ owner, repo, issue_number, labels: toAdd });
+            }
