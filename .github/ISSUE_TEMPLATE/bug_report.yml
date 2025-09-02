@@ -5,41 +5,70 @@ labels: ["🛠 type: bug", "⏳ status: pending", "🚦 priority: need triage"]
 assignees:
   - retromannfred
 body:
+  # Campo de descripción del bug
   - type: textarea
+    id: what-happened
     attributes:
       label: What happened?
-      description: Describe what is happening or what is the current behaviour of the engine.
+      description: Describe what is happening or the current behaviour of the engine.
       placeholder: The code is...
     validations:
       required: true
+
+  # Campo de cómo debería funcionar
   - type: textarea
+    id: how-should-work
     attributes:
       label: How it should work?
-      description: Describe how actually should work or how the current behaviour of the engine should be.
+      description: Describe how it should actually work or the expected behaviour.
       placeholder: The code should...
     validations:
       required: true
+
+  # Campo de reproducción
   - type: textarea
+    id: how-to-reproduce
     attributes:
       label: How it can be reproduced?
-      description: Explain how the bug can be reproducen in a run.
+      description: Explain how the bug can be reproduced in a run.
       placeholder: The steps are...
     validations:
       required: true
+
+  # Markdown explicativo antes de los scopes
   - type: markdown
     attributes:
       value: |
         ### Select the affected libraries
         Use the checkboxes below to indicate which parts of the engine are or may be affected by this bug.
+
+  # Selección de scopes con booleanos independientes
   - type: boolean
+    id: scope-core
     attributes:
-      label: RetroEngine.Core
+      label: ⚙️ RetroEngine.Core
+      description: Affected core library
+
   - type: boolean
+    id: scope-graphics
     attributes:
-      label: RetroEngine.Graphics
+      label: 🎨 RetroEngine.Graphics
+      description: Affected graphics library
+
   - type: boolean
+    id: scope-audio
     attributes:
-      label: RetroEngine.Audio
+      label: 🔊 RetroEngine.Audio
+      description: Affected audio library
+
   - type: boolean
+    id: scope-physics
     attributes:
-      label: RetroEngine.Physics
+      label: 🎳 RetroEngine.Physics
+      description: Affected physics library
+
+  - type: boolean
+    id: scope-buddies
+    attributes:
+      label: 👥 RetroEngine.Buddies
+      description: Affected buddies library
