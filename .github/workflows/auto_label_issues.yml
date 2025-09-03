@@ -1,0 +1,82 @@
+﻿name: Auto-labeling issues
+on:
+  issues:
+    types: [opened, edited]
+
+jobs:
+  sync-labels:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Sync labels from dropdowns
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const body = context.payload.issue.body || "";
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const issue_number = context.issue.number;
+
+            // === Mapas de valores → etiquetas ===
+            const scopes = {
+              "Core":     "🧩 scope: core",
+              "Graphics": "🧩 scope: graphics",
+              "Audio":    "🧩 scope: audio",
+              "Physics":  "🧩 scope: physics",
+              "Buddies":  "🧩 scope: buddies"
+            };
+
+            const types = {
+              "It is new feature":    "🛠 type: feature",
+              "It is an enhancement": "🛠 type: enhancement"
+            };
+
+            const priorities = {
+              "It is new feature":    "🚦 priority: medium",
+              "It is an enhancement": "🚦 priority: low"
+            };
+
+            // === Función para extraer selección de un bloque del body ===
+            function extract(sectionTitle) {
+              const regex = new RegExp(`${sectionTitle}\\s*\\n([^\\n]+)`);
+              const match = body.match(regex);
+              return match ? match[1].split(",").map(s => s.trim()) : [];
+            }
+
+            // === Selecciones del formulario ===
+            const selectedScopes = extract("Improved scopes");
+            const selectedTypes = extract("Improved types");
+            const selectedPriorities = extract("Improved priorities");
+
+            // === Labels deseados ===
+            const desired = [
+              ...selectedScopes.map(s => scopes[s]).filter(Boolean),
+              ...selectedTypes.map(s => types[s]).filter(Boolean),
+              ...selectedPriorities.map(s => priorities[s]).filter(Boolean)
+            ];
+
+            // === Labels actuales del issue ===
+            const { data: current } = await github.rest.issues.listLabelsOnIssue({ owner, repo, issue_number });
+            const currentLabels = current.map(l => l.name);
+
+            // Filtrar solo las categorías que gestionamos aquí
+            const managedPrefixes = ["🧩 scope: ", "🛠 type: ", "🚦 priority: "];
+            const currentManaged = currentLabels.filter(n =>
+              managedPrefixes.some(prefix => n.startsWith(prefix))
+            );
+
+            // === Calcular diferencias ===
+            const toAdd = desired.filter(n => !currentManaged.includes(n));
+            const toRemove = currentManaged.filter(n => !desired.includes(n));
+
+            // === Quitar los que sobran ===
+            for (const name of toRemove) {
+              await github.rest.issues.removeLabel({ owner, repo, issue_number, name }).catch(() => {});
+            }
+
+            // === Añadir los que faltan ===
+            if (toAdd.length) {
+              await github.rest.issues.addLabels({ owner, repo, issue_number, labels: toAdd });
+            }
