@@ -47,8 +47,8 @@ jobs:
 
             // === Selecciones del formulario ===
             const selectedScopes = extract("Improved scopes");
-            const selectedTypes = extract("Improved types");
-            const selectedPriorities = extract("Improved priorities");
+            const selectedTypes = extract("Select level of improvement");
+            const selectedPriorities = extract("Select level of improvement");
 
             // === Labels deseados ===
             const desired = [
