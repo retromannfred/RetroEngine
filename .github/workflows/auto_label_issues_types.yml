@@ -1,4 +1,4 @@
-﻿name: Auto Label Issues
+﻿name: Auto-labeling issues - Types
 on:
   issues:
     types: [opened, edited]
@@ -21,8 +21,8 @@ jobs:
 
             // Mapeo: texto del dropdown → label del repo
             const scopes = {
-              "- New feature": "🛠 type: feature",
-              "- Enhancement": "🛠 type: enhancement"
+              "It is new feature": "🛠 type: feature",
+              "It is an enhancement": "🛠 type: enhancement"
             };
 
             // Detecta qué scopes aparecen en el body

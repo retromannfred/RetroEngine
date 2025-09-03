@@ -12,8 +12,8 @@ body:
       description: Is it a new feature or is it an enhancement?
       multiple: false
       options:
-        - "New feature"
-        - "Enhancement"
+        - "It is new feature"
+        - "It is an enhancement"
     validations:
       required: true
   - type: textarea
@@ -39,10 +39,10 @@ body:
       description: Select the libraries that will improve with this feature.
       multiple: true
       options:
-        - "Core"
-        - "Graphics"
-        - "Audio"
-        - "Physics"
-        - "Buddies"
+        - "RetroEngine.Core"
+        - "RetroEngine.Graphics"
+        - "RetroEngine.Audio"
+        - "RetroEngine.Physics"
+        - "RetroEngine.Buddies"
     validations:
       required: false

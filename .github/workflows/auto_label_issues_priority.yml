@@ -1,4 +1,4 @@
-﻿name: Auto Label Issues
+﻿name: Auto-labeling issues - Priority
 on:
   issues:
     types: [opened, edited]
@@ -21,8 +21,8 @@ jobs:
 
             // Mapeo: texto del dropdown → label del repo
             const scopes = {
-              "- New feature": "🚦 priority: medium",
-              "- Enhancement": "🚦 priority: low"
+              "It is new feature": "🚦 priority: medium",
+              "It is an enhancement": "🚦 priority: low"
             };
 
             // Detecta qué scopes aparecen en el body

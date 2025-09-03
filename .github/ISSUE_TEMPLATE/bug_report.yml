@@ -29,16 +29,17 @@ body:
       placeholder: The steps are...
     validations:
       required: true
-  - type: checkboxes
-    id: afected-scopes
+  - type: dropdown
+    id: feature-scopes
     attributes:
-      label: Affected scopes
-      description: Select the libraries affected by this bug.
+      label: Improved scopes
+      description: Select the libraries that will improve with this feature.
+      multiple: true
       options:
-        - label: RetroEngine.Core
-        - label: RetroEngine.Graphics
-        - label: RetroEngine.Audio
-        - label: RetroEngine.Physics
-        - label: RetroEngine.Buddies
+        - "RetroEngine.Core"
+        - "RetroEngine.Graphics"
+        - "RetroEngine.Audio"
+        - "RetroEngine.Physics"
+        - "RetroEngine.Buddies"
     validations:
-      required: true
+      required: false
