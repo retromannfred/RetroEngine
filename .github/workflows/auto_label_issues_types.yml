@@ -1,0 +1,49 @@
+﻿name: Auto Label Issues
+on:
+  issues:
+    types: [opened, edited]
+
+jobs:
+  sync-scope-labels:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Sync scope labels from dropdown
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const body = context.payload.issue.body || "";
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const issue_number = context.issue.number;
+
+            // Mapeo: texto del dropdown → label del repo
+            const scopes = {
+              "- New feature": "🛠 type: feature",
+              "- Enhancement": "🛠 type: enhancement"
+            };
+
+            // Detecta qué scopes aparecen en el body
+            const desired = Object.entries(scopes)
+              .filter(([text, label]) => new RegExp(`^-\\s*${text}\\b`, "m").test(body))
+              .map(([text, label]) => label);
+
+            // Labels de scope ya aplicados en la issue
+            const { data: current } = await github.rest.issues.listLabelsOnIssue({ owner, repo, issue_number });
+            const currentScope = current.map(l => l.name).filter(n => n.startsWith("🧩 scope: "));
+
+            // Diferencias
+            const toAdd = desired.filter(n => !currentScope.includes(n));
+            const toRemove = currentScope.filter(n => !desired.includes(n));
+
+            // Elimina los que ya no aplican
+            for (const name of toRemove) {
+              await github.rest.issues.removeLabel({ owner, repo, issue_number, name }).catch(() => {});
+            }
+
+            // Añade los que falten
+            if (toAdd.length) {
+              await github.rest.issues.addLabels({ owner, repo, issue_number, labels: toAdd });
+            }

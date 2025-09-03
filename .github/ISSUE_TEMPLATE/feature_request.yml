@@ -9,13 +9,13 @@ body:
     id: feature-type
     attributes:
       label: Select level of improvement
-      description: Select the libraries that will improve with this feature.
+      description: Is it a new feature or is it an enhancement?
       multiple: false
       options:
-        - "Feature"
+        - "New feature"
         - "Enhancement"
     validations:
-      required: false
+      required: true
   - type: textarea
     id: feature-description
     attributes:
