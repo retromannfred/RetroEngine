@@ -1,5 +1,5 @@
 name: Feature request
-description: Report of a bug in the code.
+description: Proposes a new feature in the engine.
 title: "Feature: "
 labels: ["⏳ status: pending"]
 assignees:
