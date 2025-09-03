@@ -20,30 +20,34 @@ jobs:
             const issue_number = context.issue.number;
 
             // Mapeo: texto del dropdown → label del repo
-            const scopes = {
+            const priorities = {
               "It is new feature": "🚦 priority: medium",
               "It is an enhancement": "🚦 priority: low"
             };
 
-            // Detecta qué scopes aparecen en el body
-            const desired = Object.entries(scopes)
-              .filter(([text, label]) => new RegExp(`^-\\s*${text}\\b`, "m").test(body))
-              .map(([text, label]) => label);
+            // Buscar la sección "Improved priorities" en el body
+            const match = body.match(/Improved priorities\s*\n([^\n]+)/);
+            const selected = match ? match[1].split(",").map(s => s.trim()) : [];
 
-            // Labels de scope ya aplicados en la issue
+            // Labels que deberían aplicarse
+            const desired = selected
+              .map(scope => priorities[scope])
+              .filter(Boolean);
+
+            // Labels ya aplicados que son de scope
             const { data: current } = await github.rest.issues.listLabelsOnIssue({ owner, repo, issue_number });
             const currentScope = current.map(l => l.name).filter(n => n.startsWith("🧩 scope: "));
 
-            // Diferencias
+            // Calcular diferencias
             const toAdd = desired.filter(n => !currentScope.includes(n));
             const toRemove = currentScope.filter(n => !desired.includes(n));
 
-            // Elimina los que ya no aplican
+            // Quitar los que ya no apliquen
             for (const name of toRemove) {
               await github.rest.issues.removeLabel({ owner, repo, issue_number, name }).catch(() => {});
             }
 
-            // Añade los que falten
+            // Añadir los nuevos
             if (toAdd.length) {
               await github.rest.issues.addLabels({ owner, repo, issue_number, labels: toAdd });
             }
