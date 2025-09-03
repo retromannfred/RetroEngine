@@ -1,0 +1,48 @@
+name: Feature request
+description: Report of a bug in the code.
+title: "Feature: "
+labels: ["⏳ status: pending"]
+assignees:
+  - retromannfred
+body:
+  - type: dropdown
+    id: feature-type
+    attributes:
+      label: Select level of improvement
+      description: Select the libraries that will improve with this feature.
+      multiple: false
+      options:
+        - "Feature"
+        - "Enhancement"
+    validations:
+      required: false
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: Description
+      description: Describe the functionality you want to propose.
+      placeholder: I want to propose...
+    validations:
+      required: true
+  - type: textarea
+    id: feature-reason
+    attributes:
+      label: Justification
+      description: Why this feature is useful or why is nice to have?
+      placeholder: This feature is useful because...
+    validations:
+      required: true
+  - type: dropdown
+    id: feature-scopes
+    attributes:
+      label: Improved scopes
+      description: Select the libraries that will improve with this feature.
+      multiple: true
+      options:
+        - "Core"
+        - "Graphics"
+        - "Audio"
+        - "Physics"
+        - "Buddies"
+    validations:
+      required: false

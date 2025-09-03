@@ -1,4 +1,4 @@
-name: Bug Report
+name: Bug report
 description: Report of a bug in the code.
 title: "Bug: "
 labels: ["🛠 type: bug", "⏳ status: pending", "🚦 priority: need triage"]
@@ -30,7 +30,7 @@ body:
     validations:
       required: true
   - type: checkboxes
-    id: select-scope
+    id: afected-scopes
     attributes:
       label: Affected scopes
       description: Select the libraries affected by this bug.
