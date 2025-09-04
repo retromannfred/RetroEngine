@@ -60,7 +60,7 @@ namespace RetroEngine.UnitTest.Core.Components
         [InlineData(46, 17, 20, 19, 28, 10)]
         [InlineData(-30, -7, 2, 46, 9, -22)]
         [InlineData(5, -10, 38, -13, -16, -6)]
-        public void Transform_CallingRotate_MultipliesValueToScaleVector(float ix, float iy, float iz, float sx, float sy, float sz)
+        public void Transform_CallingRescale_MultipliesValueToScaleVector(float ix, float iy, float iz, float sx, float sy, float sz)
         {
             // Arrange
             var initial = new Vector3(ix, iy, iz);
