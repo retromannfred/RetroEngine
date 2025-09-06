@@ -19,7 +19,7 @@ jobs:
             const repo = context.repo.repo;
             const issue_number = context.issue.number;
 
-            // === Mapas de valores → etiquetas ===
+            // === Values mapping → labels ===
             const scopes = {
               "Core":     "🧩 scope: core",
               "Graphics": "🧩 scope: graphics",
@@ -29,54 +29,71 @@ jobs:
             };
 
             const types = {
-              "It is new feature":    "🛠 type: feature",
-              "It is an enhancement": "🛠 type: enhancement"
+              "New feature":              "🛠 type: feature",
+              "Enhancement of a feature": "🛠 type: enhancement",
+              "Code refactor":            "🛠 type: refactor",
+              "Quality assurance":        "🛠 type: test",
+              "Add documentation":        "🛠 type: documentation",
             };
 
             const priorities = {
-              "It is new feature":    "🚦 priority: medium",
-              "It is an enhancement": "🚦 priority: low"
+              "New feature":              "🚦 priority: medium",
+              "Enhancement of a feature": "🚦 priority: low",
+              "Code refactor":            "🚦 priority: low",
+              "Quality assurance":        "🚦 priority: low",
+              "Add documentation":        "🚦 priority: low"
             };
-
-            // === Función para extraer selección de un bloque del body ===
+            
+            // === Function to extract a block section from body ===
             function extract(sectionTitle) {
               const regex = new RegExp(`${sectionTitle}\\s*\\n([^\\n]+)`);
               const match = body.match(regex);
               return match ? match[1].split(",").map(s => s.trim()) : [];
             }
 
-            // === Selecciones del formulario ===
+            // === Form sections ===
             const selectedScopes = extract("Improved scopes");
             const selectedTypes = extract("Select level of improvement");
             const selectedPriorities = extract("Select level of improvement");
 
-            // === Labels deseados ===
+            // === Desired labels ===
             const desired = [
               ...selectedScopes.map(s => scopes[s]).filter(Boolean),
               ...selectedTypes.map(s => types[s]).filter(Boolean),
               ...selectedPriorities.map(s => priorities[s]).filter(Boolean)
             ];
 
-            // === Labels actuales del issue ===
+            // === Current issue labels ===
             const { data: current } = await github.rest.issues.listLabelsOnIssue({ owner, repo, issue_number });
             const currentLabels = current.map(l => l.name);
 
-            // Filtrar solo las categorías que gestionamos aquí
+            // Filter only categories that we manage here
             const managedPrefixes = ["🧩 scope: ", "🛠 type: ", "🚦 priority: "];
             const currentManaged = currentLabels.filter(n =>
               managedPrefixes.some(prefix => n.startsWith(prefix))
             );
 
-            // === Calcular diferencias ===
+            // === Differences calculation ===
             const toAdd = desired.filter(n => !currentManaged.includes(n));
             const toRemove = currentManaged.filter(n => !desired.includes(n));
 
-            // === Quitar los que sobran ===
+            // === Remove not used labels ===
             for (const name of toRemove) {
               await github.rest.issues.removeLabel({ owner, repo, issue_number, name }).catch(() => {});
             }
 
-            // === Añadir los que faltan ===
+            // === Add remaining labes ===
             if (toAdd.length) {
               await github.rest.issues.addLabels({ owner, repo, issue_number, labels: toAdd });
+            }
+            
+            // === Asignee issue to creator only if it is a task ===
+            if (title.startsWith("Task: ")) {
+              const assignee = context.actor; // autor de la issue
+              await github.rest.issues.addAssignees({
+                owner,
+                repo,
+                issue_number,
+                assignees: [assignee]
+              });
             }

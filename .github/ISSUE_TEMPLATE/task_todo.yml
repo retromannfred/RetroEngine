@@ -1,9 +1,7 @@
-name: Feature request
-description: Proposes a new feature in the engine.
-title: "Feature: "
+name: Task to do
+description: Adds a simple task to do in the project.
+title: "Task: "
 labels: ["⏳ status: pending"]
-assignees:
-  - retromannfred
 body:
   - type: dropdown
     id: feature-type
@@ -12,8 +10,10 @@ body:
       description: Is it a new feature or is it an enhancement?
       multiple: false
       options:
-        - "New feature"
         - "Enhancement of a feature"
+        - "Code refactor"
+        - "Quality assurance"
+        - "Add documentation"
     validations:
       required: true
   - type: textarea
