@@ -1,7 +1,7 @@
 ﻿namespace RetroEngine.Physics
 {
     /// <summary>
-    /// Defines the shape of a collider.
+    /// Enumerates shapes of a collider.
     /// </summary>
     public enum Shape2D
     {

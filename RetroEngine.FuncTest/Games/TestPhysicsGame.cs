@@ -12,7 +12,7 @@ namespace RetroEngine.FuncTest.Games
     /// </summary>
     internal class TestPhysicsGame : Game
     {
-        private const float PLAYER_ACCELERATION = 6f;
+        private const float PLAYER_ACCELERATION = 5f;
 
         private readonly World _world;
         private int _playerOneId = 0;
@@ -31,8 +31,10 @@ namespace RetroEngine.FuncTest.Games
                 .RegisterSystem(new BuddyCollider2DSystem(GraphicSettings))
                 .RegisterSystem(new SpriteSystem(GraphicSettings))
                 .RegisterSystem(new CameraSystem(GraphicSettings))
-                .RegisterSystem(new PhysicsSystem(Vector2.UnitY * -9.8f))
-                .RegisterSystem(new CollisionSystem())
+                .RegisterSystem(new GravitySystem(Vector2.UnitY * -9.8f))
+                .RegisterSystem(new CollisionResolutionSystem())
+                .RegisterSystem(new LinearMovementSystem())
+                .RegisterSystem(new LinearConservationSystem())
                 .Build();
         }
 
@@ -50,14 +52,16 @@ namespace RetroEngine.FuncTest.Games
             _playerOneId = _world.CreateEntity()
                 .Attach(new Transform() { Position = Vector3.UnitX * -3 })
                 .Attach(new SpriteRenderer(texture) { Color = Color4.Green })
-                .Attach(new RigidBody2D() { Mass = 1f, GravityScale = 0f })
+                .Attach(new LinearPhysics2D())
+                .Attach(new RigidBody() { Mass = 10f, GravityScale = 0f })
                 .Attach(new Collider2D(Shape2D.Circle) { Restitution = 1f })
                 .Id;
 
             _playerTwoId = _world.CreateEntity()
                 .Attach(new Transform() { Position = Vector3.UnitX * 3 })
                 .Attach(new SpriteRenderer(texture) { Color = Color4.Yellow })
-                .Attach(new RigidBody2D() { Mass = 1f, GravityScale = 0f })
+                .Attach(new LinearPhysics2D())
+                .Attach(new RigidBody() { Mass = 1f, GravityScale = 0f })
                 .Attach(new Collider2D(Shape2D.Circle) { Restitution = 1f })
                 .Id;
         }
@@ -65,34 +69,36 @@ namespace RetroEngine.FuncTest.Games
         protected override void Update(GameTime time)
         {
             ref var transformA = ref _world.GetComponent<Transform>(_playerOneId);
-            ref var bodyA = ref _world.GetComponent<RigidBody2D>(_playerOneId);
+            ref var linearA = ref _world.GetComponent<LinearPhysics2D>(_playerOneId);
+            ref var bodyA = ref _world.GetComponent<RigidBody>(_playerOneId);
 
             if (KeyboardState!.IsKeyDown(Keys.W))
-                bodyA.ApplyForce(Vector2.UnitY * PLAYER_ACCELERATION * time.Delta);
+                bodyA.ApplyForce(ref linearA, Vector2.UnitY * PLAYER_ACCELERATION * time.Delta);
 
             if (KeyboardState!.IsKeyDown(Keys.A))
-                bodyA.ApplyForce(-Vector2.UnitX * PLAYER_ACCELERATION * time.Delta);
+                bodyA.ApplyForce(ref linearA, -Vector2.UnitX * PLAYER_ACCELERATION * time.Delta);
 
             if (KeyboardState!.IsKeyDown(Keys.S))
-                bodyA.ApplyForce(-Vector2.UnitY * PLAYER_ACCELERATION * time.Delta);
+                bodyA.ApplyForce(ref linearA, -Vector2.UnitY * PLAYER_ACCELERATION * time.Delta);
 
             if (KeyboardState!.IsKeyDown(Keys.D))
-                bodyA.ApplyForce(Vector2.UnitX * PLAYER_ACCELERATION * time.Delta);
+                bodyA.ApplyForce(ref linearA, Vector2.UnitX * PLAYER_ACCELERATION * time.Delta);
 
             ref var transformB = ref _world.GetComponent<Transform>(_playerTwoId);
-            ref var bodyB = ref _world.GetComponent<RigidBody2D>(_playerTwoId);
+            ref var linearB = ref _world.GetComponent<LinearPhysics2D>(_playerTwoId);
+            ref var bodyB = ref _world.GetComponent<RigidBody>(_playerTwoId);
 
             if (KeyboardState!.IsKeyDown(Keys.Up))
-                bodyB.ApplyForce(Vector2.UnitY * PLAYER_ACCELERATION * time.Delta);
+                bodyB.ApplyForce(ref linearB, Vector2.UnitY * PLAYER_ACCELERATION * time.Delta);
 
             if (KeyboardState!.IsKeyDown(Keys.Left))
-                bodyB.ApplyForce(-Vector2.UnitX * PLAYER_ACCELERATION * time.Delta);
+                bodyB.ApplyForce(ref linearB, -Vector2.UnitX * PLAYER_ACCELERATION * time.Delta);
 
             if (KeyboardState!.IsKeyDown(Keys.Down))
-                bodyB.ApplyForce(-Vector2.UnitY * PLAYER_ACCELERATION * time.Delta);
+                bodyB.ApplyForce(ref linearB, - Vector2.UnitY * PLAYER_ACCELERATION * time.Delta);
 
             if (KeyboardState!.IsKeyDown(Keys.Right))
-                bodyB.ApplyForce(Vector2.UnitX * PLAYER_ACCELERATION * time.Delta);
+                bodyB.ApplyForce(ref linearB, Vector2.UnitX * PLAYER_ACCELERATION * time.Delta);
 
             _world.Update(time);
         }

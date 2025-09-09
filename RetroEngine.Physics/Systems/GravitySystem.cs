@@ -4,19 +4,20 @@ using RetroEngine.Core;
 namespace RetroEngine.Physics
 {
     /// <summary>
-    /// Defines a system that updates the transform component of an entity that applies physics with a body.
+    /// Defines a system that updates linear velocity of an entity following a wold gravity.
     /// </summary>
     /// <param name="gravity">Gravity of the world.</param>
-    public class PhysicsSystem(Vector2 gravity) : UpdateSystem(Contract
+    public class GravitySystem(Vector2 gravity) : UpdateSystem(Contract
             .Include<Transform>()
-            .Include<RigidBody2D>())
+            .Include<LinearPhysics2D>()
+            .Include<RigidBody>())
     {
         private Vector2 _gravity = gravity;
 
         /// <summary>
         /// Creates a new physics system with no gravity.
         /// </summary>
-        public PhysicsSystem() : this(Vector2.Zero) { }
+        public GravitySystem() : this(Vector2.Zero) { }
 
         /// <inheritdoc/>
         public override void Process(World world, GameTime time)
@@ -24,11 +25,11 @@ namespace RetroEngine.Physics
             foreach (var entity in GetEntities())
             {
                 ref var transform = ref world.GetComponent<Transform>(entity);
-                ref var body = ref world.GetComponent<RigidBody2D>(entity);
+                ref var linear = ref world.GetComponent<LinearPhysics2D>(entity);
+                ref var body = ref world.GetComponent<RigidBody>(entity);
 
-                body.LinearVelocity *= 1f - body.LinearDrag * time.Delta;
-                body.LinearVelocity += _gravity * time.Delta * body.GravityScale;
-                transform.Translate(new Vector3(body.LinearVelocity.X * time.Delta, body.LinearVelocity.Y * time.Delta, 0));
+                linear.Velocity += _gravity * time.Delta * body.GravityScale;
+                transform.Translate(new Vector3(linear.Velocity * time.Delta));
             }
         }
     }
