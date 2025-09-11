@@ -4,13 +4,14 @@ using RetroEngine.Core;
 namespace RetroEngine.Physics
 {
     /// <summary>
-    /// Updates entities with bodies that collides with another body.
+    /// Defines a system that updates linear velocities following the law of conservation of linear momentum.
     /// </summary>
-    public class CollisionSystem()
+    public class LinearMomentumSystem()
         : UpdateSystem(Contract
             .Include<Transform>()
-            .Include<RigidBody2D>()
-            .Include<Collider2D>())
+            .Include<Collider2D>()
+            .Include<LinearPhysics2D>()
+            .Include<RigidBody>())
     {
         /// <inheritdoc/>
         public override void Process(World world, GameTime time)
@@ -18,7 +19,6 @@ namespace RetroEngine.Physics
             foreach (var entityA in GetEntities())
             {
                 ref var transformA = ref world.GetComponent<Transform>(entityA);
-                ref var bodyA = ref world.GetComponent<RigidBody2D>(entityA);
                 ref var colliderA = ref world.GetComponent<Collider2D>(entityA);
 
                 foreach (var entityB in GetEntities())
@@ -27,7 +27,6 @@ namespace RetroEngine.Physics
                         continue;
 
                     ref var transformB = ref world.GetComponent<Transform>(entityB);
-                    ref var bodyB = ref world.GetComponent<RigidBody2D>(entityB);
                     ref var colliderB = ref world.GetComponent<Collider2D>(entityB);
 
                     if (Collider2D.Intersects(
@@ -35,18 +34,21 @@ namespace RetroEngine.Physics
                         transformB, colliderB,
                         out Vector2 direction, out float depth))
                     {
+                        ref var linearA = ref world.GetComponent<LinearPhysics2D>(entityA);
+                        ref var bodyA = ref world.GetComponent<RigidBody>(entityA);
+
+                        ref var linearB = ref world.GetComponent<LinearPhysics2D>(entityB);
+                        ref var bodyB = ref world.GetComponent<RigidBody>(entityB);
+
                         transformA.Translate(new Vector3(direction) * -depth / 2f);
                         transformB.Translate(new Vector3(direction) * depth / 2f);
 
-                        var velA = bodyA.LinearVelocity;
-                        var velB = bodyB.LinearVelocity;
-
                         var sharedRestitution = Math.Min(colliderA.Restitution, colliderB.Restitution);
                         var massSum = bodyA.Mass + bodyB.Mass;
-                        var velDiff = Vector2.Dot(velA - velB, direction) * direction;
+                        var velDiff = Vector2.Dot(linearA.Velocity - linearB.Velocity, direction) * direction;
 
-                        bodyA.LinearVelocity = velA - ((1 + sharedRestitution) * bodyB.Mass) / massSum * velDiff;
-                        bodyB.LinearVelocity = velB + ((1 + sharedRestitution) * bodyA.Mass) / massSum * velDiff;
+                        linearA.Velocity -= ((1 + sharedRestitution) * bodyB.Mass) / massSum * velDiff;
+                        linearB.Velocity += ((1 + sharedRestitution) * bodyA.Mass) / massSum * velDiff;
                     }
                 }
             }
