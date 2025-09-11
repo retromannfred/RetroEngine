@@ -56,7 +56,7 @@ namespace RetroEngine.FuncTest.Games
             _playerId = _world.CreateEntity()
                 .Attach(new Transform())
                 .Attach(new SpriteRenderer(texture) { Color = Color4.Blue })
-                .Attach(new Collider2D(Shape2D.Circle))
+                .Attach(new Collider2D() { Shape = Shape2D.Circle })
                 .Id;
 
             for (int i = 0; i < 10; i++)
@@ -70,7 +70,7 @@ namespace RetroEngine.FuncTest.Games
                 {
                     Color = Color4.White
                 })
-                .Attach(new Collider2D(Shape2D.Circle));
+                .Attach(new Collider2D() { Shape = Shape2D.Circle });
             }
         }
 

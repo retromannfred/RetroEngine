@@ -6,21 +6,21 @@ namespace RetroEngine.Physics
     /// <summary>
     /// Defines how an entity behaves when collides with another entity.
     /// </summary>
-    public struct Collider2D
+    public struct Collider2D()
     {
-        private float _restitution;
-        private float _friction;
+        private float _restitution = 1f;
+        private float _friction = 0f;
 
         /// <summary>
         /// Gets or sets the shape of the collider.
         /// </summary>
-        public Shape2D Shape { get; set; }
+        public Shape2D Shape { get; set; } = Shape2D.Circle;
 
         /// <summary>
         /// Gets or sets the position of the collider relative to its related transform.
         /// </summary>
         /// <remarks>Final collider position will be transform position + collider offset.</remarks>
-        public Vector2 Offset { get; set; }
+        public Vector2 Offset { get; set; } = Vector2.Zero;
 
         /// <summary>
         /// Gets or sets the restitution of this collider.
@@ -37,59 +37,25 @@ namespace RetroEngine.Physics
         /// <summary>
         /// Gets or sets the density of this collider.
         /// </summary>
-        public float Density { get; set; }
+        public float Density { get; set; } = 1f;
 
         /// <summary>
         /// Gets or sets de radius of this collider.
         /// </summary>
         /// <remarks>This property will be used when the shape is set to circle.</remarks>
-        public float Radius { get; set; }
+        public float Radius { get; set; } = .5f;
 
         /// <summary>
         /// Gets or sets the width of this collider.
         /// </summary>
         /// <remarks>This property will be used when the shape is set to rectangle.</remarks>
-        public float Width { get; set; }
+        public float Width { get; set; } = 1f;
 
         /// <summary>
         /// Gets or sets the height of this collider.
         /// </summary>
         /// <remarks>This property will be used when the shape is set to rectangle.</remarks>
-        public float Height { get; set; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Collider2D"/> struct.
-        /// </summary>
-        /// <param name="shape"></param>
-        public Collider2D(Shape2D shape)
-        {
-            Shape = shape;
-            Offset = Vector2.Zero;
-            Restitution = 1f;
-            Friction = 0f;
-            Density = 1f;
-
-            switch (shape)
-            {
-                case Shape2D.Rectangle:
-                    Radius = 0f;
-                    Width = 1f;
-                    Height = 1f;
-                    break;
-                case Shape2D.Circle:
-                    Radius = 0.5f;
-                    Width = 1f;
-                    Height = 1f;
-                    break;
-                case Shape2D.Polygon:
-                    Radius = 0f;
-                    Width = 0f;
-                    Height = 0f;
-                    break;
-                default:
-                    break;
-            }
-        }
+        public float Height { get; set; } = 1f;
 
         /// <summary>
         /// Determines if an entity is intersecting with another entity.

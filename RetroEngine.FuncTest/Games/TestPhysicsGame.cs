@@ -33,8 +33,8 @@ namespace RetroEngine.FuncTest.Games
                 .RegisterSystem(new CameraSystem(GraphicSettings))
                 .RegisterSystem(new GravitySystem(Vector2.UnitY * -9.8f))
                 .RegisterSystem(new CollisionResolutionSystem())
-                .RegisterSystem(new LinearMovementSystem())
-                .RegisterSystem(new LinearConservationSystem())
+                .RegisterSystem(new LinearTranslationSystem())
+                .RegisterSystem(new LinearMomentumSystem())
                 .Build();
         }
 
@@ -54,7 +54,7 @@ namespace RetroEngine.FuncTest.Games
                 .Attach(new SpriteRenderer(texture) { Color = Color4.Green })
                 .Attach(new LinearPhysics2D())
                 .Attach(new RigidBody() { Mass = 10f, GravityScale = 0f })
-                .Attach(new Collider2D(Shape2D.Circle) { Restitution = 1f })
+                .Attach(new Collider2D() { Shape = Shape2D.Circle, Restitution = 1f })
                 .Id;
 
             _playerTwoId = _world.CreateEntity()
@@ -62,7 +62,7 @@ namespace RetroEngine.FuncTest.Games
                 .Attach(new SpriteRenderer(texture) { Color = Color4.Yellow })
                 .Attach(new LinearPhysics2D())
                 .Attach(new RigidBody() { Mass = 1f, GravityScale = 0f })
-                .Attach(new Collider2D(Shape2D.Circle) { Restitution = 1f })
+                .Attach(new Collider2D() { Shape = Shape2D.Circle, Restitution = 1f })
                 .Id;
         }
 

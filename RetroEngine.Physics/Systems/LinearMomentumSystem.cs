@@ -4,9 +4,9 @@ using RetroEngine.Core;
 namespace RetroEngine.Physics
 {
     /// <summary>
-    /// Updates entities with bodies that collides with another body.
+    /// Defines a system that updates linear velocities following the law of conservation of linear momentum.
     /// </summary>
-    public class LinearConservationSystem()
+    public class LinearMomentumSystem()
         : UpdateSystem(Contract
             .Include<Transform>()
             .Include<Collider2D>()

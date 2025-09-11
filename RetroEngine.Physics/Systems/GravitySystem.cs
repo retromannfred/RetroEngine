@@ -29,7 +29,6 @@ namespace RetroEngine.Physics
                 ref var body = ref world.GetComponent<RigidBody>(entity);
 
                 linear.Velocity += _gravity * time.Delta * body.GravityScale;
-                transform.Translate(new Vector3(linear.Velocity * time.Delta));
             }
         }
     }
