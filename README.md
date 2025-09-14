@@ -12,7 +12,7 @@ I created this project to adquire knowledge about:
 - Audio and music in a game works.
 
 
-## 🚀 Características
+## 🚀 Features
 - Architecture based on **ECS** in order to separate data, logic and rendering.
 - Rendering with **OpenTK** (OpenGL over .NET).
 - Modularity: designing as a collection of independent modules, where each module handles a specific functionality and communicates with others thanks to ECS architecture.
