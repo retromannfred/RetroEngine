@@ -19,6 +19,11 @@ namespace RetroEngine.Buddies.Helpers
         private readonly ShaderProgram _shader;
 
         /// <summary>
+        /// Gets or sets the thickness of the collider line.
+        /// </summary>
+        public float Thickness { get; set; } = 0.015f;
+
+        /// <summary>
         /// Creates a new <see cref="RectangleColliderRenderer"/>.
         /// </summary>
         public CircleColliderRenderer()
@@ -87,13 +92,15 @@ namespace RetroEngine.Buddies.Helpers
             int locView = GL.GetUniformLocation(_shader.Id, "u_view");
             int locProj = GL.GetUniformLocation(_shader.Id, "u_projection");
             int locColor = GL.GetUniformLocation(_shader.Id, "u_color");
-            int locRadius = GL.GetUniformLocation(_shader.Id, "u_radius");
+            int locRadius = GL.GetUniformLocation(_shader.Id, "u_sq_radius");
+            int locThickness = GL.GetUniformLocation(_shader.Id, "u_thickness");
 
             GL.UniformMatrix4(locModel, false, ref model);
             GL.UniformMatrix4(locView, false, ref view);
             GL.UniformMatrix4(locProj, false, ref projection);
             GL.Uniform4(locColor, color);
             GL.Uniform1(locRadius, radius * radius);
+            GL.Uniform1(locThickness, Thickness);
 
             GL.DrawElements(PrimitiveType.Triangles, _ebo.Count, DrawElementsType.UnsignedInt, 0);
         }
