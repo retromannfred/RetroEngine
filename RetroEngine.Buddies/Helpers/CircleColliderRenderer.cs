@@ -9,9 +9,9 @@ using System.Reflection;
 namespace RetroEngine.Buddies.Helpers
 {
     /// <summary>
-    /// Defines a render to draw colliders in rectangle form.
+    /// Defines a render to draw colliders in circle form.
     /// </summary>
-    public class RectangleColliderRenderer
+    public class CircleColliderRenderer
     {
         private readonly VertexArray _vao;
         private readonly VertexBuffer<Vector2> _vbo;
@@ -19,13 +19,18 @@ namespace RetroEngine.Buddies.Helpers
         private readonly ShaderProgram _shader;
 
         /// <summary>
+        /// Gets or sets the thickness of the collider line.
+        /// </summary>
+        public float Thickness { get; set; } = 0.015f;
+
+        /// <summary>
         /// Creates a new <see cref="RectangleColliderRenderer"/>.
         /// </summary>
-        public RectangleColliderRenderer()
+        public CircleColliderRenderer()
         {
             var assembly = Assembly.GetExecutingAssembly();
-            var vertexShader = new Shader(Shader.LoadShaderSource(assembly, assembly.GetName().Name + ".Shaders.rectangle.vert"), ShaderType.VertexShader);
-            var fragmentShader = new Shader(Shader.LoadShaderSource(assembly, assembly.GetName().Name + ".Shaders.rectangle.frag"), ShaderType.FragmentShader);
+            var vertexShader = new Shader(Shader.LoadShaderSource(assembly, assembly.GetName().Name + ".Shaders.circle.vert"), ShaderType.VertexShader);
+            var fragmentShader = new Shader(Shader.LoadShaderSource(assembly, assembly.GetName().Name + ".Shaders.circle.frag"), ShaderType.FragmentShader);
 
             _shader = new ShaderProgram();
             _shader.AddShader(vertexShader);
@@ -49,44 +54,55 @@ namespace RetroEngine.Buddies.Helpers
 
             _vbo.CreateData(vertices);
 
-            uint[] indices = [0, 1, 2, 3];
+            uint[] indices = [0, 1, 2, 2, 3, 0];
             _ebo.UpdateData(indices);
 
             _vao.Link(0, _vbo, 2);
         }
 
         /// <summary>
-        /// Draws a rectangle collider.
+        /// Draws a circle collider.
         /// </summary>
         /// <param name="transform">Transform component associated to the collider.</param>
         /// <param name="collider">Collider component to draw.</param>
         /// <param name="view">Camera's view matrix.</param>
         /// <param name="projection">Camera's projection matrix.</param>
         /// <param name="color">Color of the collider lines.</param>
-        public void Draw(Transform transform, Collider2D collider, Matrix4 view, Matrix4 projection, Vector4 color)
+        /// <param name="screenSize">Size of the screen.</param>
+        public void Draw(
+            Transform transform,
+            Collider2D collider,
+            Matrix4 view,
+            Matrix4 projection,
+            Vector4 color,
+            Vector2 screenSize)
         {
             _shader.Bind();
             _vao.Bind();
             _ebo.Bind();
 
             var model =
-                Matrix4.CreateScale(collider.Width * transform.Scale.X, collider.Height * transform.Scale.Y, 1.0f) *
-                Matrix4.CreateRotationX(transform.Rotation.X) *
-                Matrix4.CreateRotationY(transform.Rotation.Y) *
-                Matrix4.CreateRotationZ(transform.Rotation.Z) *
+                Matrix4.CreateScale(transform.Scale.X, transform.Scale.Y, 1.0f) *
+                Matrix4.CreateFromQuaternion(new Quaternion(transform.Rotation)) *
                 Matrix4.CreateTranslation(transform.Position);
+
+            var radius = collider.Radius;
 
             int locModel = GL.GetUniformLocation(_shader.Id, "u_model");
             int locView = GL.GetUniformLocation(_shader.Id, "u_view");
             int locProj = GL.GetUniformLocation(_shader.Id, "u_projection");
             int locColor = GL.GetUniformLocation(_shader.Id, "u_color");
+            int locRadius = GL.GetUniformLocation(_shader.Id, "u_sq_radius");
+            int locThickness = GL.GetUniformLocation(_shader.Id, "u_thickness");
 
             GL.UniformMatrix4(locModel, false, ref model);
             GL.UniformMatrix4(locView, false, ref view);
             GL.UniformMatrix4(locProj, false, ref projection);
             GL.Uniform4(locColor, color);
+            GL.Uniform1(locRadius, radius * radius);
+            GL.Uniform1(locThickness, Thickness);
 
-            GL.DrawElements(PrimitiveType.LineLoop, _ebo.Count, DrawElementsType.UnsignedInt, 0);
+            GL.DrawElements(PrimitiveType.Triangles, _ebo.Count, DrawElementsType.UnsignedInt, 0);
         }
     }
 }

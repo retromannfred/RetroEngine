@@ -78,8 +78,8 @@ namespace RetroEngine.Physics
             if (colliderA.Shape == Shape2D.Circle && colliderB.Shape == Shape2D.Circle)
             {
                 return CollisionMath.IntersectCircles(
-                    transformA.Position.Xy + colliderA.Offset, colliderA.Radius,
-                    transformB.Position.Xy + colliderB.Offset, colliderB.Radius,
+                    transformA.Position.Xy + colliderA.Offset, colliderA.Radius * MathHelper.Max(transformA.Scale.X, transformA.Scale.Y),
+                    transformB.Position.Xy + colliderB.Offset, colliderB.Radius * MathHelper.Max(transformB.Scale.X, transformB.Scale.Y),
                     out direction, out depth);
             }
             else if (colliderA.Shape == Shape2D.Rectangle && colliderB.Shape == Shape2D.Rectangle)
