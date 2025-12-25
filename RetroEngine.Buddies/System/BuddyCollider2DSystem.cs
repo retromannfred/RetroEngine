@@ -17,6 +17,7 @@ namespace RetroEngine.Buddies.System
     {
         private readonly GraphicSettings _graphicSettings = graphicSettings;
         private readonly RectangleColliderRenderer _rectangleRenderer = new();
+        private readonly CircleColliderRenderer _circleRenderer = new();
 
         /// <inheritdoc/>
         public override void Process(World world, GameTime time)
@@ -43,14 +44,27 @@ namespace RetroEngine.Buddies.System
                             transformB, colliderB,
                             out _, out _))
                         {
-                            _rectangleRenderer.Draw(transformA, colliderA, clipSpace.View, clipSpace.Projection, (Vector4)Color4.Red);
+                            DrawCollider(transformA, colliderA, clipSpace.View, clipSpace.Projection, Color4.Red);
                             break;
                         }
                     }
 
                     if (collided == false)
-                        _rectangleRenderer.Draw(transformA, colliderA, clipSpace.View, clipSpace.Projection, new Vector4(0f, 1f, 0f, 1f));
+                        DrawCollider(transformA, colliderA, clipSpace.View, clipSpace.Projection, new Color4(0f, 1f, 0f, 1f));
                 }
+            }
+        }
+
+        private void DrawCollider(Transform transform, Collider2D collider, Matrix4 view, Matrix4 projection, Color4 color)
+        {
+            switch (collider.Shape)
+            {
+                case Shape2D.Circle:
+                    _circleRenderer.Draw(transform, collider, view, projection, (Vector4)color, new Vector2(_graphicSettings.Width, _graphicSettings.Height));
+                    break;
+                case Shape2D.Rectangle:
+                    _rectangleRenderer.Draw(transform, collider, view, projection, (Vector4)color);
+                    break;
             }
         }
     }

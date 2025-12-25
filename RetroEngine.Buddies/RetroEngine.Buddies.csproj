@@ -7,8 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Shaders\pass_color.frag" />
-    <EmbeddedResource Include="Shaders\rectangle_render.vert" />
+    <EmbeddedResource Include="Shaders\circle.vert" />
+    <EmbeddedResource Include="Shaders\circle.frag" />
+    <EmbeddedResource Include="Shaders\rectangle.frag" />
+    <EmbeddedResource Include="Shaders\rectangle.vert" />
   </ItemGroup>
 
   <ItemGroup>

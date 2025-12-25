@@ -54,7 +54,7 @@ namespace RetroEngine.FuncTest.Games
             .Id;
 
             _playerId = _world.CreateEntity()
-                .Attach(new Transform())
+                .Attach(new Transform() { Scale = Vector3.One * 5f})
                 .Attach(new SpriteRenderer(texture) { Color = Color4.Blue })
                 .Attach(new Collider2D() { Shape = Shape2D.Circle })
                 .Id;
