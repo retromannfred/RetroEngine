@@ -61,22 +61,22 @@ namespace RetroEngine.FuncTest.Games
             ref var camera = ref _world.GetComponent<Camera>(_cameraId);
 
             if (KeyboardState!.IsKeyDown(Keys.W))
-                transform = camera.MoveForward(transform, CAMERA_SPEED * time.Delta);
+                camera.MoveForward(ref transform, CAMERA_SPEED * time.Delta);
 
             if (KeyboardState!.IsKeyDown(Keys.A))
-                transform = camera.MoveLeft(transform, CAMERA_SPEED * time.Delta);
+                camera.MoveLeft(ref transform, CAMERA_SPEED * time.Delta);
 
             if (KeyboardState!.IsKeyDown(Keys.S))
-                transform = camera.MoveBackwards(transform, CAMERA_SPEED * time.Delta);
+                camera.MoveBackwards(ref transform, CAMERA_SPEED * time.Delta);
 
             if (KeyboardState!.IsKeyDown(Keys.D))
-                transform = camera.MoveRight(transform, CAMERA_SPEED * time.Delta);
+                camera.MoveRight(ref transform, CAMERA_SPEED * time.Delta);
 
             if (KeyboardState!.IsKeyDown(Keys.Space))
-                transform = camera.MoveUp(transform, CAMERA_SPEED * time.Delta);
+                transform.Translate(Vector3.UnitY * CAMERA_SPEED * time.Delta);
 
             if (KeyboardState!.IsKeyDown(Keys.LeftShift))
-                transform = camera.MoveDown(transform, CAMERA_SPEED * time.Delta);
+                transform.Translate(-Vector3.UnitY * CAMERA_SPEED * time.Delta);
 
             _world.Update(time);
         }
@@ -88,8 +88,8 @@ namespace RetroEngine.FuncTest.Games
 
             if (MouseState!.IsButtonDown(MouseButton.Left))
             {
-                transform = camera.LookUp(transform, MouseState.Delta.Y * CAMERA_SENSITIVITY * time.Delta);
-                transform = camera.LookRight(transform, MouseState.Delta.X * CAMERA_SENSITIVITY * time.Delta);
+                camera.LookUp(ref transform, MouseState.Delta.Y * CAMERA_SENSITIVITY * time.Delta);
+                camera.LookRight(ref transform, MouseState.Delta.X * CAMERA_SENSITIVITY * time.Delta);
             }
 
             ClearScreen(Color4.CornflowerBlue);

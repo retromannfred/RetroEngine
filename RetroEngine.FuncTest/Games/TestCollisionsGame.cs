@@ -115,8 +115,8 @@ namespace RetroEngine.FuncTest.Games
 
             if (MouseState!.IsButtonDown(MouseButton.Left))
             {
-                cameraTransform = camera.LookUp(cameraTransform, (MouseState!.Delta.Y) * CAMERA_SENSITIVITY * time.Delta);
-                cameraTransform = camera.LookRight(cameraTransform, (MouseState!.Delta.X) * CAMERA_SENSITIVITY * time.Delta);
+                camera.LookUp(ref cameraTransform, (MouseState!.Delta.Y) * CAMERA_SENSITIVITY * time.Delta);
+                camera.LookRight(ref cameraTransform, (MouseState!.Delta.X) * CAMERA_SENSITIVITY * time.Delta);
             }
 
             ClearScreen(Color4.CornflowerBlue);
