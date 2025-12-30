@@ -33,32 +33,5 @@ namespace RetroEngine.Core
         /// Gets or sets the scale of the entity.
         /// </summary>
         public Vector3 Scale { get; set; } = Vector3.One;
-
-        /// <summary>
-        /// Translates the current component.
-        /// </summary>
-        /// <param name="translation">Translation to be added to current position.</param>
-        public void Translate(Vector3 translation)
-        {
-            Position += translation;
-        }
-
-        /// <summary>
-        /// Rotates the current component.
-        /// </summary>
-        /// <param name="radians">Rotation vector in radians to be added to current rotation.</param>
-        public void Rotate(Vector3 radians)
-        {
-            Rotation += radians;
-        }
-
-        /// <summary>
-        /// Rescales the current component.
-        /// </summary>
-        /// <param name="scale">Module to multiply the current scale.</param>
-        public void Rescale(Vector3 scale)
-        {
-            Scale *= scale;
-        }
     }
 }

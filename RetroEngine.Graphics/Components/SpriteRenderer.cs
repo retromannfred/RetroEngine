@@ -35,32 +35,5 @@ namespace RetroEngine.Graphics
         /// Gets or sets the flip mode of the sprite.
         /// </summary>
         public Flip Flip { get; set; } = Flip.None;
-
-        /// <summary>
-        /// Flips this sprite horizontally.
-        /// </summary>
-        public void FlipHorizontally()
-        {
-            Flip ^= Flip.X;
-        }
-
-        /// <summary>
-        /// Flips this sprite vertically.
-        /// </summary>
-        public void FlipVertically()
-        {
-            Flip ^= Flip.Y;
-        }
-    }
-
-    /// <summary>
-    /// Enumerates all flipping moves of an image.
-    /// </summary>
-    public enum Flip
-    {
-        None = 0,
-        X = 1,
-        Y = 2,
-        Both = 3
     }
 }

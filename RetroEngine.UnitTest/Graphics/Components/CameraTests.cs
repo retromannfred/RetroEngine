@@ -92,7 +92,7 @@ namespace RetroEngine.UnitTest.Graphics.Components
 
             // Act
             camera.UpdateCameraVectors(transform);
-            transform = camera.MoveForward(transform, 1f);
+            camera.MoveForward(ref transform, 1f);
             transform.Position = new Vector3(
                 MathF.Round(transform.Position.X, 2),
                 MathF.Round(transform.Position.Y, 2),
@@ -113,7 +113,7 @@ namespace RetroEngine.UnitTest.Graphics.Components
 
             // Act
             camera.UpdateCameraVectors(transform);
-            transform = camera.MoveBackwards(transform, 1f);
+            camera.MoveBackwards(ref transform, 1f);
             transform.Position = new Vector3(
                 MathF.Round(transform.Position.X, 2),
                 MathF.Round(transform.Position.Y, 2),
@@ -134,7 +134,7 @@ namespace RetroEngine.UnitTest.Graphics.Components
 
             // Act
             camera.UpdateCameraVectors(transform);
-            transform = camera.MoveRight(transform, 1f);
+            camera.MoveRight(ref transform, 1f);
             transform.Position = new Vector3(
                 MathF.Round(transform.Position.X, 2),
                 MathF.Round(transform.Position.Y, 2),
@@ -155,7 +155,7 @@ namespace RetroEngine.UnitTest.Graphics.Components
 
             // Act
             camera.UpdateCameraVectors(transform);
-            transform = camera.MoveLeft(transform, 1f);
+            camera.MoveLeft(ref transform, 1f);
             transform.Position = new Vector3(
                 MathF.Round(transform.Position.X, 2),
                 MathF.Round(transform.Position.Y, 2),
@@ -176,7 +176,7 @@ namespace RetroEngine.UnitTest.Graphics.Components
 
             // Act
             camera.UpdateCameraVectors(transform);
-            transform = camera.MoveUp(transform, 1f);
+            camera.MoveUp(ref transform, 1f);
             transform.Position = new Vector3(
                 MathF.Round(transform.Position.X, 2),
                 MathF.Round(transform.Position.Y, 2),
@@ -197,7 +197,7 @@ namespace RetroEngine.UnitTest.Graphics.Components
 
             // Act
             camera.UpdateCameraVectors(transform);
-            transform = camera.MoveDown(transform, 1f);
+            camera.MoveDown(ref transform, 1f);
             transform.Position = new Vector3(
                 MathF.Round(transform.Position.X, 2),
                 MathF.Round(transform.Position.Y, 2),
@@ -218,7 +218,7 @@ namespace RetroEngine.UnitTest.Graphics.Components
 
             // Act
             camera.UpdateCameraVectors(transform);
-            transform = camera.LookUp(transform, MathHelper.PiOver6);
+            camera.LookUp(ref transform, MathHelper.PiOver6);
 
             // Assert
             Assert.Equal(expected, transform.Rotation);
@@ -234,7 +234,7 @@ namespace RetroEngine.UnitTest.Graphics.Components
 
             // Act
             camera.UpdateCameraVectors(transform);
-            transform = camera.LookDown(transform, MathHelper.PiOver6);
+            camera.LookDown(ref transform, MathHelper.PiOver6);
 
             // Assert
             Assert.Equal(expected, transform.Rotation);
@@ -250,7 +250,7 @@ namespace RetroEngine.UnitTest.Graphics.Components
 
             // Act
             camera.UpdateCameraVectors(transform);
-            transform = camera.LookLeft(transform, MathHelper.PiOver6);
+            camera.LookLeft(ref transform, MathHelper.PiOver6);
 
             // Assert
             Assert.Equal(expected, transform.Rotation);
@@ -266,7 +266,7 @@ namespace RetroEngine.UnitTest.Graphics.Components
 
             // Act
             camera.UpdateCameraVectors(transform);
-            transform = camera.LookRight(transform, MathHelper.PiOver6);
+            camera.LookRight(ref transform, MathHelper.PiOver6);
 
             // Assert
             Assert.Equal(expected, transform.Rotation);

@@ -5,12 +5,12 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Performance", "CA1822", Scope = "member", Target = "~M:RetroEngine.Graphics.Camera.MoveUp(RetroEngine.Core.Transform,System.Single)~RetroEngine.Core.Transform")]
-[assembly: SuppressMessage("Performance", "CA1822", Scope = "member", Target = "~M:RetroEngine.Graphics.Camera.MoveDown(RetroEngine.Core.Transform,System.Single)~RetroEngine.Core.Transform")]
-[assembly: SuppressMessage("Performance", "CA1822", Scope = "member", Target = "~M:RetroEngine.Graphics.Camera.LookUp(RetroEngine.Core.Transform,System.Single)~RetroEngine.Core.Transform")]
-[assembly: SuppressMessage("Performance", "CA1822", Scope = "member", Target = "~M:RetroEngine.Graphics.Camera.LookRight(RetroEngine.Core.Transform,System.Single)~RetroEngine.Core.Transform")]
-[assembly: SuppressMessage("Performance", "CA1822", Scope = "member", Target = "~M:RetroEngine.Graphics.Camera.LookLeft(RetroEngine.Core.Transform,System.Single)~RetroEngine.Core.Transform")]
-[assembly: SuppressMessage("Performance", "CA1822", Scope = "member", Target = "~M:RetroEngine.Graphics.Camera.LookDown(RetroEngine.Core.Transform,System.Single)~RetroEngine.Core.Transform")]
 [assembly: SuppressMessage("Style", "IDE0300", Scope = "member", Target = "~F:RetroEngine.Graphics.Batching.FixedSpriteBatchBufferData.PositionAndTextureCoords")]
 [assembly: SuppressMessage("Style", "IDE0300", Scope = "member", Target = "~F:RetroEngine.Graphics.Batching.FixedSpriteBatchBufferData.ElementBufferIndices")]
 [assembly: SuppressMessage("Style", "IDE0130", Scope = "namespace", Target = "~N:RetroEngine.Graphics")]
+[assembly: SuppressMessage("Style", "IDE0060", Justification = "", Scope = "member", Target = "~M:RetroEngine.Graphics.CameraExtensions.MoveUp(RetroEngine.Graphics.Camera,RetroEngine.Core.Transform@,System.Single)")]
+[assembly: SuppressMessage("Style", "IDE0060", Justification = "", Scope = "member", Target = "~M:RetroEngine.Graphics.CameraExtensions.MoveDown(RetroEngine.Graphics.Camera,RetroEngine.Core.Transform@,System.Single)")]
+[assembly: SuppressMessage("Style", "IDE0060", Justification = "", Scope = "member", Target = "~M:RetroEngine.Graphics.CameraExtensions.LookUp(RetroEngine.Graphics.Camera,RetroEngine.Core.Transform@,System.Single)")]
+[assembly: SuppressMessage("Style", "IDE0060", Justification = "", Scope = "member", Target = "~M:RetroEngine.Graphics.CameraExtensions.LookDown(RetroEngine.Graphics.Camera,RetroEngine.Core.Transform@,System.Single)")]
+[assembly: SuppressMessage("Style", "IDE0060", Justification = "", Scope = "member", Target = "~M:RetroEngine.Graphics.CameraExtensions.LookLeft(RetroEngine.Graphics.Camera,RetroEngine.Core.Transform@,System.Single)")]
+[assembly: SuppressMessage("Style", "IDE0060", Justification = "", Scope = "member", Target = "~M:RetroEngine.Graphics.CameraExtensions.LookRight(RetroEngine.Graphics.Camera,RetroEngine.Core.Transform@,System.Single)")]

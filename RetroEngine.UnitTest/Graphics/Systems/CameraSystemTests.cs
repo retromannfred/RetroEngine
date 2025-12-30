@@ -30,7 +30,7 @@ namespace RetroEngine.UnitTest.Graphics.Systems
             ref var transform = ref entity.GetComponent<Transform>();
             world.Update(new GameTime());
             world.Render(new GameTime());
-            transform = camera.MoveForward(transform, 1f);
+            camera.MoveForward(ref transform, 1f);
 
             // Assert
             Assert.Equal(.5f, MathHelper.Round(entity.GetComponent<Transform>().Position.Y, 2));
